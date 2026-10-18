@@ -1,6 +1,6 @@
 {
-  "name": "@ericrisco/rsc",
-  "version": "3.1.1",
+  "name": "@aguerrave/rsc",
+  "version": "3.1.1-aguerrave.1",
   "description": "A guided harness builder that turns your goal into a minimal, verified AI-agent setup using strict best practices.",
   "type": "module",
   "bin": {
@@ -56,13 +56,13 @@
   ],
   "license": "MIT",
   "author": "Eric Risco",
-  "homepage": "https://github.com/ericrisco/rsc-harness#readme",
+  "homepage": "https://github.com/aguerrave/rsc-harness#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ericrisco/rsc-harness.git"
+    "url": "git+https://github.com/aguerrave/rsc-harness.git"
   },
   "bugs": {
-    "url": "https://github.com/ericrisco/rsc-harness/issues"
+    "url": "https://github.com/aguerrave/rsc-harness/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -102,7 +102,7 @@
     },
     {
       "fixedIn": "2.0.18",
-      "symptom": "Onboarding silently replaced a skill you wrote yourself that had the same name as one of rsc's (review, plan, debug…)"
+      "symptom": "Onboarding silently replaced a skill you wrote yourself that had the same name as one of rsc's (review, plan, debug\u2026)"
     },
     {
       "fixedIn": "2.0.19",
@@ -116,5 +116,12 @@
       "fixedIn": "2.1.0",
       "symptom": "Answers were long and leaned on hidden reasoning, and onboarding asked an accompaniment level few could answer; now: short stand-alone sentences, one question"
     }
-  ]
+  ],
+  "private": true,
+  "rscSource": {
+    "repository": "https://github.com/aguerrave/rsc-harness",
+    "ref": "v3.1.1-aguerrave.1",
+    "upstream": "https://github.com/ericrisco/rsc-harness",
+    "upstreamVersion": "3.1.1"
+  }
 }

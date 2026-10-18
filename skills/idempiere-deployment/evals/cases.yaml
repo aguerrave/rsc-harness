@@ -1,0 +1,34 @@
+skill: idempiere-deployment
+
+should_trigger:
+  - prompt: "Despliega un bundle iDempiere y comprueba los 2Pack en un contenedor compartido."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Identifica el servidor real detrás de esta URL de iDempiere antes de instalar."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Prepara respaldo y recuperación para actualizar un plugin de iDempiere."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Verifica que el bundle iDempiere sigue activo después del reinicio."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Comprueba que todos los paquetes incrementales se aplicaron, no solo ACTIVE."
+    why: "Responsabilidad específica de esta skill."
+
+should_not_trigger:
+  - prompt: "Implementa el parser de importes del plugin Java."
+    route_to: idempiere-plugins
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Define el alcance contratado y formación ERP."
+    route_to: idempiere-implementation
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Publica una landing Next.js en Vercel."
+    route_to: vercel
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Configura la retención genérica de copias de PostgreSQL."
+    route_to: backups
+    why: "Corresponde a otra responsabilidad."
+
+capability:
+  - scenario: "Despliega un bundle iDempiere y comprueba los 2Pack en un contenedor compartido."
+    must_include:
+      - "Identifica el destino y el mecanismo existente."
+      - "Comprueba paquetes incrementales además del estado ACTIVE."
+      - "No restaura automáticamente un snapshot que perdería trabajo ajeno."

@@ -1,4 +1,4 @@
-import { existsSync, lstatSync, mkdirSync, rmSync, symlinkSync, cpSync, readFileSync } from 'node:fs';
+import { existsSync, lstatSync, mkdirSync, rmSync, symlinkSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { homedir } from 'node:os';
 import * as claudeAdapter from './claude.js';
@@ -170,7 +170,24 @@ export function targetPaths(target, home = homedir(), cwd = process.cwd()) {
 }
 
 export function writeSkill(target, id, fromDir, toPath) {
-  return ADAPTER[SPEC[target].adapter].writeSkill(id, fromDir, toPath);
+  const files = ADAPTER[SPEC[target].adapter].writeSkill(id, fromDir, toPath);
+  // Native discovery for our self-contained iDempiere skills, without replacing the
+  // existing Codex adapter or overwriting a user-authored same-name skill.
+  if (target === 'codex' && id.startsWith('idempiere-')) {
+    const project = dirname(dirname(dirname(toPath)));
+    const native = join(project, '.agents', 'skills', id, 'SKILL.md');
+    const marker = '<!-- rsc:idempiere-native -->';
+    if (existsSync(native) && !readFileSync(native, 'utf8').includes(marker)) {
+      throw new Error(`Native skill collision at ${native}; preserve the user skill`);
+    }
+    const source = readFileSync(join(fromDir, 'SKILL.md'), 'utf8');
+    const description = source.match(/^description: (.+)$/m)?.[1];
+    const body = source.replace(/^---\n[\s\S]*?\n---\n?/, '');
+    mkdirSync(dirname(native), { recursive: true });
+    writeFileSync(native, `---\nname: ${id}\ndescription: ${description}\n---\n${marker}\n${body}`);
+    files.push(native);
+  }
+  return files;
 }
 
 export function wireHook(target, paths, sourceMd, policy) {

@@ -77,7 +77,7 @@ The same guard also enforces the **sello** where it was opted into — per proje
 `sello on --global`, with the project switch always winning; `rsc sello status` prints which
 scope decided): commit, push and PR are denied unless the change's exact bytes match the
 sealed, approved review — one byte of drift, a moved base, or a missing review on a risk>0 change
-all block, and every denial names its way out (re-run `review`, or `npx @ericrisco/rsc sello off`).
+all block, and every denial names its way out (re-run `review`, or `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sello off`).
 Risk-0 changes (docs/copy) always pass silently. Off by default; the flow lives in the `review`
 skill. Note `.rsc/.no-ship-guard` opts out of the branch-hygiene rules above but **not** of the
 sello, which has its own switch. The sello binds bytes, not intent — it proves what ships is what
@@ -94,9 +94,9 @@ This mirrors the harness "siempre 3 opciones" pattern. Gather the one fact that 
 | **3. Park or discard** | Keep the branch un-merged (park) or delete it (discard) | The approach was superseded, the spike answered its question, or the work is paused — it should not land |
 
 **When the default branch is closed for the agent** (team-safe-default: the project is complex or in
-production — `npx @ericrisco/rsc main status` says `closed: true`), **option 1 is not offered**: a
+production — `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc main status` says `closed: true`), **option 1 is not offered**: a
 local merge is a commit on the default branch. Present option 2 (the recommendation) and option 3,
-and say in one line why option 1 is absent and that «desbloquea main» (`npx @ericrisco/rsc main
+and say in one line why option 1 is absent and that «desbloquea main» (`npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc main
 unlock`) would bring it back. The branch guard denies the local merge anyway.
 
 Recommend based on repo signals: protected `main` or an existing PR culture (look for `.github/`, prior PRs via `gh pr list`) → recommend **option 2**. A solo project with no protection and a passed review → **option 1** is honest and faster. Never default to a PR ceremony the repo doesn't use, and never force-merge a repo that gates `main`.
@@ -133,7 +133,7 @@ Use `--no-ff` so the feature is one legible merge commit tied to the spec. Confi
 
 This used to be an instruction in this paragraph, and it was skipped on both features that reached it. That is why it is a hook now: an instruction at the end of a long phase is the least reliable place to put a step that matters (P1).
 
-If something did survive, it survived *for a reason* — read it rather than forcing it: `npx @ericrisco/rsc worktrees` lists what is left and why. `worktrees reap <path>` still exists for the backlog and for anything the hook deliberately refused; name the path, because bare `reap` retires every worktree that qualifies and with `parallel` running two streams that is how shipping A deletes B. Naming a path selects it, it does not accept the risk: add `--confirm` only after the user has seen the reason and said yes.
+If something did survive, it survived *for a reason* — read it rather than forcing it: `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc worktrees` lists what is left and why. `worktrees reap <path>` still exists for the backlog and for anything the hook deliberately refused; name the path, because bare `reap` retires every worktree that qualifies and with `parallel` running two streams that is how shipping A deletes B. Naming a path selects it, it does not accept the risk: add `--confirm` only after the user has seen the reason and said yes.
 
 ### Option 2 — pull request
 

@@ -116,10 +116,10 @@ without actually running the lenses produces a valid sello and a worthless one.
 Every state transition is deterministic CLI, never tokens:
 
 ```text
-1. npx @ericrisco/rsc sello freeze      → hashes the candidate, prints risk tier + lens count
+1. npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sello freeze      → hashes the candidate, prints risk tier + lens count
 2. Run the lenses (below), filter findings, decide
-3a. approved → npx @ericrisco/rsc sello approve --lenses correctness,security,tests
-3b. blocked  → npx @ericrisco/rsc sello block --reason "<the blocking finding>"
+3a. approved → npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sello approve --lenses correctness,security,tests
+3b. blocked  → npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sello block --reason "<the blocking finding>"
 ```
 
 `approve` refuses to seal with fewer lenses than the tier requires — pass them all, or accept the
@@ -170,7 +170,7 @@ report one defect three ways, and a lens hunting for something can overstate wha
 steps, in this order:
 
 1. **Group (deterministic).** Each lens ends its report with a ` ```json findings ` block. Save the
-   three reports and run `npx @ericrisco/rsc review consolidate <reports…>`. It merges findings on
+   three reports and run `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc review consolidate <reports…>`. It merges findings on
    the same file within 3 lines, or quoting the same evidence; keeps the highest severity and every
    lens that saw it; and downgrades a blocker or should-fix with no `file:line` or failure scenario to
    a question. Several lenses on one finding is a reason to look first, never a reason to raise its
@@ -196,7 +196,7 @@ find something is not evidence:
    its reason in the report); UNPROVEN is a `[question]`, and questions don't block.
 
 **Fixing a blocker is budgeted, one attempt.** Before touching anything: estimate the fix and
-declare it — `npx @ericrisco/rsc sello budget --lines <N>`. After the fix:
+declare it — `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sello budget --lines <N>`. After the fix:
 `sello budget-check` (over budget → justify with `--justify "…"` or shrink; an unexplained
 overrun is how over-engineering enters disguised as a fix). Then `sello freeze` + re-review
 **only the divergence**, and approve. Still broken after one attempt → stop, hand it to the human.

@@ -124,7 +124,7 @@ test('tsd15 · the way out of a closed default branch: alone → a branch in thi
   assert.doesNotMatch(alone, /worktree add/);
   // 2026-10-06, Eric: the agent never branches on its own; the denial hands the choice back.
   assert.match(alone, /Do not choose for the person: ask them in one line whether to open a branch for this change or to unlock "main"/);
-  assert.match(alone, /only on their explicit answer, `npx @ericrisco\/rsc main unlock`/);
+  assert.match(alone, /only on their explicit answer, `npx .*github:aguerrave\/rsc-harness#[^ ]+ rsc main unlock`/);
   session(r, 'other', 'codex');
   const shared = await evaluate({ root: r, command: 'git commit -m x', cwd: r, sessionId: 'me' });
   assert.match(shared, /git worktree add \.worktrees\/<branch> -b feat\/<what>/);

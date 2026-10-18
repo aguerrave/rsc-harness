@@ -135,6 +135,7 @@ export function managedPathsForInstall({ skillIds, agentIds = [], target, home, 
   for (const step of plan) {
     if (step.kind === 'skill') {
       out.push(step.to, baseDir(step.id, cwd));
+      if (target === 'codex' && step.id.startsWith('idempiere-')) out.push(join(cwd, '.agents', 'skills', step.id));
     } else if (step.kind === 'hook') {
       out.push(step.to, ...generatedHookFiles({ target, cwd, policy }));
     }

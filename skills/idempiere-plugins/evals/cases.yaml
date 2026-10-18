@@ -1,0 +1,34 @@
+skill: idempiere-plugins
+
+should_trigger:
+  - prompt: "El proceso Java del plugin está en AD_Process pero no se puede instanciar."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Corrige el registro Service-Component de este plugin iDempiere."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Revisa las referencias UUID y el orden de estos 2Pack incrementales."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Añade pruebas a un parser QIF que pierde céntimos en iDempiere."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Implementa un matcher de conciliación por referencia para este plugin OSGi."
+    why: "Responsabilidad específica de esta skill."
+
+should_not_trigger:
+  - prompt: "Planifica formación y aceptación de una implantación ERP."
+    route_to: idempiere-implementation
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Despliega el JAR ya compilado y revisa sus servicios."
+    route_to: idempiere-deployment
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Implementa un controlador Spring Boot sin dependencia de iDempiere."
+    route_to: spring-boot
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Crea un informe editorial para publicar novedades."
+    route_to: article-writing
+    why: "Corresponde a otra responsabilidad."
+
+capability:
+  - scenario: "El proceso Java del plugin está en AD_Process pero no se puede instanciar."
+    must_include:
+      - "Verifica IProcessFactory y el registro del componente."
+      - "Contrasta Service-Component y contenido del bundle."
+      - "Pide evidencia de ejecución además de compilación."

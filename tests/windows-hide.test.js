@@ -48,6 +48,5 @@ test('#293 · no hook process goes through a shell on Windows unless nothing els
   assert.deepEqual(shelled, [], 'an unconditional shell');
   // The one conditional shell left: auto-update's fallback when npm's npx-cli.js is not next to node.
   const src = readFileSync(join(DIR.pathname, 'auto-update.mjs'), 'utf8');
-  assert.match(src, /'node_modules', 'npm', 'bin', 'npx-cli\.js'/, 'npx runs through node, not npx.cmd');
-  assert.match(src, /const viaShell = !npxCli && process\.platform === 'win32';/);
+  assert.doesNotMatch(src, /spawn\s*\(/, 'fork startup launches no update process on any platform');
 });

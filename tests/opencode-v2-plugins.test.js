@@ -65,10 +65,8 @@ test('ocv2-01 · update: the notice reaches a V2 session as a text part, and V1 
     await module.default.setup(ctx);
     const event = { sessionID: 'ses_1', system: [{ type: 'text', text: 'base' }] };
     await hooks.session.context(event);
-    assert.equal(event.system.length, 2);
-    assert.equal(event.system[1].type, 'text');
-    assert.match(event.system[1].text, /update available/);
-    assert.match(event.system[1].text, /only in your first reply/);
+    assert.equal(event.system.length, 1, 'fork startup never injects an upstream update notice');
+    assert.equal(event.system[0].text, 'base');
   } finally {
     process.env = saved;
   }

@@ -41,7 +41,7 @@ back — you do not write feature code anyway.
    `sdd.registry_path`. Do not choose a different test command from memory while config exists.
 3. **Read the skill registry.** Open `.rsc/skill-registry.json` if present. Select only the
    relevant stack/process skills for this task, then digest them into compact rules. If the
-   registry is missing, run or recommend `npx @ericrisco/rsc registry refresh` and record the fallback.
+   registry is missing, run or recommend `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc registry refresh` and record the fallback.
 4. **Read the register.** Open `02-DOCS/wiki/harness/user-profile.md` and read `technical_level`.
    It picks technical terms or plain words with analogies at each checkpoint (see "Checkpoints"
    below). No profile yet → use analogies, and ask before any irreversible step.

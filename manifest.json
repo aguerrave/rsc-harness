@@ -1,7 +1,7 @@
 {
-  "version": "3.1.1",
+  "version": "3.1.1-aguerrave.1",
   "counts": {
-    "skills": 271,
+    "skills": 274,
     "agents": 34,
     "commands": 53,
     "fixedCommands": 20
@@ -2441,6 +2441,42 @@
       ]
     },
     {
+      "id": "idempiere-deployment",
+      "description": "Instalar, actualizar y validar iDempiere o sus bundles en entornos identificados, con respaldo, migraciones y evidencia del runtime. No implica autorización automática para producción ni reinicios compartidos.",
+      "tags": [
+        "idempiere",
+        "deployment",
+        "osgi",
+        "backup"
+      ],
+      "recommends": [],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-implementation",
+      "description": "Planificar y ejecutar implantaciones de iDempiere para clientes: alcance contratado, configuración, migración, formación, aceptación y puesta en producción. No sustituye las skills técnicas de plugins o despliegue.",
+      "tags": [
+        "idempiere",
+        "erp",
+        "implantacion",
+        "cliente"
+      ],
+      "recommends": [],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-plugins",
+      "description": "Desarrollar y revisar plugins Java OSGi de iDempiere: factories, servicios declarativos, modelos, procesos y paquetes 2Pack. Úsala sobre código fuente, no para configurar procesos funcionales del cliente.",
+      "tags": [
+        "idempiere",
+        "java",
+        "osgi",
+        "2pack"
+      ],
+      "recommends": [],
+      "profiles": []
+    },
+    {
       "id": "implement",
       "description": "Use when an approved plan and task list exist and it is time to turn them into working, tested code — the SDD phase after `analyze` and before `verify`. Enforces TDD: a failing test comes before the code that makes it pass, one task at a time, appended to a progress ledger that survives compaction. Delegates test tooling to the stack skill and fans disjoint tasks out via `parallel`. NOT spec writing (that is `specify`), NOT planning (that is `plan`), NOT the final lint/test/audit gate (that is `verify`).",
       "tags": [
@@ -4791,7 +4827,7 @@
     },
     {
       "id": "suggest",
-      "description": "Always-on. Use whenever the current user turn would clearly benefit from an rsc skill that is not yet installed — detect the gap during normal agent use, name the skill, and (with a one-word confirm) install it via `npx @ericrisco/rsc add <id>`. Triggers on capability intent in any language: building technology, creating content/assets, automating workflows, analyzing data, connecting tools, shipping/deploying, security, business ops, marketing, education, research, or company/documentation harness work.",
+      "description": "Always-on. Use whenever the current user turn would clearly benefit from an rsc skill that is not yet installed — detect the gap during normal agent use, name the skill, and (with a one-word confirm) install it via `rsc add <id>`. Triggers on capability intent in any language: building technology, creating content/assets, automating workflows, analyzing data, connecting tools, shipping/deploying, security, business ops, marketing, education, research, or company/documentation harness work.",
       "tags": [
         "suggest",
         "detect",

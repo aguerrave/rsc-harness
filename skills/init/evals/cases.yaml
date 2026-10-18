@@ -60,7 +60,7 @@ capability:
       - "Asks no second calibration question (no accompaniment/verbosity level); given a silent or unclear answer, records non-technical and speaks with plain words and analogies"
       - "Persists the profile to 02-DOCS/wiki/harness/user-profile.md and an append-only 02-DOCS/wiki/harness/decisions.md, and links both from a ## Knowledge map section in root CLAUDE.md (creating CLAUDE.md if absent, additive only)"
       - "Detects greenfield vs brownfield rather than assuming, and runs DISCOVER (goals, audience, constraints, surfaces) before recommending"
-      - "Recommends specific rsc skills matched to discovery (at minimum harness; nextjs/flutter + design if app surfaces justify it) and PRINTS the exact install commands (npx @ericrisco/rsc add <skill> ...)"
+      - "Recommends specific rsc skills matched to discovery (at minimum harness; nextjs/flutter + design if app surfaces justify it) and PRINTS the exact install commands (npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add <skill> ...)"
       - "Does NOT install anything itself and does NOT scaffold 01-TOOLS/02-DOCS — it hands off to the harness skill as the final step"
       - "Does not recommend speculative skills (e.g. building-agents) unless discovery justified them"
 

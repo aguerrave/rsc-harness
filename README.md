@@ -8,7 +8,7 @@
 
 [![npm](https://img.shields.io/npm/v/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=npm)](https://www.npmjs.com/package/@ericrisco/rsc)
 [![downloads](https://img.shields.io/npm/dm/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=downloads)](https://www.npmjs.com/package/@ericrisco/rsc)
-[![skills](https://img.shields.io/badge/skills-271-63d68a?labelColor=12161c)](#the-catalog)
+[![skills](https://img.shields.io/badge/skills-274-63d68a?labelColor=12161c)](#the-catalog)
 [![license](https://img.shields.io/badge/license-MIT-63d68a?labelColor=12161c)](LICENSE)
 [![stars](https://img.shields.io/github/stars/ericrisco/rsc-harness?color=63d68a&labelColor=12161c)](https://github.com/ericrisco/rsc-harness/stargazers)
 
@@ -26,7 +26,7 @@ Ask me the onboarding questions, show me the exact plan, and wait for my accepta
 Or start from the terminal:
 
 ```bash
-npx @ericrisco/rsc@latest onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
 ```
 
 </div>
@@ -60,7 +60,7 @@ The model is the brain your agent rents, and you already have it. rsc adds the r
 | --- | --- | --- |
 | **Memory** | `02-DOCS/` | A wiki the agent reads before it works and keeps up to date while it works. |
 | **Hands** | `01-TOOLS/` | One folder per tool, with a test that proves the connection works. |
-| **Trade** | skills | Only the skills your project needs: 271 available, a handful installed. |
+| **Trade** | skills | Only the skills your project needs: 274 available, a handful installed. |
 | **Reflexes** | hooks | Rules that hold even when the agent forgets them mid-session. |
 
 ### Why documentation comes first
@@ -117,7 +117,7 @@ same time.
 ## Install in one minute
 
 ```bash
-npx @ericrisco/rsc@latest onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
 ```
 
 The first run asks **one** question about conversation (technical, or with analogies), then what the
@@ -130,10 +130,10 @@ Everything stays **in the project**. The real skill files are written once to `.
 each assistant gets a symlink back to that shared base, so picking several duplicates nothing. Skills
 load progressively: only their description is paid for until a task needs them.
 
-Prefer a short `rsc` command? `npm install -g @ericrisco/rsc`.
+Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v3.1.1-aguerrave.1`.
 
 > **Run it inside the project you are equipping, not inside a clone of this repo.** The catalog's own
-> `package.json` is named `@ericrisco/rsc`, so `npx @ericrisco/rsc` from within a clone resolves to
+> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc` from within a clone resolves to
 > the local bin and fails with `sh: rsc: command not found`. Working on the catalog itself? Use
 > `node scripts/rsc.js …` or `npm link`.
 
@@ -143,7 +143,7 @@ If you are an AI coding agent and your user asked you to **install rsc, this har
 skills**, run this in the root of the project they are equipping:
 
 ```bash
-npx @ericrisco/rsc@latest onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
 ```
 
 It asks the user how technical to talk, the project kind and the goal **before it writes anything**,
@@ -156,11 +156,11 @@ tell the user before accepting.
 Non-interactive, with the answers collected first:
 
 ```bash
-npx @ericrisco/rsc@latest onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex
 # After the user accepts the printed plan:
-npx @ericrisco/rsc@latest onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex --accept-plan PRINTED_SHA256_ID
 ```
@@ -283,7 +283,7 @@ Whoever clones runs **one command** and gets the same harness, at the version th
 its `.rsc.json` as `catalogVersion`:
 
 ```bash
-npx @ericrisco/rsc@<catalogVersion> sync
+npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc@<catalogVersion> sync
 ```
 
 You do not have to know that. Open the project and the assistant tells you, in the first message,
@@ -453,22 +453,19 @@ follows. **Onboarding readiness** says whether onboarding is finished (`ready`, 
 ### Something's off? `rsc repair`
 
 If the harness is wired for the wrong assistant, a hook runs several times, or skills appear that you
-never asked for, run `npx @ericrisco/rsc@latest repair`. It shows what it found before touching
+never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc repair`. It shows what it found before touching
 anything, keeps a recoverable copy, and never touches skills or agents you wrote by hand. Add
 `--dry-run` to see the pass without writing.
 
 ### Update
 
-**rsc updates itself.** At session start it checks npm. A release in the same major installs in the
-background and takes effect next session; a new major asks first. To turn it off, create
-`.rsc/.no-auto-update`. By hand: `npm install -g @ericrisco/rsc@latest && rsc sync`. Every sync
-snapshots the project first, so `rsc restore latest` undoes a bad update.
+**This fork uses explicit, pinned releases.** Session startup never downloads upstream npm updates. The source and release ref are recorded in `.rsc.json`. Review changes from upstream, run the tests and publish a new fork release before updating projects. `rsc upgrade --dry-run` shows the pinned fork installation and sync commands. Every sync snapshots its managed paths before writing.
 
 ---
 
 ## The catalog
 
-271 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
+274 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
 its own when a task matches.
 
 ### 🧭 Core & control plane
@@ -635,3 +632,9 @@ craft bar in them is the original author's.
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## iDempiere (aguerrave)
+
+- [Implantación](skills/idempiere-implementation/)
+- [Plugins](skills/idempiere-plugins/)
+- [Despliegue](skills/idempiere-deployment/)

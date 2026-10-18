@@ -1,18 +1,12 @@
-import { spawnSync } from 'node:child_process';
-
-export function upgradePlan({ targets = [] } = {}) {
-  const targetArg = targets.length ? targets.join(',') : '<target>';
-  return {
-    installCommand: 'npm install -g @ericrisco/rsc@latest',
-    syncCommand: `rsc sync --target ${targetArg}`,
-  };
+import {spawnSync} from 'node:child_process';
+import {SOURCE,INSTALL_SPEC,RUN_COMMAND} from './distribution.js';
+export function upgradePlan({targets=[]}={}) {
+ return {source:SOURCE.repository,installCommand:`npm install -g ${INSTALL_SPEC}`,syncCommand:`${RUN_COMMAND} sync${targets.length ? ` --target ${targets.join(',')}` : ''}`};
 }
-
-export function runUpgrade({ targets = [], dryRun = false, global = false } = {}) {
-  const plan = upgradePlan({ targets });
-  if (dryRun || !global) return { ran: false, plan };
-
-  const result = spawnSync('npm', ['install', '-g', '@ericrisco/rsc@latest'], { stdio: 'inherit' });
-  if (result.status !== 0) throw new Error('npm global upgrade failed');
-  return { ran: true, plan };
+export function runUpgrade({targets=[],dryRun=false,global=false}={}) {
+ const plan=upgradePlan({targets});
+ if(dryRun || !global) return {ran:false,plan};
+ const result=spawnSync('npm',['install','-g',INSTALL_SPEC],{stdio:'inherit'});
+ if(result.status !== 0) throw new Error('Fork upgrade failed');
+ return {ran:true,plan};
 }

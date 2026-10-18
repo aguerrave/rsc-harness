@@ -13,7 +13,7 @@ const docs = {
 
 test('every public surface sends humans and chat agents through canonical onboarding', () => {
   for (const [name, body] of Object.entries(docs)) {
-    assert.match(body, /rsc@latest onboard/, `${name} lacks the canonical onboarding command`);
+    assert.match(body, /github:aguerrave\/rsc-harness#[^ ]+ rsc onboard/, `${name} lacks the canonical onboarding command`);
     assert.match(body, /technical-level/, `${name} does not expose the first wizard answer`);
     assert.match(body, /accept-plan/, `${name} does not explain binding acceptance`);
   }

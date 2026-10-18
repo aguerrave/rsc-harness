@@ -30,7 +30,8 @@ import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
-const PACKAGE = '@ericrisco/rsc';
+const FORK_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc';
+const PACKAGE = 'github:aguerrave/rsc-harness#v3.1.1-aguerrave.1';
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9a-z.-]+)?$/i;
 
 /**
@@ -179,7 +180,7 @@ function localTier(root) {
  */
 export function composeDivergence(manifest, evaluation) {
   const version = safeVersion(manifest.catalogVersion);
-  const command = version ? `npx ${PACKAGE}@${version} sync` : `npx ${PACKAGE} sync`;
+  const command = `${FORK_COMMAND} sync`;
   let text =
     '===== rsc =====\n' +
     'This project declares a harness that no longer matches what is built here — someone changed\n' +
@@ -232,13 +233,13 @@ export function composeOffer(manifest) {
   // accepting an install on a repo they just cloned is entitled to read the exact thing first
   // (spec AC#21). No pin is itself a fact worth showing, not a blank to fill in.
   //
-  // And it has to be IN THE COMMAND, not only in the prose above it. `npx @ericrisco/rsc sync`
+  // And it has to be IN THE COMMAND, not only in the prose above it. `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc sync`
   // resolves to the latest published package, so an offer phrased that way hands a clone whatever
   // shipped since — the exact divergence the pin exists to prevent, introduced by the feature meant
   // to honour it. Pinned, the command is reproducible three months from now (spec AC#6).
   const version = safeVersion(manifest.catalogVersion);
-  const pin = version ? `${PACKAGE}@${version}` : `${PACKAGE} (no version pinned)`;
-  const command = version ? `npx ${PACKAGE}@${version} sync` : `npx ${PACKAGE} sync`;
+  const pin = version ? `${PACKAGE} (previous catalog: ${version})` : `${PACKAGE} (no version pinned)`;
+  const command = `${FORK_COMMAND} sync`;
   const count = manifest.skills.length;
   const own = manifest.own.length ? `, plus ${manifest.own.length} written by the team (never overwritten)` : '';
   return {
@@ -378,7 +379,7 @@ function remindOnProtectedAction(root) {
       additionalContext:
         `rsc: you are about to ${hit.what}, and this project's checks for that are not built on ` +
         'this machine. Nothing is blocked, and this is the last time it will be mentioned. ' +
-        `To build them: npx ${PACKAGE}${pin} sync`,
+        `To build them: ${FORK_COMMAND} sync`,
     },
   }));
 }

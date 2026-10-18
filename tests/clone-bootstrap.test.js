@@ -220,7 +220,7 @@ test('AC#1/#21 — an unmounted clone gets the offer, and it names the exact pac
     wiredCommands(root).find((c) => c.event === 'SessionStart').command,
     root,
   );
-  assert.ok(stdout.includes('@ericrisco/rsc@1.3.6'), `the offer must name what would be installed; got:\n${stdout}`);
+  assert.ok(stdout.includes('github:aguerrave/rsc-harness#v3.1.1-aguerrave.1'), `the offer must name what would be installed; got:\n${stdout}`);
   assert.ok(/not built on this machine/i.test(stdout), 'the offer must name the symptom');
   assert.ok(stdout.includes('sync'), 'the offer must carry its own way out (P6)');
 });
@@ -266,7 +266,7 @@ test('AC#6 — the offer tells you to install the PINNED version, never a floati
   const offer = composeOffer({ state: 'declared', skills: ['orient'], own: [], catalogVersion: '1.3.6', targets: [] });
   assert.match(
     offer.text,
-    /npx @ericrisco\/rsc@1\.3\.6 sync/,
+    /github:aguerrave\/rsc-harness#v3\.1\.1-aguerrave\.1 rsc sync/,
     'the command a person runs must carry the pin; a bare `npx @ericrisco/rsc` resolves to latest',
   );
   assert.doesNotMatch(offer.text, /npx @ericrisco\/rsc@latest/, 'the offer must never send a clone to latest');
@@ -279,8 +279,8 @@ test('AC#6 — the offer tells you to install the PINNED version, never a floati
 
 test('AC#6 — a newer release existing changes nothing about what the offer asks for', () => {
   const older = composeOffer({ state: 'declared', skills: ['orient'], own: [], catalogVersion: '1.2.2', targets: [] });
-  assert.match(older.text, /@1\.2\.2/, 'the manifest decides, not the calendar');
-  assert.doesNotMatch(older.text, /1\.3\.6|1\.4\.0/, 'no version the team did not choose may appear');
+  assert.match(older.text, /#v3\.1\.1-aguerrave\.1/, 'the fork release remains pinned independently of historical upstream receipts');
+  assert.doesNotMatch(older.text.split('\n').find((line) => line.trim().startsWith('npx ')), /@latest/, 'the executable command must never float');
 });
 
 test('AC#3/#23 — with no pin recorded, the offer says so instead of inventing one', () => {
@@ -401,7 +401,7 @@ test('AC#7 — a manifest that arrived by git pull and no longer matches is anno
   const { stdout } = runBootstrap(root, 'announce', join(root, '.rsc', 'probe.mjs'));
   assert.match(stdout, /verify/, 'the skills that are declared and missing must be named');
   assert.match(stdout, /ship/, 'all of them, not just the first');
-  assert.match(stdout, /@ericrisco\/rsc@1\.3\.6 sync/, 'converging uses the pinned version, like building does');
+  assert.match(stdout, /github:aguerrave\/rsc-harness#v3\.1\.1-aguerrave\.1 rsc sync/, 'converging uses the pinned version, like building does');
   assert.match(stdout, /DELEGATE SPOKE/, 'a harness that works must keep working while it is out of date');
 });
 

@@ -1,0 +1,34 @@
+skill: idempiere-implementation
+
+should_trigger:
+  - prompt: "Implanta iDempiere para un cliente con presupuesto aprobado, migración y formación."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Define entregables y aceptación de una implantación ERP sin ampliar el presupuesto aprobado."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Planifica el ensayo de migración de saldos y la formación por rol en iDempiere."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Organiza las decisiones funcionales y dependencias de una implantación iDempiere."
+    why: "Responsabilidad específica de esta skill."
+  - prompt: "Prepara el corte y la aceptación del cliente para poner iDempiere en producción."
+    why: "Responsabilidad específica de esta skill."
+
+should_not_trigger:
+  - prompt: "Implementa una IProcessFactory Java para iDempiere."
+    route_to: idempiere-plugins
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Instala este JAR en el runtime iDempiere de pruebas."
+    route_to: idempiere-deployment
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Diseña la campaña de marketing de una tienda."
+    route_to: marketing
+    why: "Corresponde a otra responsabilidad."
+  - prompt: "Revisa el saldo de una factura en nuestro proceso contable."
+    route_to: bookkeeping
+    why: "Corresponde a otra responsabilidad."
+
+capability:
+  - scenario: "Implanta iDempiere para un cliente con presupuesto aprobado, migración y formación."
+    must_include:
+      - "Distingue alcance contratado y cambio adicional."
+      - "Separa evidencia técnica de aceptación del cliente."
+      - "Incluye reconciliación de datos y responsables del corte."

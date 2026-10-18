@@ -1,5 +1,6 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { SOURCE } from './distribution.js';
 
 // `.rsc.json` — the team's decision about this project's harness, committed.
 //
@@ -15,7 +16,7 @@ import { join } from 'node:path';
 export const MANIFEST = '.rsc.json';
 export const manifestPath = (cwd = process.cwd()) => join(cwd, MANIFEST);
 
-const KEYS = ['version', 'targets', 'skills', 'agents', 'ownSkills', 'catalogVersion', 'tier', 'optOuts', 'memory', 'gitPermissions', 'agentModels', 'onboarding'];
+const KEYS = ['version', 'targets', 'skills', 'agents', 'ownSkills', 'catalogVersion', 'source', 'tier', 'optOuts', 'memory', 'gitPermissions', 'agentModels', 'onboarding'];
 
 export function readManifest(cwd = process.cwd()) {
   const file = manifestPath(cwd);
@@ -35,6 +36,7 @@ export function readManifest(cwd = process.cwd()) {
     agents: raw.agents || [],
     ownSkills: raw.ownSkills || [],
     catalogVersion: raw.catalogVersion ?? null,
+    source: raw.source,
     tier: raw.tier ?? null,
     optOuts: raw.optOuts || [],
     memory: raw.memory ?? undefined,
@@ -56,8 +58,9 @@ function agentModelsFrom(value) {
 // Stable output: fixed key order, arrays one entry per line, order as given. Rewriting an
 // unchanged manifest must produce identical bytes, or every install shows up as a diff.
 export function writeManifest(cwd, manifest) {
-  const out = {};
+  const out = { source: SOURCE };
   for (const k of KEYS) if (manifest[k] !== undefined) out[k] = manifest[k];
+  out.source = SOURCE;
   out.version ??= 1;
   out.agents ??= [];
   const ordered = {};

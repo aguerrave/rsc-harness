@@ -33,7 +33,7 @@ There is one harness and it installs whole; there is no profile to choose.
 If your user asked you to install rsc / rsc-harness / this harness, do this in order:
 
 1. Work in the ROOT of the user's project, never inside a clone of rsc-harness.
-2. Run: `npx @ericrisco/rsc@latest onboard --target claude,codex`
+2. Run: `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --target claude,codex`
 3. Relay every `RSC_ONBOARDING_REQUIRED` question. Never choose, invent or default
    `--technical-level`, `--project-kind`, `--goal` or `--software-scope`.
 4. Rerun with the answers to obtain `RSC_ONBOARDING_PLAN`. This preview writes nothing.
@@ -60,11 +60,11 @@ Already installed: `rsc sync`. Add one skill: `rsc add <id>`. Reassess deferred 
 installing: `rsc reassess`. Recommend without installing: `rsc consult "<what the user wants>"`.
 
 Canonical non-interactive preview:
-`npx @ericrisco/rsc@latest onboard --technical-level technical --project-kind software --goal "small website" --software-scope small --target codex`
+`npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --technical-level technical --project-kind software --goal "small website" --software-scope small --target codex`
 
 ## Key links
 
-- [npm package](https://www.npmjs.com/package/@ericrisco/rsc): install with npx @ericrisco/rsc@latest onboard
+- [Maintained fork](https://github.com/aguerrave/rsc-harness): install with npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
 - [README](https://github.com/ericrisco/rsc-harness): full documentation and reference
 - [Website, English](https://ericrisco.github.io/rsc-harness/): overview, agent instructions and FAQ
 - [Website, Español](https://ericrisco.github.io/rsc-harness/es/): la misma página en español
@@ -74,7 +74,7 @@ Canonical non-interactive preview:
 
 ## Facts
 
-- 271 skills; minimal profile 7, core 30, full 271.
+- 274 skills; minimal profile 7, core 30, full 274.
 - 18 supported assistants (newest: DeepSeek Harness, `--target deepseek`); 34 agents and 53 command entries in the catalog.
 - Every skill cleared an adversarial behavioral quality gate of at least 8.5/10.
 - Free, MIT, no API key and no global install required.

@@ -40,7 +40,7 @@ test('the website leads with the agent handoff and demonstrates proportional jud
     const start = body.indexOf('<!-- HERO -->');
     const hero = body.slice(start, body.indexOf('<!-- ', start + 5));
     assert.ok(start >= 0 && hero.includes('agent-prompt'), `${name} must have the agent prompt in the install block`);
-    assert.ok(hero.indexOf('agent-prompt') < hero.indexOf('rsc@latest onboard'), `${name} must put the agent prompt before the terminal command`);
+    assert.ok(hero.indexOf('agent-prompt') < hero.indexOf(' rsc onboard'), `${name} must put the agent prompt before the terminal command`);
     assert.match(body, /for AI agents reading this page|para agentes que leen esta página/i, `${name} must keep the instructions agents follow`);
     assert.match(body, /selected|seleccionado/i, `${name} must show a selected component`);
     assert.match(body, /deferred|pospuesto/i, `${name} must show a deferred component`);
