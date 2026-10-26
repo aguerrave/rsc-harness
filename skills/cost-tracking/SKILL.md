@@ -152,9 +152,10 @@ Route every cloud alert into the **same alert pipe** as your app-level budget al
 |---|---|---|
 | Zero code change, fastest setup | Helicone (proxy, ~2-min) | adds a network hop / latency |
 | SDK-level capture + a ready cost table | Langfuse (MIT, ships model+tokenizer cost table) | you wire the SDK, but no proxy hop |
+| Hard spend caps at a gateway, per team or app key | Bifrost (self-hosted, Apache-2.0; budgets and rate limits per virtual key) | one more service to run; caps are per key, not per feature |
 | Full control / custom attribution / typed caps | DIY ledger (this skill) | you own pricing-table freshness and capture coverage |
 
-(firecrawl.dev best-llm-observability-tools; guptadeepak.com top-5-llm-observability-platforms-2026, accessed 2026-06-02.) Buy the proxy/platform when you want spend *visibility* fast; build the ledger when caps and per-feature attribution must live inside your own logic.
+(firecrawl.dev best-llm-observability-tools; guptadeepak.com top-5-llm-observability-platforms-2026, accessed 2026-06-02; docs.getbifrost.ai features/governance/virtual-keys, accessed 2026-10-19.) Buy the proxy/platform when you want spend *visibility* fast; build the ledger when caps and per-feature attribution must live inside your own logic.
 
 ## Anti-patterns
 

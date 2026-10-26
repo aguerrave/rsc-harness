@@ -1,7 +1,7 @@
 # Recommend Skills — the skill map, sample printouts & the "siempre 3 opciones" pattern
 
 Phase 3 detail. Map discovery to individual rsc skills, print the exact
-`npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add` commands, and run the requirements-first 3-option decision pattern
+`npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add` commands, and run the requirements-first 3-option decision pattern
 for any significant choice. A skill **cannot install anything** — it recommends
 and prints commands the user runs.
 
@@ -27,11 +27,11 @@ usually does NOT want `fastapi`/`nextjs` unless they're also building software.
 
 ## What to print
 
-One `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add` line per recommendation (or batch them on one line), each with
+One `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add` line per recommendation (or batch them on one line), each with
 its *why* in the user's language and register.
 
 ```text
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add <skill> [<skill> ...]
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add <skill> [<skill> ...]
 ```
 
 ### Sample printout — software, full-stack web app with marketing
@@ -40,11 +40,11 @@ npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add <ski
 Based on what you described (a web app with a backend, a Next.js UI, a landing
 page, and you want to ship it securely), install these:
 
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add harness        # the control plane — scaffolds and governs the workspace
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add fastapi postgresdb   # the API and the database
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add nextjs design  # the web UI people see
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add marketing      # the words for your landing page
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add secure-coding deployment   # ship it safely
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add harness        # the control plane — scaffolds and governs the workspace
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add fastapi postgresdb   # the API and the database
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add nextjs design  # the web UI people see
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add marketing      # the words for your landing page
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add secure-coding deployment   # ship it safely
 
 Once they're installed, run the harness skill and I'll build the project structure.
 ```
@@ -55,9 +55,9 @@ Once they're installed, run the harness skill and I'll build the project structu
 You're organizing how your agency runs — client emails, contracts, invoicing,
 and you want it all findable. That's a non-code harness; install:
 
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add harness        # your 01-TOOLS (connections) + 02-DOCS (your second brain)
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add secure-coding deployment   # connect email, payments, drive — and keep credentials safe
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add marketing      # for the proposals, decks and copy you send clients
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add harness        # your 01-TOOLS (connections) + 02-DOCS (your second brain)
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add secure-coding deployment   # connect email, payments, drive — and keep credentials safe
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add marketing      # for the proposals, decks and copy you send clients
 
 Once installed, run the harness skill and I'll set up the structure that holds it all.
 ```
@@ -67,10 +67,10 @@ Once installed, run the harness skill and I'll set up the structure that holds i
 ```text
 You want an AI agent that answers questions over your own documents. Install:
 
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add harness            # the control plane
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add building-agents    # agent loops, tools, RAG
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add fastapi postgresdb # an API + database to serve it
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc add secure-coding deployment   # ship it safely
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add harness            # the control plane
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add building-agents    # agent loops, tools, RAG
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add fastapi postgresdb # an API + database to serve it
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add secure-coding deployment   # ship it safely
 
 Then run the harness skill.
 ```

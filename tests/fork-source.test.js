@@ -13,7 +13,7 @@ test('fork startup never queries upstream',async()=>{
 test('upgrade points exclusively to the pinned fork without executing in dry-run',()=>{
  const p=upgradePlan({targets:['claude','codex']});
  assert.equal(p.source,'https://github.com/aguerrave/rsc-harness');
- assert.match(p.installCommand,/github:aguerrave\/rsc-harness#v3\.1\.1-aguerrave\.1/);
+ assert.match(p.installCommand,/github:aguerrave\/rsc-harness#v3\.3\.1-aguerrave\.1/);
  assert.ok(!p.syncCommand.includes('@ericrisco/rsc'));
  assert.equal(runUpgrade({global:true,dryRun:true}).ran,false);
 });
@@ -21,6 +21,6 @@ test('manifest records fork provenance and preserves user decisions',()=>{
  const dir=mkdtempSync(join(tmpdir(),'rsc-fork-manifest-'));
  writeManifest(dir,{targets:['codex'],skills:['ftd'],optOuts:['trunk-guard'],memory:false});
  const d=readManifest(dir);assert.equal(d.source.repository,'https://github.com/aguerrave/rsc-harness');
- assert.equal(d.source.ref,'v3.1.1-aguerrave.1');assert.deepEqual(d.targets,['codex']);assert.equal(d.memory,false);
- assert.equal(JSON.parse(readFileSync(join(dir,'.rsc.json'))).source.upstreamVersion,'3.1.1');
+ assert.equal(d.source.ref,'v3.3.1-aguerrave.1');assert.deepEqual(d.targets,['codex']);assert.equal(d.memory,false);
+ assert.equal(JSON.parse(readFileSync(join(dir,'.rsc.json'))).source.upstreamVersion,'3.3.1');
 });

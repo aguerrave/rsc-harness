@@ -1,7 +1,7 @@
 {
-  "version": "3.1.1-aguerrave.1",
+  "version": "3.3.1-aguerrave.1",
   "counts": {
-    "skills": 274,
+    "skills": 272,
     "agents": 34,
     "commands": 53,
     "fixedCommands": 20
@@ -124,7 +124,8 @@
         "fal",
         "replicate",
         "remotion-video",
-        "video-shorts"
+        "video-shorts",
+        "scroll-film"
       ],
       "profiles": []
     },
@@ -1310,61 +1311,28 @@
     },
     {
       "id": "design",
-      "description": "Use when designing or refreshing a web UI or landing page — visual concept, type/color/spacing/motion tokens, composition, rescuing a UI that reads AI-generic, or a graded design review. Brand-grounded and research-first; ships Tailwind v4 + Next.js 15 under WCAG 2.2 AA and Core Web Vitals budgets. NOT the words on the page (that is `marketing`), NOT the App Router build (that is `nextjs`).",
+      "description": "Use when designing, redesigning, restyling or reviewing a web page or app screen (landing, product site, portfolio, dashboard, docs) or when a UI looks generic or AI-made. Deals a researched direction, takes the idea from the subject, uses real pictures, proves it in a browser. NOT the words (landing-copy), NOT component state (ui-engineering).",
       "tags": [
         "design",
-        "ux",
         "ui",
+        "ux",
         "landing",
-        "conversion"
+        "dashboard",
+        "frontend",
+        "taste"
       ],
       "recommends": [
-        "design-loop",
-        "design-dna",
-        "nextjs",
-        "marketing"
-      ],
-      "profiles": [
-        "full"
-      ]
-    },
-    {
-      "id": "design-dna",
-      "description": "Use when a design has won and its look must survive: codify it into a permanent style skill with measured ratios, bans and tests that can fail, then build new pieces in that exact look. Fires on 'turn this into a skill', 'keep the same style', 'my output drifted'. NOT finding the winner (that is `design-loop`), NOT the words (that is `marketing`).",
-      "tags": [
-        "design",
-        "style",
-        "dna",
-        "codify",
-        "skill-factory",
-        "consistency"
-      ],
-      "recommends": [
-        "design-loop",
-        "design",
-        "nextjs",
-        "marketing"
-      ],
-      "profiles": []
-    },
-    {
-      "id": "design-loop",
-      "description": "Use when something must be built well and there is a real reference it should beat: turn what makes the reference good into measured mechanisms, then run a builder and three fresh-context critics until all three pass. Fires on 'design loop', 'make it as good as <site>', 'it looks generic'. NOT keeping an already-won look (that is `design-dna`).",
-      "tags": [
-        "design",
-        "critique",
-        "loop",
-        "reference",
-        "quality",
-        "convergence"
-      ],
-      "recommends": [
-        "design",
-        "design-dna",
-        "marketing",
+        "landing-copy",
+        "ui-engineering",
+        "accessibility",
+        "brand-identity",
         "nextjs"
       ],
-      "profiles": []
+      "profiles": [
+        "minimal",
+        "core",
+        "full"
+      ]
     },
     {
       "id": "digitalocean",
@@ -3167,23 +3135,6 @@
       "profiles": []
     },
     {
-      "id": "motion-craft",
-      "description": "Use when an interface moves and the movement has to feel right — durations and easing, what must never animate, fixing motion that reads sluggish, cheap or janky, and reduced-motion. Web and native. NOT the visual system (that is `design`), NOT the graded critique (that is `design-loop`).",
-      "tags": [
-        "motion",
-        "animation",
-        "interface",
-        "craft",
-        "frontend"
-      ],
-      "recommends": [
-        "design"
-      ],
-      "profiles": [
-        "full"
-      ]
-    },
-    {
       "id": "mysql",
       "description": "Use when designing, querying, indexing or operating a MySQL or MariaDB database and engine-specific behaviour matters — schema and type choices, index design, reading EXPLAIN, online schema change, replication and replica lag, locking and InnoDB deadlocks, charset traps, and server config. NOT portable SELECT/JOIN/window-function craft (that is `sql`), NOT PostgreSQL engine behaviour like VACUUM or JSONB (that is `postgresdb`), NOT the PlanetScale/Vitess branch-and-deploy workflow (that is `planetscale`).",
       "tags": [
@@ -4337,6 +4288,30 @@
       "profiles": []
     },
     {
+      "id": "scroll-film",
+      "description": "Use when a page's hero is a pre-rendered camera flight the visitor scrubs by scrolling, Apple-style: AI clips chained frame to frame so seams never pop, encoded for seeking, mounted with an engine that holds up on phones. NOT scroll reveals or pinning (that is `design`), NOT a finished MP4 (that is `ai-media`).",
+      "tags": [
+        "scroll-scrub",
+        "scroll-video",
+        "scrollytelling",
+        "landing-hero",
+        "image-to-video",
+        "camera-flight",
+        "seamless-video"
+      ],
+      "recommends": [
+        "ai-media",
+        "fal",
+        "replicate-images",
+        "landing-copy",
+        "design",
+        "performance"
+      ],
+      "profiles": [
+        "full"
+      ]
+    },
+    {
       "id": "sdd",
       "description": "Use when you want a disciplined, spec-driven path from a feature idea to shipped, verified software — the SDD dispatcher and front door, in any language. States the method, reads the user's register from 02-DOCS, and routes to the right phase: constitution -> specify -> clarify -> plan -> tasks -> analyze -> implement -> verify -> review -> ship, with debug / worktrees / parallel on demand. Use it to start a feature, to govern the whole flow, or when unsure which phase you are in. NOT a single phase itself (it dispatches), NOT the workspace harness (that is `harness`), NOT a stack build skill.",
       "tags": [
@@ -5181,8 +5156,7 @@
         "craft"
       ],
       "recommends": [
-        "design",
-        "motion-craft"
+        "design"
       ],
       "profiles": [
         "core",
@@ -5306,7 +5280,7 @@
     },
     {
       "id": "variant-explorer",
-      "description": "Use when someone wants OPTIONS rather than an answer — 'show me a few versions', picking between approaches by seeing them. Genuinely different candidates, cheap to throw away, trade-off named. NOT the critique that judges one (`design-loop`), NOT the spec (`specify`).",
+      "description": "Use when someone wants OPTIONS rather than an answer — 'show me a few versions', picking between approaches by seeing them. Genuinely different candidates, cheap to throw away, trade-off named. NOT the critique that judges one (`design`), NOT the spec (`specify`).",
       "tags": [
         "prototyping",
         "divergence",
@@ -5315,7 +5289,7 @@
         "decision"
       ],
       "recommends": [
-        "design-loop"
+        "design"
       ],
       "profiles": [
         "full"

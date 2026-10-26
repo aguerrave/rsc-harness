@@ -8,7 +8,7 @@
 
 [![npm](https://img.shields.io/npm/v/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=npm)](https://www.npmjs.com/package/@ericrisco/rsc)
 [![downloads](https://img.shields.io/npm/dm/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=downloads)](https://www.npmjs.com/package/@ericrisco/rsc)
-[![skills](https://img.shields.io/badge/skills-274-63d68a?labelColor=12161c)](#the-catalog)
+[![skills](https://img.shields.io/badge/skills-272-63d68a?labelColor=12161c)](#the-catalog)
 [![license](https://img.shields.io/badge/license-MIT-63d68a?labelColor=12161c)](LICENSE)
 [![stars](https://img.shields.io/github/stars/ericrisco/rsc-harness?color=63d68a&labelColor=12161c)](https://github.com/ericrisco/rsc-harness/stargazers)
 
@@ -26,7 +26,7 @@ Ask me the onboarding questions, show me the exact plan, and wait for my accepta
 Or start from the terminal:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard
 ```
 
 </div>
@@ -60,7 +60,7 @@ The model is the brain your agent rents, and you already have it. rsc adds the r
 | --- | --- | --- |
 | **Memory** | `02-DOCS/` | A wiki the agent reads before it works and keeps up to date while it works. |
 | **Hands** | `01-TOOLS/` | One folder per tool, with a test that proves the connection works. |
-| **Trade** | skills | Only the skills your project needs: 274 available, a handful installed. |
+| **Trade** | skills | Only the skills your project needs: 272 available, a handful installed. |
 | **Reflexes** | hooks | Rules that hold even when the agent forgets them mid-session. |
 
 ### Why documentation comes first
@@ -117,7 +117,7 @@ same time.
 ## Install in one minute
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard
 ```
 
 The first run asks **one** question about conversation (technical, or with analogies), then what the
@@ -130,10 +130,10 @@ Everything stays **in the project**. The real skill files are written once to `.
 each assistant gets a symlink back to that shared base, so picking several duplicates nothing. Skills
 load progressively: only their description is paid for until a task needs them.
 
-Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v3.1.1-aguerrave.1`.
+Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v3.3.1-aguerrave.1`.
 
 > **Run it inside the project you are equipping, not inside a clone of this repo.** The catalog's own
-> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc` from within a clone resolves to
+> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc` from within a clone resolves to
 > the local bin and fails with `sh: rsc: command not found`. Working on the catalog itself? Use
 > `node scripts/rsc.js …` or `npm link`.
 
@@ -143,7 +143,7 @@ If you are an AI coding agent and your user asked you to **install rsc, this har
 skills**, run this in the root of the project they are equipping:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard
 ```
 
 It asks the user how technical to talk, the project kind and the goal **before it writes anything**,
@@ -156,11 +156,11 @@ tell the user before accepting.
 Non-interactive, with the answers collected first:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex
 # After the user accepts the printed plan:
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex --accept-plan PRINTED_SHA256_ID
 ```
@@ -283,7 +283,7 @@ Whoever clones runs **one command** and gets the same harness, at the version th
 its `.rsc.json` as `catalogVersion`:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc@<catalogVersion> sync
+npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc@<catalogVersion> sync
 ```
 
 You do not have to know that. Open the project and the assistant tells you, in the first message,
@@ -405,6 +405,9 @@ file, and `rsc agents reset <name>` takes rsc's version back after a backup.
 
 ## CLI
 
+`rsc` below is short for `npx @ericrisco/rsc`. Without a global install (`npm i -g @ericrisco/rsc`),
+the bare `rsc` answers `command not found`: type the `npx` form.
+
 ```bash
 # Setup
 rsc onboard                          # plain-language onboarding; writes nothing until you accept
@@ -429,7 +432,7 @@ rsc ingest notas.md --topic crm      # move a file into 02-DOCS/raw/ (verified c
 rsc copy rules | check ad.txt        # the phrases this project forbids, and a check before publishing
 
 # Memory and diagnostics
-rsc memory status | off | resume
+rsc memory status | off | resume     # session continuity; «recuerda esto» goes to 02-DOCS/wiki/
 rsc doctor                           # harness health and onboarding readiness
 rsc repair                           # put the harness back to what is declared
 rsc backups | restore latest         # project-local snapshots
@@ -453,7 +456,7 @@ follows. **Onboarding readiness** says whether onboarding is finished (`ready`, 
 ### Something's off? `rsc repair`
 
 If the harness is wired for the wrong assistant, a hook runs several times, or skills appear that you
-never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc repair`. It shows what it found before touching
+never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc repair`. It shows what it found before touching
 anything, keeps a recoverable copy, and never touches skills or agents you wrote by hand. Add
 `--dry-run` to see the pass without writing.
 
@@ -465,7 +468,7 @@ anything, keeps a recoverable copy, and never touches skills or agents you wrote
 
 ## The catalog
 
-274 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
+272 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
 its own when a task matches.
 
 ### 🧭 Core & control plane
@@ -558,11 +561,11 @@ whether, what and which platform.
 
 ### 🌀 Motion & interface craft
 
-[motion-craft](skills/motion-craft/) · [ui-engineering](skills/ui-engineering/) · [variant-explorer](skills/variant-explorer/)
+[ui-engineering](skills/ui-engineering/) · [variant-explorer](skills/variant-explorer/) · [scroll-film](skills/scroll-film/)
 
 ### 🎨 Design & content craft
 
-[design-loop](skills/design-loop/) · [design](skills/design/) · [design-dna](skills/design-dna/) · [presentations](skills/presentations/) · [course-storytelling](skills/course-storytelling/) · [course-builder](skills/course-builder/) · [technical-writing](skills/technical-writing/) · [translation-l10n](skills/translation-l10n/)
+[design](skills/design/) · [presentations](skills/presentations/) · [course-storytelling](skills/course-storytelling/) · [course-builder](skills/course-builder/) · [technical-writing](skills/technical-writing/) · [translation-l10n](skills/translation-l10n/)
 
 ### 🧠 Knowledge & meta
 
@@ -623,8 +626,10 @@ Most of this catalog is written here. These are not, and they keep their author'
 | Skills | Source | License |
 | --- | --- | --- |
 | `design-eng` · `animate` · `animate-expo` · `review-animations` · `improve-animations` · `find-animation-opportunities` · `animation-vocabulary` · `apple-design` · `prototype` · `pick-ui-library` · `write-swift` · `ask-sonner` | [emilkowalski/skills](https://github.com/emilkowalski/skills) by Emil Kowalski, commit `d23d7f8` | MIT |
-| part of the AI-tell corpus in `design` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | MIT |
+| the engine of `design` (`skills/design/engine/`: direction draw, browser inspector, study library), shipped unmodified | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) v2.1.4 | MIT |
+| the four modes, the fresh review and the `DESIGN.md` record in `design` (text rewritten) | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) by Paul Bakaus, `skill-v4.7.0` | Apache-2.0 |
 | the answer-first habits in `orient` | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) | MIT |
+| the scroll-scrubbed camera flight, the frame handoff between clips and the phone fixes behind `scroll-film` (prose and engine rewritten) | [oso95/scroll-world](https://github.com/oso95/scroll-world) | MIT |
 
 Adapted, not mirrored: each carries rsc frontmatter, routing evals and hand-offs to its siblings. The
 craft bar in them is the original author's.

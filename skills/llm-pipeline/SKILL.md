@@ -83,7 +83,7 @@ resp = router.completion(model="smart",
                          messages=[{"role": "user", "content": prompt}])
 ```
 
-**Build vs buy:** raw SDK + a thin retry/timeout wrapper (fewest deps, fine for one provider) → LiteLLM SDK/proxy (widest provider coverage, fallbacks for free) → hosted gateway (Bifrost/Portkey, when you want it operated for you). Full config — all fallback buckets, redis cache params, budget/rate-limit settings, cost callbacks — is in [references/litellm-router.md](references/litellm-router.md).
+**Build vs buy:** raw SDK + a thin retry/timeout wrapper (fewest deps, fine for one provider) → LiteLLM SDK/proxy (widest provider coverage, fallbacks for free) → self-hosted open-source gateway (Bifrost: Go, Apache-2.0, per-key budgets and rate limits) → hosted gateway (Portkey, when you want it operated for you). Full config — all fallback buckets, redis cache params, budget/rate-limit settings, cost callbacks — is in [references/litellm-router.md](references/litellm-router.md).
 
 ## Reliability mechanics
 

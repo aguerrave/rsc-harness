@@ -124,7 +124,7 @@ Common stack: **PAS/AIDA hook → FAB offer → proof → CTA.** How much you ag
 ## Banned phrases gate (before you deliver)
 
 The project's forbidden phrases are enforced, not suggested. Before handing over copy meant to be
-published, write it to a scratch file and run `npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc copy check <file>`. On
+published, write it to a scratch file and run `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc copy check <file>`. On
 `RSC_COPY_VIOLATION`, rewrite and check again. A negation still counts ("this is not X" uses X), so
 say what it is instead. When the person states a new ban, record it in
 `02-DOCS/wiki/brand/voice-guide.md` under `## Never use`, one phrase per bullet (`word*` also covers

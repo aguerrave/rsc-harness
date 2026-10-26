@@ -196,7 +196,7 @@ export function renderAuditMarkdown(report) {
   }
   if (report.summary.clean) L.push('Nothing to flag. The installed set fits the project.', '');
 
-  L.push('---', `_Advisory only. Trim with \`npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc uninstall <id>\`. Re-run with \`npx --yes --package=github:aguerrave/rsc-harness#v3.1.1-aguerrave.1 rsc audit\`._`);
+  L.push('---', `_Advisory only. Trim with \`npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc uninstall <id>\`. Re-run with \`npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc audit\`._`);
   return L.join('\n') + '\n';
 }
 
