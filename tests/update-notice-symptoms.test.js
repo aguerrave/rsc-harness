@@ -55,12 +55,12 @@ test('rsc --version prints the CLI version, offline', () => {
 test('rsc --version names the version installed in this project, and says when it is behind', () => {
   const out = spawnSync('node', [CLI, '--version'], { cwd: project('2.0.4'), encoding: 'utf8' }).stdout;
   assert.match(out, /2\.0\.4/);
-  assert.match(out, /github:aguerrave\/rsc-harness#v3\.3\.1-aguerrave\.1 rsc/, 'behind → the exact command to catch up');
+  assert.match(out, /github:aguerrave\/rsc-harness#v3\.4\.0-aguerrave\.1 rsc/, 'behind → the exact command to catch up');
 });
 
 test('rsc --version stays quiet about catching up when the project is current', () => {
   const out = spawnSync('node', [CLI, '--version'], { cwd: project(PKG.version), encoding: 'utf8' }).stdout;
-  assert.doesNotMatch(out, /github:aguerrave\/rsc-harness#v3\.3\.1-aguerrave\.1 rsc/);
+  assert.doesNotMatch(out, /github:aguerrave\/rsc-harness#v3\.4\.0-aguerrave\.1 rsc/);
 });
 
 // --- doctor --------------------------------------------------------------------

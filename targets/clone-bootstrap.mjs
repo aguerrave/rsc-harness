@@ -30,8 +30,8 @@ import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
-const FORK_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc';
-const PACKAGE = 'github:aguerrave/rsc-harness#v3.3.1-aguerrave.1';
+const FORK_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc';
+const PACKAGE = 'github:aguerrave/rsc-harness#v3.4.0-aguerrave.1';
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9a-z.-]+)?$/i;
 
 /**
@@ -96,7 +96,7 @@ export function readManifest(root) {
   const ids = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string' && ID.test(x)) : []);
   // Retired skills read as their successors. Canonical map: scripts/lib/retired-skills.js — inlined
   // because this file cannot import anything, and tests/retired-skills.test.js holds the two equal.
-  const RETIRED = { eli5: 'orient', 'show-me': 'orient', bro: 'unslop', 'design-loop': 'design', 'design-dna': 'design', 'motion-craft': 'design' };
+  const RETIRED = { eli5: 'orient', 'show-me': 'orient', bro: 'unslop', 'design-loop': 'design', 'design-dna': 'design', 'motion-craft': 'design', 'ui-engineering': 'ux' };
   const skills = [...new Set(ids(parsed.skills).map((id) => (Object.hasOwn(RETIRED, id) ? RETIRED[id] : id)))];
   const own = ids(parsed.ownSkills);
   // A manifest with nothing declared is not a clone waiting to be equipped; there is nothing to offer.
@@ -233,7 +233,7 @@ export function composeOffer(manifest) {
   // accepting an install on a repo they just cloned is entitled to read the exact thing first
   // (spec AC#21). No pin is itself a fact worth showing, not a blank to fill in.
   //
-  // And it has to be IN THE COMMAND, not only in the prose above it. `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc sync`
+  // And it has to be IN THE COMMAND, not only in the prose above it. `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc sync`
   // resolves to the latest published package, so an offer phrased that way hands a clone whatever
   // shipped since — the exact divergence the pin exists to prevent, introduced by the feature meant
   // to honour it. Pinned, the command is reproducible three months from now (spec AC#6).

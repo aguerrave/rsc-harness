@@ -208,6 +208,6 @@ test('rsc upgrade --dry-run prints npm upgrade command', () => {
   });
 
   assert.equal(result.status, 0, result.stderr);
-  assert.ok(result.stdout.includes('npm install -g github:aguerrave/rsc-harness#v3.3.1-aguerrave.1'));
+  assert.ok(result.stdout.includes('npm install -g github:aguerrave/rsc-harness#v3.4.0-aguerrave.1'));
   assert.ok(result.stdout.includes('rsc sync --target claude'));
 });

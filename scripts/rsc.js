@@ -41,22 +41,22 @@ if (['--version', '-v', 'version'].includes(rawArgv[0])) {
   const lines = [`rsc ${v.cli}`];
   if (v.installed) lines.push(`installed in this project: ${v.installed}${v.behind ? ' (behind)' : ''}`);
   else lines.push('installed in this project: none');
-  if (v.behind) lines.push('This project runs older hooks than this CLI. To catch up, run here:', '  npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc');
+  if (v.behind) lines.push('This project runs older hooks than this CLI. To catch up, run here:', '  npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc');
   process.stdout.write(`${lines.join('\n')}\n`);
   process.exit(0);
 }
 const GENERAL_HELP = [
-  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard | reassess | add <id...> | install --profile <p> | consult "<text>" | list | capabilities [--full|gap-log] | audit | registry refresh | doctor | sync | agent-model <target> <model|inherit|status> | agents [status|reset <name|--all>] | memory <on|off|status|save|resume|learn|metrics> | review consolidate [reports…] | ingest <file...> | copy check <file> | copy rules | sello <on|off|status|…> | worktrees [reap [path] [--confirm]] | backups | restore <id|latest> | upgrade | repair | uninstall <id...> | purge | help',
+  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard | reassess | add <id...> | install --profile <p> | consult "<text>" | list | capabilities [--full|gap-log] | audit | registry refresh | doctor | sync | agent-model <target> <model|inherit|status> | agents [status|reset <name|--all>] | memory <on|off|status|save|resume|learn|metrics> | review consolidate [reports…] | ingest <file...> | copy check <file> | copy rules | sello <on|off|status|…> | worktrees [reap [path] [--confirm]] | backups | restore <id|latest> | upgrade | repair | uninstall <id...> | purge | help',
   'Any command takes --target <claude|codex|cursor|copilot|gemini|…> (comma-separate for several)',
   '   → without it, rsc uses the assistant already installed here; if two are, it asks instead of guessing.',
 ].join('\n');
 const UNINSTALL_HELP = [
-  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc uninstall <id...> [--dry-run] [--target <assistant>]',
+  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc uninstall <id...> [--dry-run] [--target <assistant>]',
   '  Removes the named skills or agents from this project.',
-  '  To remove everything rsc installed here, run: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc purge  (keeps 02-DOCS/ unless --with-docs)',
+  '  To remove everything rsc installed here, run: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc purge  (keeps 02-DOCS/ unless --with-docs)',
 ].join('\n');
 const PURGE_HELP = [
-  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc purge [--dry-run] [--with-docs]',
+  'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc purge [--dry-run] [--with-docs]',
   '  Removes everything rsc installed in this project and reports what was removed, cleaned and kept.',
   '  --dry-run shows the report without touching anything. 02-DOCS/ is kept unless --with-docs.',
 ].join('\n');
@@ -127,7 +127,7 @@ function onboardingRequired(raw, action = 'onboard') {
     code: 'RSC_ONBOARDING_REQUIRED',
     schemaVersion: 1,
     missing: missingOnboardingFields(raw),
-    recovery: `Run npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc ${action} --technical-level <non-technical|mixed|technical> --project-kind <software|operations|research|content|mixed> --goal "<what you want>" --target <assistant> (software or mixed also: --software-scope <small|growing|complex> --workflow <main|branches>)`,
+    recovery: `Run npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc ${action} --technical-level <non-technical|mixed|technical> --project-kind <software|operations|research|content|mixed> --goal "<what you want>" --target <assistant> (software or mixed also: --software-scope <small|growing|complex> --workflow <main|branches>)`,
     // Each value is the person's own answer, asked as a question. Never infer one from the code or
     // from a nearby answer: a field test mapped «mixto» to technical and «growing» to small.
     ask: {
@@ -209,7 +209,7 @@ function renderPlan(plan, planId) {
   // depends on the catalog of the running version: `@latest` would accept it with whatever version
   // npm resolves next, which answers RSC_PLAN_CHANGED the day a release lands in between.
   const pieces = [
-    `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard`,
+    `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard`,
     `--technical-level ${plan.record.technicalLevel}`,
     `--project-kind ${plan.record.projectKind}`,
     `--goal-base64 ${encodeGoal(plan.record.goal)}`,
@@ -356,7 +356,7 @@ function runReassessment() {
   const manifest = readManifest();
   const plan = manifest?.onboarding?.plan;
   if (!plan) {
-    console.error('RSC_ONBOARDING_REQUIRED: no accepted onboarding receipt. Run npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard');
+    console.error('RSC_ONBOARDING_REQUIRED: no accepted onboarding receipt. Run npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard');
     process.exitCode = 2;
     return;
   }
@@ -367,7 +367,7 @@ function runReassessment() {
   const record = recommendations[0].suggestedRecord || plan.record;
   say('Review a new plan; nothing has been installed:');
   say([
-    'npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard',
+    'npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard',
     `--technical-level ${record.technicalLevel}`,
     `--project-kind ${record.projectKind}`,
     `--goal-base64 ${encodeGoal(record.goal)}`,
@@ -530,8 +530,8 @@ function printNextSteps(targets, ids) {
   say(`   ${n++}. From there, work in your own words. orient + suggest stay always-on; unslop is ready on request:`);
   say('      orient talks in short stand-alone sentences (technical or with analogies) and draws a diagram if you do not follow;');
   say('      suggest proposes missing skills; unslop rewrites text you send to other people.');
-  say('\n   Add something by hand anytime:    npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add <skill>');
-  say('   Browse the catalog / get picks:   npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc consult "whatever you need"');
+  say('\n   Add something by hand anytime:    npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc add <skill>');
+  say('   Browse the catalog / get picks:   npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc consult "whatever you need"');
   say('────────────────────────────────────────────────────────');
   if (targets.includes('codex')) say('   Codex: review and trust the project lifecycle hook once with `/hooks`; until then memory is reported as requiring trust.');
   if (targets.includes('deepseek')) say('   DeepSeek Harness: hooks run through rsc\'s bridge in ~/.dsh/cordis.patch.yml (one block, every profile); restart dsh once to load it.');
@@ -670,7 +670,7 @@ async function wizard(flagTargets, declaredTargets = []) {
       { key: 'sdd', label: 'Base + Spec-Driven Development — the specify → plan → implement → ship flow' },
       { key: 'manual', label: 'Pick skills by hand, by area' },
     ]);
-    if (choice === null) { say('\nOK — nothing installed. Anytime: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc'); return; }
+    if (choice === null) { say('\nOK — nothing installed. Anytime: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc'); return; }
     if (choice === 'update') return syncDeclared(declaredTargets);
 
     let ids;
@@ -766,7 +766,7 @@ async function main() {
     } else {
       console.error(
         `rsc: ${resolved.ambiguous.join(' and ')} are both installed here, so I will not guess.\n` +
-        `     Say which one:  npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc ${cmd} --target ${resolved.ambiguous[0]}`,
+        `     Say which one:  npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc ${cmd} --target ${resolved.ambiguous[0]}`,
       );
       process.exitCode = 1;
       return;
@@ -819,7 +819,7 @@ async function main() {
       // replaced it (P6).
       if (flag('profile')) {
         say('⚠️  `--profile` no longer exists: rsc installs one harness — the always-on layer, the FTD lane and the SDD chain.');
-        say('    Everything else still arrives on demand: `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc add <id>`.');
+        say('    Everything else still arrives on demand: `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc add <id>`.');
         return;
       }
       if (!hasDeclaredHarness()) return onboardingRequired(onboardingInput(targets));
@@ -938,7 +938,7 @@ async function main() {
         const { otherActiveSessions } = await import('../targets/session-memory-core.mjs');
         return void say(JSON.stringify({ isolation: existsSync(marker) ? 'off' : 'on', activeSessions: otherActiveSessions({ cwd: root }) }, null, 2));
       }
-      say(`Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc ${cmd} ${ON}|${OFF}|status`);
+      say(`Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc ${cmd} ${ON}|${OFF}|status`);
       process.exitCode = 2;
       return;
     }
@@ -964,7 +964,7 @@ async function main() {
         const { knowledgeStatus } = await import('../targets/knowledge-sync.mjs');
         return void say(JSON.stringify(knowledgeStatus(root), null, 2));
       }
-      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc knowledge-sync on|off|status');
+      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc knowledge-sync on|off|status');
       process.exitCode = 2;
       return;
     }
@@ -978,7 +978,7 @@ async function main() {
       const { gitPermissionsState, explainGitPermissions, GIT_PERMISSION_TARGETS } = await import('../targets/git-permissions.js');
       if (sub === 'on' || sub === 'off') {
         const current = readManifest(root);
-        if (!current) { say('No .rsc.json here: install the harness first (`npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard`).'); process.exitCode = 2; return; }
+        if (!current) { say('No .rsc.json here: install the harness first (`npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard`).'); process.exitCode = 2; return; }
         writeManifest(root, { ...current, gitPermissions: sub === 'on' });
         for (const t of targets) await syncInstalled({ target: t, cwd: root });
         // What rsc controls, what stops when off, and what is the assistant's own job (#298).
@@ -996,7 +996,7 @@ async function main() {
           notCovered: targets.filter((t) => !GIT_PERMISSION_TARGETS.includes(t)),
         }, null, 2));
       }
-      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc git-permissions on|off|status [--json]');
+      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc git-permissions on|off|status [--json]');
       process.exitCode = 2;
       return;
     }
@@ -1044,7 +1044,7 @@ async function main() {
         return void say(JSON.stringify(result, null, 2));
       }
       if (sub === 'metrics') return void say(JSON.stringify(M.metricsSummary({ cwd: root }), null, 2));
-      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc memory on|off|status|save [--session id]|resume [--json]|learn --text "…" --evidence "…" --scope project|global --confidence 0..1 --approve|metrics');
+      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc memory on|off|status|save [--session id]|resume [--json]|learn --text "…" --evidence "…" --scope project|global --confidence 0..1 --approve|metrics');
       process.exitCode = 1;
       return;
     }
@@ -1074,12 +1074,12 @@ async function main() {
       }
       if (value === 'status') return void say(JSON.stringify(describe(t), null, 2));
       if (!isValidAgentModel(value)) {
-        console.error(`rsc: '${value}' is not a model id (letters, digits and . _ : / @ + - only), nor 'inherit'.\nUse: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc agent-model <target> <model|inherit|status>`);
+        console.error(`rsc: '${value}' is not a model id (letters, digits and . _ : / @ + - only), nor 'inherit'.\nUse: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc agent-model <target> <model|inherit|status>`);
         process.exitCode = 2;
         return;
       }
       const current = readManifest(root);
-      if (!current) { say('No .rsc.json here: install the harness first (`npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard`).'); process.exitCode = 2; return; }
+      if (!current) { say('No .rsc.json here: install the harness first (`npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard`).'); process.exitCode = 2; return; }
       const next = { ...(current.agentModels || {}) };
       // `inherit` on a target whose default is inherit stores nothing: the manifest stays as small as the decision.
       if (value === AGENT_MODEL_INHERIT && targetInheritsByDefault(t)) delete next[t];
@@ -1103,7 +1103,7 @@ async function main() {
         const all = argv.includes('--all');
         const names = requestedIds(2);
         if (!all && !names.length) {
-          console.error('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc agents reset <name...|--all> [--target <assistant>]');
+          console.error('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc agents reset <name...|--all> [--target <assistant>]');
           process.exitCode = 2;
           return;
         }
@@ -1136,7 +1136,7 @@ async function main() {
           return { target: t, agents: state.agents || [], editedByYou: (state.agentsKept || []).map((k) => k.name) };
         }), null, 2));
       }
-      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc agents status | agents reset <name...|--all>');
+      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc agents status | agents reset <name...|--all>');
       process.exitCode = 2;
       return;
     }
@@ -1178,12 +1178,12 @@ async function main() {
         say(JSON.stringify(registryStatus(), null, 2));
         return;
       }
-      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc registry refresh | registry status');
+      say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc registry refresh | registry status');
       return;
     }
     case 'ingest': {
       // "Eat this file": into 02-DOCS/raw/, verified, then gone from where it was dropped (lib/ingest-move.js).
-      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc ingest <file...> [--topic <topic>] [--keep] [--json]\n  Moves each file into 02-DOCS/raw/ (the copy is verified first, then the original is removed) and records it in 02-DOCS/wiki/.ingested.json.\n  --keep copies without removing. Project files, code and secrets are refused.';
+      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc ingest <file...> [--topic <topic>] [--keep] [--json]\n  Moves each file into 02-DOCS/raw/ (the copy is verified first, then the original is removed) and records it in 02-DOCS/wiki/.ingested.json.\n  --keep copies without removing. Project files, code and secrets are refused.';
       const rest = argv.slice(1);
       const files = rest.filter((a, i) => !a.startsWith('--') && rest[i - 1] !== '--topic');
       if (!files.length) { say(USE); process.exitCode = 1; return; }
@@ -1205,7 +1205,7 @@ async function main() {
     case 'copy': {
       // The phrases this project forbids in what it publishes (targets/copy-rules.mjs). `check` is the
       // gate the copy skills run before delivering text; the Claude Stop hook runs the same check.
-      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc copy check <file|-> [--json] | copy rules [--json]\n  Rules come from 02-DOCS/wiki/: a "Never use" / "Frases prohibidas" section, a "Never use: a, b" line, or a sentence that prohibits quoted phrases.';
+      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc copy check <file|-> [--json] | copy rules [--json]\n  Rules come from 02-DOCS/wiki/: a "Never use" / "Frases prohibidas" section, a "Never use: a, b" line, or a sentence that prohibits quoted phrases.';
       const sub = argv[1];
       if (sub !== 'check' && sub !== 'rules') { say(USE); if (sub) process.exitCode = 1; return; }
       const { readFileSync } = await import('node:fs');
@@ -1236,7 +1236,7 @@ async function main() {
       // `review consolidate` — the deterministic half of the refuter panel (P1): the three lenses
       // often report one defect three ways, so grouping happens here, by location and evidence, and
       // only the unique serious findings go on to `finding-verifier`, which is judgement.
-      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc review consolidate [report.md|findings.json ...] [--json] [--window <lines>]\n  Without files it reads stdin. Each lens report carries its findings in ```json findings blocks.';
+      const USE = 'Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc review consolidate [report.md|findings.json ...] [--json] [--window <lines>]\n  Without files it reads stdin. Each lens report carries its findings in ```json findings blocks.';
       if (argv[1] !== 'consolidate') { say(USE); if (argv[1]) process.exitCode = 1; return; }
       const { readFileSync } = await import('node:fs');
       const R = await import('./lib/review-findings.js');
@@ -1314,8 +1314,8 @@ async function main() {
       say(`${candidates.length} worktree(s) whose work has landed:`);
       for (const c of candidates) say(W.describe(c));
       say('');
-      say('Remove the safe ones:  npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc worktrees reap');
-      say('Remove one by name:    npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc worktrees reap <path> [--confirm]');
+      say('Remove the safe ones:  npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees reap');
+      say('Remove one by name:    npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees reap <path> [--confirm]');
       return;
     }
     case 'capabilities': {
@@ -1553,7 +1553,7 @@ async function main() {
           return;
         }
         default:
-          say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc sello on|off [--global]|status|freeze|approve --lenses a,b [--accept-partial-lenses]|block --reason "…"|budget --lines N|budget-check [--justify "…"]|check|report');
+          say('Use: npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc sello on|off [--global]|status|freeze|approve --lenses a,b [--accept-partial-lenses]|block --reason "…"|budget --lines N|budget-check [--justify "…"]|check|report');
           return;
       }
     }

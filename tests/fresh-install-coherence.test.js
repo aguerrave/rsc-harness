@@ -50,7 +50,7 @@ function sessionStart(sessionId) {
 
 test('9c · the accept command pins the exact version that produced the plan', () => {
   const line = preview.split('\n').find((l) => l.startsWith('Accept exactly this plan:'));
-  assert.ok(line.includes('npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc onboard'), line);
+  assert.ok(line.includes('npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc onboard'), line);
   assert.ok(!line.includes('@latest'), line);
 });
 

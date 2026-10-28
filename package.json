@@ -1,6 +1,6 @@
 {
   "name": "@aguerrave/rsc",
-  "version": "3.3.1-aguerrave.1",
+  "version": "3.4.0-aguerrave.1",
   "description": "A guided harness builder that turns your goal into a minimal, verified AI-agent setup using strict best practices.",
   "type": "module",
   "bin": {
@@ -125,8 +125,8 @@
   "private": true,
   "rscSource": {
     "repository": "https://github.com/aguerrave/rsc-harness",
-    "ref": "v3.3.1-aguerrave.1",
+    "ref": "v3.4.0-aguerrave.1",
     "upstream": "https://github.com/ericrisco/rsc-harness",
-    "upstreamVersion": "3.3.1"
+    "upstreamVersion": "3.4.0"
   }
 }

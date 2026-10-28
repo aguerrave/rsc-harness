@@ -93,7 +93,7 @@ Read the surrounding code, trace the *value*, confirm the path is reachable.
 
 If you cannot trace it to a concrete value and a reachable sink, you do not yet have a finding.
 
-When several reviewers looked at the same diff, merge before reporting. Have each one end with a ` ```json findings ` block, run `npx --yes --package=github:aguerrave/rsc-harness#v3.3.1-aguerrave.1 rsc review consolidate <reports…>`, and send each blocker it marks `verify` to the `finding-verifier` agent. That is the `review` skill's step, and it applies here unchanged.
+When several reviewers looked at the same diff, merge before reporting. Have each one end with a ` ```json findings ` block, run `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc review consolidate <reports…>`, and send each blocker it marks `verify` to the `finding-verifier` agent. That is the `review` skill's step, and it applies here unchanged.
 
 ## The verdict
 
