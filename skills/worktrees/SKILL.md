@@ -44,7 +44,7 @@ Both isolate history. A worktree also isolates the *filesystem*. Pick by what's 
 | You'll run two streams of work at once (see the parallel pattern) | **worktree** | Each stream gets its own directory; no stash-juggling, no checkout thrash. |
 | The current tree is dirty and the user wants both the WIP and the new work | **worktree** | Stash-and-switch risks losing the WIP; a worktree sidesteps the stash entirely. |
 | You're an agent that may keep the main session running elsewhere | **worktree** | Filesystem isolation is the whole point — the parent session keeps its files. |
-| **Another session is working in this same folder** (rsc says so on each message) | **worktree — mandatory** | Switching branches would change its files under it; rsc's branch guard denies the switch. Tell the person that `.worktrees/<branch>/` is where the project now runs. Off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc isolation off`. |
+| **Another session is working in this same folder** (rsc says so on each message) | **worktree — mandatory** | Switching branches would change its files under it; rsc's branch guard denies the switch. Tell the person that `.worktrees/<branch>/` is where the project now runs. Off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc isolation off`. |
 
 When in doubt, prefer a **worktree**: it is the strictly stronger isolation and the cost is one
 extra directory. The rest of this skill assumes a worktree; the branch path is the degenerate case
@@ -114,11 +114,25 @@ git worktree add -b feat/<slug> .worktrees/<slug> origin/<default-branch>
 # work happens in .worktrees/<slug>; the main checkout is untouched
 ```
 
-**Inside the repo, always — never a sibling.** `.worktrees/` is already gitignored by the harness,
-the reaper already recognises it as its own, and the difference matters after the work lands: a
-sibling directory sits outside the tree, so it survives every cleanup of the repository and stops
-being visible to whoever would retire it. Two of them accumulated here before this was written down.
-Deleting the repo should delete its worktrees with it.
+**At the root you work in, always — never inside a project folder, never a sibling.** The root is
+the folder holding `.rsc.json`. For the repo at that root the worktree is `.worktrees/<slug>`. For a
+project that lives in a folder under it (a workspace with `03-PROJECTS/<p>/`), it is
+`<root>/.worktrees/<p>-<slug>`, and the path is written absolute — a relative one resolves inside
+the project, which is how they ended up there:
+
+```bash
+git -C 03-PROJECTS/<p> fetch origin
+git -C 03-PROJECTS/<p> worktree add -b feat/<slug> <root>/.worktrees/<p>-<slug> origin/<default-branch>
+```
+
+A worktree at the root is a fresh checkout with nothing above it to borrow from: install its
+dependencies inside it (`npm ci`, `uv sync`, …) before running anything. Inside the project, a
+missing `node_modules` was silently taken from the parent; at the root it fails loudly instead.
+
+rsc's branch guard denies any other place, with the right command in its message. `.worktrees/` is
+already gitignored at the root, the reaper recognises both shapes as its own, and a sibling
+directory would sit outside the tree, survive every cleanup and stop being visible to whoever would
+retire it. Deleting the workspace deletes its worktrees with it.
 
 ```bash
 # branch-only path (the degenerate case: no separate directory needed)
@@ -127,7 +141,7 @@ git switch -c feat/<slug> origin/<default-branch>
 
 ```bash
 # when the work has landed — the cleanup is the default, and it is a command, not a judgement call
-npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees reap
+npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees reap
 ```
 
 Either way, the contract is identical: **after this step, the cwd is an isolated branch off a clean
@@ -141,9 +155,9 @@ reading the situation, because "is this safe to delete?" is a deterministic ques
 answer costs a directory that cannot be brought back. Ask the command:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees        # every landed worktree, with a verdict and a reason
-npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees reap   # retire the ones that are safe with nothing to lose
-npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc worktrees reap <path>   # retire one the user has just confirmed
+npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees        # every landed worktree, with a verdict and a reason
+npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees reap   # retire the ones that are safe with nothing to lose
+npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees reap <path>   # retire one the user has just confirmed
 ```
 
 Three things have to hold before a worktree is retired without asking, and each fails towards

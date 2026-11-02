@@ -1,7 +1,7 @@
 {
-  "version": "3.4.0-aguerrave.1",
+  "version": "3.7.5-aguerrave.1",
   "counts": {
-    "skills": 272,
+    "skills": 277,
     "agents": 34,
     "commands": 53,
     "fixedCommands": 20
@@ -813,7 +813,7 @@
     },
     {
       "id": "connect-tool",
-      "description": "Use when the user names a specific tool to connect to the agent (an ERP, accounting or desktop program, CRM, WhatsApp, a spreadsheet, a database): research its real docs, choose the safest route, build `01-TOOLS/<TOOL>/` with a test that proves it, and guide the user. NOT a full typed API client (that is `api-connector-builder`), NOT a whole-workspace tooling scan (that is `harness`).",
+      "description": "Use when the user names a specific tool to connect to the agent (an ERP, accounting or desktop program, CRM, WhatsApp, a spreadsheet, a database): research its real docs first, and when none exist, diagnose the program with the user and keep going. Picks the safest route, builds `01-TOOLS/<TOOL>/` with a test that proves it. NOT a full typed API client (that is `api-connector-builder`), NOT a whole-workspace tooling scan (that is `harness`).",
       "tags": [
         "connect",
         "integration",
@@ -825,6 +825,8 @@
         "mcp",
         "api",
         "export",
+        "import",
+        "file-exchange",
         "least-privilege",
         "onboarding"
       ],
@@ -1049,6 +1051,25 @@
         "postgresdb",
         "secure-coding",
         "deployment"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "customer-research",
+      "description": "Use when buyer interviews, reviews or lost deals need to become sourced needs, objections and language for an offer, or when that evidence is missing. Separates segments, repeated sources and inference. NOT market sizing (that is `market-research`) or page copy (that is `landing-copy`).",
+      "tags": [
+        "customer-research",
+        "buyer-language",
+        "interviews",
+        "reviews",
+        "objections",
+        "voice-of-customer"
+      ],
+      "recommends": [
+        "offer-design",
+        "landing-copy",
+        "market-research",
+        "case-studies"
       ],
       "profiles": []
     },
@@ -2688,7 +2709,10 @@
         "design",
         "brand-voice",
         "ab-testing",
-        "case-studies"
+        "case-studies",
+        "offer-design",
+        "sales-funnel",
+        "vsl-script"
       ],
       "profiles": []
     },
@@ -3376,6 +3400,26 @@
         "performance",
         "cost-tracking",
         "docker"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "offer-design",
+      "description": "Use when deciding what a buyer receives, why it solves their problem, and which promises, extras and conditions the seller can support. Produces an evidence-backed offer brief. NOT setting price levels (that is `pricing`) or writing the page (that is `landing-copy`).",
+      "tags": [
+        "offer",
+        "value-proposition",
+        "differentiation",
+        "guarantee",
+        "deliverables",
+        "commercial-terms"
+      ],
+      "recommends": [
+        "customer-research",
+        "pricing",
+        "sales-funnel",
+        "vsl-script",
+        "landing-copy"
       ],
       "profiles": []
     },
@@ -4243,6 +4287,28 @@
       "profiles": []
     },
     {
+      "id": "sales-funnel",
+      "description": "Use when planning the steps from an offer to purchase or booking: pages, transitions, recovery paths and measurement handoffs. NOT writing one page (that is `landing-copy`), running deals (that is `sales-pipeline`) or implementing payment (that is `stripe`).",
+      "tags": [
+        "sales-funnel",
+        "vsl",
+        "buyer-journey",
+        "conversion",
+        "checkout",
+        "campaign"
+      ],
+      "recommends": [
+        "customer-research",
+        "offer-design",
+        "vsl-script",
+        "landing-copy",
+        "marketing",
+        "analytics",
+        "stripe"
+      ],
+      "profiles": []
+    },
+    {
       "id": "sales-pipeline",
       "description": "Use when an operator runs deals out of a spreadsheet or Notion and wants real stages, win probabilities, deal hygiene, a weekly follow-up sweep, and a defensible roll-up forecast — including the case where the pipeline looks full but nothing closes. NOT statistical or scenario forecast modelling (that is `forecasting`), NOT sourcing prospects (that is `lead-gen`), NOT writing the outbound emails (that is `cold-outreach`), NOT the proposal or quote (that is `proposals`), NOT the post-close kickoff (that is `client-onboarding`).",
       "tags": [
@@ -5029,6 +5095,29 @@
       "profiles": []
     },
     {
+      "id": "tidy",
+      "description": "Use when every repository in the workspace must end synced and clean: each one on its default branch, everything pushed, everything pulled, no leftover branches or worktrees. Covers the root repo and every nested repo (child projects). Fires on 'limpia el harness', 'actualiza todo', 'sincroniza todo', 'déjalo todo en main', 'sube y baja todo', 'tidy up the repos', 'sync everything'. NOT upgrading the rsc version (that is `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc upgrade`), NOT opening isolation for new work (that is `worktrees`), NOT landing one finished branch (that is `ship`).",
+      "tags": [
+        "git",
+        "sync",
+        "cleanup",
+        "branches",
+        "worktrees",
+        "limpieza",
+        "sincronizar",
+        "main"
+      ],
+      "recommends": [
+        "worktrees",
+        "ship"
+      ],
+      "profiles": [
+        "minimal",
+        "core",
+        "full"
+      ]
+    },
+    {
       "id": "tiktok-api",
       "description": "Use when connecting a real TikTok account to code via the Content Posting, Display and Business Account APIs — OAuth, chunked video publish with status polling, and pulling views, watch time and impression sources, then logging that performance into the wiki as a dated feedback record. Covers short-lived tokens breaking a cron, unverified pull-from-URL ownership, and rate limits. NOT what to post or how to package it (that is `shortform-strategy` and `shortform-packaging`).",
       "tags": [
@@ -5436,6 +5525,26 @@
         "runpod",
         "modal",
         "ollama"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "vsl-script",
+      "description": "Use when writing or revising a spoken sales video with timed narration, visual cues, supported claims and one next action. NOT writing the surrounding page (that is `landing-copy`) or rendering the video (that is `remotion-video`).",
+      "tags": [
+        "vsl",
+        "sales-video",
+        "script",
+        "storyboard",
+        "narration",
+        "conversion"
+      ],
+      "recommends": [
+        "customer-research",
+        "offer-design",
+        "sales-funnel",
+        "landing-copy",
+        "remotion-video"
       ],
       "profiles": []
     },

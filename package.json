@@ -1,6 +1,6 @@
 {
   "name": "@aguerrave/rsc",
-  "version": "3.4.0-aguerrave.1",
+  "version": "3.7.5-aguerrave.1",
   "description": "A guided harness builder that turns your goal into a minimal, verified AI-agent setup using strict best practices.",
   "type": "module",
   "bin": {
@@ -57,13 +57,13 @@
   ],
   "license": "MIT",
   "author": "Eric Risco",
-  "homepage": "https://github.com/aguerrave/rsc-harness#readme",
+  "homepage": "https://github.com/ericrisco/rsc-harness#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aguerrave/rsc-harness.git"
+    "url": "git+https://github.com/ericrisco/rsc-harness.git"
   },
   "bugs": {
-    "url": "https://github.com/aguerrave/rsc-harness/issues"
+    "url": "https://github.com/ericrisco/rsc-harness/issues"
   },
   "publishConfig": {
     "access": "public"
@@ -103,7 +103,7 @@
     },
     {
       "fixedIn": "2.0.18",
-      "symptom": "Onboarding silently replaced a skill you wrote yourself that had the same name as one of rsc's (review, plan, debug\u2026)"
+      "symptom": "Onboarding silently replaced a skill you wrote yourself that had the same name as one of rsc's (review, plan, debug…)"
     },
     {
       "fixedIn": "2.0.19",
@@ -121,12 +121,5 @@
       "fixedIn": "3.3.0",
       "symptom": "Pages and screens designed with rsc came out generic and AI-looking, and most projects had no design skill installed at all (found by Carlos del Corral)"
     }
-  ],
-  "private": true,
-  "rscSource": {
-    "repository": "https://github.com/aguerrave/rsc-harness",
-    "ref": "v3.4.0-aguerrave.1",
-    "upstream": "https://github.com/ericrisco/rsc-harness",
-    "upstreamVersion": "3.4.0"
-  }
+  ]
 }

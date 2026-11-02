@@ -10,13 +10,16 @@
 //   B · another session is working in this same checkout (session-memory-core.mjs). Switching
 //       branches here would change its files under it, so it is denied, and the message says how to
 //       carry on: a worktree under `.worktrees/`.
+//   C · a worktree goes in `.worktrees/` at the root the session works in, never inside a project
+//       folder (Eric, 2026-10-27). In a workspace holding its projects as folders, `git -C <p>
+//       worktree add .worktrees/<b>` resolved inside the project; it is denied with the root's path.
 //
 // Every denial carries its way out (constitution P6). Only what the AGENT runs is seen: a person
 // committing in their own terminal is never touched (spec, P3). FAIL-OPEN: no repo, no git, a module
 // missing, anything unclear → allow. Opt-outs, both PROJECT switches: `.rsc/.no-trunk-guard`
 // («desbloquea main» / `rsc main unlock`) and `.rsc/.no-worktree-isolation` (`rsc isolation off`).
 import { existsSync, readFileSync, realpathSync } from 'node:fs';
-import { isAbsolute, join, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -54,6 +57,52 @@ export function pushesTo(seg, trunk) {
     const dst = spec.replace(/^\+/, '').split(':')[1];
     return dst !== undefined && dst.replace(/^refs\/heads\//, '') === trunk;
   });
+}
+
+export const ADDS_WORKTREE = new RegExp(String.raw`\bgit\s+${GIT_OPTS}worktree\s+add(?![\w-])`);
+
+/** `git worktree add [opts] <path> [<commit-ish>]` → { path, branch } (branch from -b/-B), or null. */
+export function worktreeAddTarget(seg) {
+  const t = tokens(seg.replace(/^.*?\bgit\s+/, '').replace(/^(?:(?:-C|-c)\s+\S+\s+|--\S+\s+)*/, ''));
+  if (t.shift() !== 'worktree' || t.shift() !== 'add') return null;
+  let branch = null;
+  let path = null;
+  for (let i = 0; i < t.length; i++) {
+    if (/^-[bB]$/.test(t[i])) { branch = t[++i] ?? null; continue; }
+    if (t[i] === '--reason') { i++; continue; }
+    if (!t[i].startsWith('-') && path === null) path = t[i];
+  }
+  return path === null ? null : { path, branch };
+}
+
+/** realpath of what exists, with the not-yet-created tail kept: a worktree path does not exist yet. */
+function realish(p) {
+  let head = p;
+  const tail = [];
+  while (!existsSync(head)) { const up = dirname(head); if (up === head) return p; tail.unshift(basename(head)); head = up; }
+  try { return join(realpathSync(head), ...tail); } catch { return p; }
+}
+
+const within = (p, dir) => p === dir || p.startsWith(dir + sep);
+
+/** Rule C: the reason to deny this `worktree add`, or null. Repos outside the root are not judged. */
+export function worktreePlaceDenial({ root, here, seg, at }) {
+  const target = worktreeAddTarget(seg);
+  if (!target) return null;
+  const home = realish(root);
+  if (!within(here, home)) return null;
+  const dest = realish(isAbsolute(target.path) ? target.path : resolve(at, target.path));
+  const place = join(home, '.worktrees');
+  if (within(dest, place) && dest !== place) return null;
+  const slug = (target.branch || basename(dest)).replace(/[\\/]+/g, '-');
+  const b = target.branch ? ` -b ${target.branch}` : '';
+  const rel = relative(home, here).split(sep).join('/');
+  const how = here === home
+    ? `\`git worktree add .worktrees/${slug}${b}\``
+    : `\`git -C ${rel} worktree add ${join(place, `${basename(here)}-${slug}`)}${b}\``;
+  return 'rsc: a worktree goes in `.worktrees/` at the root you work in, never inside a project folder ' +
+    `and never beside it (${dest} is not under ${place}). Create it with ${how} and work inside it; ` +
+    'tell the person that is where the work now runs. To stop rsc judging worktrees: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc isolation off`.';
 }
 
 export const unquoted = (command) => command.replace(/"(?:[^"\\]|\\.)*"|'[^']*'/g, '""');
@@ -133,7 +182,7 @@ export async function evaluate({ root, command, cwd, sessionId }) {
   // the segments judged are the ones the shell would really run (shell-unwrap.mjs).
   const raw = SH.expand(command);
   const segs = raw.map(unquoted);
-  if (!segs.some((s) => COMMITS_HERE.test(s) || MOVES_BRANCH.test(s) || MOVES_REF.test(s) || PUSHES.test(s))) return null;
+  if (!segs.some((s) => COMMITS_HERE.test(s) || MOVES_BRANCH.test(s) || MOVES_REF.test(s) || PUSHES.test(s) || ADDS_WORKTREE.test(s))) return null;
   const self = (rel) => new URL(rel, import.meta.url);
   let dir = cwd || root;
   const branchAt = new Map(); // toplevel → branch the chain has moved it to
@@ -146,12 +195,18 @@ export async function evaluate({ root, command, cwd, sessionId }) {
     const moves = MOVES_BRANCH.test(seg);
     const movesRef = MOVES_REF.test(seg);
     const pushes = PUSHES.test(seg);
-    if (!commits && !moves && !movesRef && !pushes) continue;
+    const addsWorktree = ADDS_WORKTREE.test(seg);
+    if (!commits && !moves && !movesRef && !pushes && !addsWorktree) continue;
     const at = effectiveDir(raw[i] || seg, dir);
     const git = gitAt(at);
     const top = git('rev-parse', '--show-toplevel');
     if (!top) continue;
     const here = (() => { try { return realpathSync(top); } catch { return top; } })();
+
+    if (addsWorktree && !existsSync(join(root, '.rsc', '.no-worktree-isolation'))) {
+      const reason = worktreePlaceDenial({ root, here, seg, at });
+      if (reason) return reason;
+    }
 
     if (moves) {
       const target = moveTarget(seg, at);
@@ -222,14 +277,14 @@ async function trunkDenial({ root, here, sessionId, self, trunk, policy }) {
   return `This project keeps its default branch "${trunk}" closed for the agent (it looks complex or in production: ${policy.signals.join(', ')}), so this commit was not made. ` +
     `Do not choose for the person: ask them in one line whether to open a branch for this change or to unlock "${trunk}". ` +
     `Branch → ${branch}; it reaches "${trunk}" through a pull request. ` +
-    'Unlock → only on their explicit answer, `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc main unlock` (a project decision, saved in .rsc.json), then commit again.';
+    'Unlock → only on their explicit answer, `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc main unlock` (a project decision, saved in .rsc.json), then commit again.';
 }
 
 function refDenial({ trunk, policy, how = '`git update-ref` and a forced `git branch`' }) {
   return `This project keeps its default branch "${trunk}" closed for the agent (it looks complex or in production: ${policy.signals.join(', ')}), so "${trunk}" was not moved — ` +
     `${how} land${how.includes(' and ') ? '' : 's'} work on it with no review. ` +
     `Work reaches "${trunk}" through a pull request: push the branch and open one (the \`ship\` skill). ` +
-    `Do not choose for the person: if they want "${trunk}" moved by hand, ask them in one line; only on their explicit answer, \`npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc main unlock\` (a project decision, saved in .rsc.json).`;
+    `Do not choose for the person: if they want "${trunk}" moved by hand, ask them in one line; only on their explicit answer, \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc main unlock\` (a project decision, saved in .rsc.json).`;
 }
 
 async function isolationDenial({ root, here, sessionId, self }) {
@@ -237,8 +292,8 @@ async function isolationDenial({ root, here, sessionId, self }) {
   if (!others.length) return null;
   const who = others.map((o) => `${o.target}${o.branch ? ` on "${o.branch}"` : ''}, ${ago(o.updatedAt)}`).join('; ');
   return `Another session is working in this same folder (${who}). Switching branches here would change its files under it. ` +
-    'Work in a worktree instead, inside the project: `git worktree add .worktrees/<branch> -b <branch>` (or without -b for an existing branch) and run everything inside `.worktrees/<branch>/`; tell the person that is where the project now runs. ' +
-    'To turn this rule off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v3.4.0-aguerrave.1 rsc isolation off`.';
+    'Work in a worktree instead, in `.worktrees/` at the root (never inside a project folder): `git worktree add .worktrees/<branch> -b <branch>` (or without -b for an existing branch; for a project in a folder, `git -C <project> worktree add <root>/.worktrees/<project>-<branch> -b <branch>`) and run everything inside it; tell the person that is where the project now runs. ' +
+    'To turn this rule off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc isolation off`.';
 }
 
 function isMain(metaUrl) {
