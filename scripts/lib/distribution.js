@@ -1,4 +1,4 @@
 // This release is pinned to the maintained fork, never to the upstream npm package.
-export const SOURCE = Object.freeze({"repository": "https://github.com/aguerrave/rsc-harness", "ref": "v3.7.5-aguerrave.1", "upstream": "https://github.com/ericrisco/rsc-harness", "upstreamVersion": "3.7.5"});
-export const INSTALL_SPEC = 'github:aguerrave/rsc-harness#v3.7.5-aguerrave.1';
-export const RUN_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc';
+export const SOURCE = Object.freeze({"repository": "https://github.com/aguerrave/rsc-harness", "ref": "v4.0.4-aguerrave.1", "upstream": "https://github.com/ericrisco/rsc-harness", "upstreamVersion": "4.0.4"});
+export const INSTALL_SPEC = 'github:aguerrave/rsc-harness#v4.0.4-aguerrave.1';
+export const RUN_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc';

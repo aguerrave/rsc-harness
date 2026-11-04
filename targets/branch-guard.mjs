@@ -102,7 +102,7 @@ export function worktreePlaceDenial({ root, here, seg, at }) {
     : `\`git -C ${rel} worktree add ${join(place, `${basename(here)}-${slug}`)}${b}\``;
   return 'rsc: a worktree goes in `.worktrees/` at the root you work in, never inside a project folder ' +
     `and never beside it (${dest} is not under ${place}). Create it with ${how} and work inside it; ` +
-    'tell the person that is where the work now runs. To stop rsc judging worktrees: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc isolation off`.';
+    'tell the person that is where the work now runs. To stop rsc judging worktrees: `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc isolation off`.';
 }
 
 export const unquoted = (command) => command.replace(/"(?:[^"\\]|\\.)*"|'[^']*'/g, '""');
@@ -274,17 +274,26 @@ async function trunkDenial({ root, here, sessionId, self, trunk, policy }) {
   const branch = others.length
     ? '`git worktree add .worktrees/<branch> -b feat/<what>` and commit inside `.worktrees/<branch>/` (another session is working in this folder)'
     : '`git switch -c feat/<what>` in this same folder, no worktree';
-  return `This project keeps its default branch "${trunk}" closed for the agent (it looks complex or in production: ${policy.signals.join(', ')}), so this commit was not made. ` +
+  return `This project keeps its default branch "${trunk}" closed for the agent (it looks complex or in production: ${policy.signals.join(', ')}), so this change was not made. ` +
     `Do not choose for the person: ask them in one line whether to open a branch for this change or to unlock "${trunk}". ` +
     `Branch → ${branch}; it reaches "${trunk}" through a pull request. ` +
-    'Unlock → only on their explicit answer, `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc main unlock` (a project decision, saved in .rsc.json), then commit again.';
+    'Unlock → only on their explicit answer, `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc main unlock` (a project decision, saved in .rsc.json), then commit again. ' +
+    AUTOPILOT_LANDING;
 }
+
+// An autopilot run has nobody to ask, and the 4.0.1 test run read "ask them" as a reason to look for
+// another way in. Landing a finished branch is `ship`'s job, and with the trunk closed it has exactly
+// one legal path per case — this says which, so the denial ends the attempt instead of starting one.
+const AUTOPILOT_LANDING = 'In autopilot (nobody to ask) and landing a finished feature branch: do not merge another way — ' +
+  'with a remote, push the branch and open a pull request; without one, park it: write the exact merge command for the person ' +
+  'in `02-DOCS/wiki/sdd/progress/<slug>.md` and stop (the `ship` skill, "No remote").';
 
 function refDenial({ trunk, policy, how = '`git update-ref` and a forced `git branch`' }) {
   return `This project keeps its default branch "${trunk}" closed for the agent (it looks complex or in production: ${policy.signals.join(', ')}), so "${trunk}" was not moved — ` +
     `${how} land${how.includes(' and ') ? '' : 's'} work on it with no review. ` +
     `Work reaches "${trunk}" through a pull request: push the branch and open one (the \`ship\` skill). ` +
-    `Do not choose for the person: if they want "${trunk}" moved by hand, ask them in one line; only on their explicit answer, \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc main unlock\` (a project decision, saved in .rsc.json).`;
+    `Do not choose for the person: if they want "${trunk}" moved by hand, ask them in one line; only on their explicit answer, \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc main unlock\` (a project decision, saved in .rsc.json). ` +
+    AUTOPILOT_LANDING;
 }
 
 async function isolationDenial({ root, here, sessionId, self }) {
@@ -293,7 +302,7 @@ async function isolationDenial({ root, here, sessionId, self }) {
   const who = others.map((o) => `${o.target}${o.branch ? ` on "${o.branch}"` : ''}, ${ago(o.updatedAt)}`).join('; ');
   return `Another session is working in this same folder (${who}). Switching branches here would change its files under it. ` +
     'Work in a worktree instead, in `.worktrees/` at the root (never inside a project folder): `git worktree add .worktrees/<branch> -b <branch>` (or without -b for an existing branch; for a project in a folder, `git -C <project> worktree add <root>/.worktrees/<project>-<branch> -b <branch>`) and run everything inside it; tell the person that is where the project now runs. ' +
-    'To turn this rule off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc isolation off`.';
+    'To turn this rule off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc isolation off`.';
 }
 
 function isMain(metaUrl) {

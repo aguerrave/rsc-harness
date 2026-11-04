@@ -85,7 +85,7 @@ Three of them carry the weight and fail quietly:
 
 Write `02-DOCS/wiki/sdd/plans/<slug>.md`, `<slug>` matching the spec's slug exactly — one plan per
 spec, same name, because that is how `tasks`, `analyze` and `implement` find it. Then index it in
-`02-DOCS/wiki/index.md` (the Knowledge map; root `CLAUDE.md` keeps only a pointer). If a plan for
+`02-DOCS/wiki/index.md` (the Knowledge map) — never the root `CLAUDE.md`. If a plan for
 this slug already exists, update it in place and note what changed — never fork a `-v2`.
 
 ## Model tier — `heavy` (opt-in routing)
@@ -93,7 +93,7 @@ this slug already exists, update it in place and note what changed — never for
 Architecture, interfaces, data flow and risk are the heaviest reasoning in the chain, so this
 phase's default tier is **`heavy`**. Routing is off unless `models.enabled: true` in
 `02-DOCS/wiki/sdd/config.yaml`; the resolution order, the announce rule and the model table live in
-`../sdd/references/model-routing.md`. Routing off or no profile → session model, silently.
+`../asdd/references/model-routing.md`. Routing off or no profile → session model, silently.
 
 ## Talking about the plan
 
@@ -140,7 +140,7 @@ regardless. (`implement` re-checks this as a hard gate before its first commit.)
 ## Result envelope
 
 End with the parseable block every SDD phase shares, so the dispatcher can chain without
-interpreting prose (contract: `../sdd/SKILL.md`):
+interpreting prose (contract: `../asdd/SKILL.md`):
 
 ```json result-envelope
 {

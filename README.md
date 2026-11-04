@@ -27,7 +27,7 @@ Ask me the onboarding questions, show me the exact plan, and wait for my accepta
 Or start from the terminal:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
 ```
 
 </div>
@@ -85,7 +85,7 @@ remove the need to check the result.
 1. **Describe the project.** Choose the assistants you use and how technical the conversation should be.
 2. **Review the setup.** See each proposed component and its reason, then accept the plan you want applied.
 3. **Ask for the work.** The agent names the appropriate lane: an answer, a focused change (FTD), or the
-   specification-led chain (SDD) for decisions that affect each other.
+   specification-led chain (ASDD) for decisions that affect each other.
 4. **Keep the result and its evidence.** Project knowledge goes into `02-DOCS/`; implementation stays in
    your code. Future sessions can consult both.
 
@@ -104,12 +104,12 @@ individual skill into an existing rsc project rather than adopt a whole workflow
 ## Install in one minute
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
 ```
 
 The first run asks **one** question about conversation (technical, or with analogies), then what the
 project is for, its goal and the assistants to target. Then it presents the complete plan. A small
-website can defer SDD, agents and code guards; an operations harness does not receive them merely
+website can defer ASDD, agents and code guards; an operations harness does not receive them merely
 because it lives in a repository. Deferred components record the evidence that would make rsc
 recommend them later, and `rsc reassess` reports it without installing anything.
 
@@ -117,10 +117,10 @@ Everything stays **in the project**. The real skill files are written once to `.
 each assistant gets a symlink back to that shared base, so picking several duplicates nothing. Skills
 load progressively: only their description is paid for until a task needs them.
 
-Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v3.7.5-aguerrave.1`.
+Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1`.
 
 > **Run it inside the project you are equipping, not inside a clone of this repo.** The catalog's own
-> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc` from within a clone resolves to
+> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc` from within a clone resolves to
 > the local bin and fails with `sh: rsc: command not found`. Working on the catalog itself? Use
 > `node scripts/rsc.js …` or `npm link`.
 
@@ -130,7 +130,7 @@ If you are an AI coding agent and your user asked you to **install rsc, this har
 skills**, run this in the root of the project they are equipping:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
 ```
 
 It asks the user how technical to talk, the project kind and the goal **before it writes anything**,
@@ -143,11 +143,11 @@ tell the user before accepting.
 Non-interactive, with the answers collected first:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex
 # After the user accepts the printed plan:
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex --accept-plan PRINTED_SHA256_ID
 ```
@@ -186,10 +186,13 @@ Every turn takes exactly one lane, and the agent names it in one line, in your l
 2. **FTD, Fast-Track Development.** The request authorises a change. This is the default for ordinary
    work. One feature document holds intent, scope, a checklist, the evidence and the next step. Tasks
    are checked off against observed proof, never against intention.
-3. **SDD, the ten-phase chain.** For the big or complex: several decisions that affect each other.
-   **The agent enters it on its own**, and you still decide *what* gets built: you approve the spec
-   and answer the clarifying questions, then review each phase or let it run on autopilot. Publishing
-   always asks.
+3. **ASDD, Agent Spec-Driven Development.** For the big or complex: several decisions that affect
+   each other, and work an agent may run for hours. **The agent enters it on its own**, and you still
+   decide *what* gets built: the spec answers four questions (what the user can do, what result they
+   get, what it must respect, how it proves it) and you approve the spec. Then every task is reviewed inside
+   the build, scaled by `rsc risk`; what the agent must not decide alone waits in a decision queue
+   while independent work continues. Low-risk work lands on green CI; auth, billing, CI and migrations
+   wait for you.
 
 Ask for the other lane and it switches.
 
@@ -229,7 +232,7 @@ project. rsc handles four things by default:
 | --- | --- | --- |
 | **You choose how the project works** | The install asks once: straight on `main`, or branches and pull requests? With branches, a commit on `main` is refused and the agent asks before each change: this branch, a new one, or unlock `main`? It never opens a branch on its own. | «unlock main», or `rsc main unlock` |
 | **One workspace per agent** | If another session works in the same folder, new work goes to `.worktrees/<branch>/` at the root you work in (never inside a project folder) and is never committed. A `post-merge` hook retires it once the branch lands. | `rsc isolation off` |
-| **The agent picks the method** | FTD for simple changes, SDD for complex ones. The agent decides and says why. | Ask for the other lane |
+| **The agent picks the method** | FTD for simple changes, ASDD for complex ones. The agent decides and says why. | Ask for the other lane |
 | **Knowledge reaches everyone** | `01-TOOLS/`, `02-DOCS/wiki/` and `02-DOCS/attachments/` travel through one exchange branch, `rsc/knowledge`, and reach `main` inside your normal pull requests. | `rsc knowledge-sync off` |
 
 **How it knows a project is complex.** A hook counts what anyone can check: a CI setup, a deployment
@@ -272,7 +275,7 @@ Whoever clones runs **one command** and gets the same harness, at the version th
 its `.rsc.json` as `catalogVersion`:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc@<catalogVersion> sync
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc@<catalogVersion> sync
 ```
 
 You do not have to know that. Open the project and the assistant tells you, in the first message,
@@ -318,7 +321,11 @@ git-excluded local path, keeps 30 days, and injects at most 4,096 bytes. `rsc me
 
 ### Review that only brings you what is real
 
-In SDD, `review` sends three adversarial reviewers at the diff (correctness, security, tests). They
+In ASDD, review runs inside every task, as deep as `rsc risk` says: none for docs, one fresh-context
+reviewer for ordinary code, three adversarial reviewers (correctness, security, tests) for auth,
+billing, CI or migrations. `rsc review ledger` caps the fix loop at three rounds and never lets a
+finding be raised twice, and `rsc review escapes` turns every revert into a case for the reviewer. The
+three reviewers
 often report the same defect in different words, and a reviewer hunting for problems can overstate
 one. So `rsc review consolidate` merges the duplicates, and every serious finding left goes to a
 fresh `finding-verifier` agent whose starting position is that the finding is false. It blocks the
@@ -394,7 +401,7 @@ file, and `rsc agents reset <name>` takes rsc's version back after a backup.
 
 ## CLI
 
-`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v3.7.5-aguerrave.1`),
+`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1`),
 the bare `rsc` answers `command not found`: type the `npx` form.
 
 ```bash
@@ -445,7 +452,7 @@ follows. **Onboarding readiness** says whether onboarding is finished (`ready`, 
 ### Something's off? `rsc repair`
 
 If the harness is wired for the wrong assistant, a hook runs several times, or skills appear that you
-never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc repair`. It shows what it found before touching
+never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc repair`. It shows what it found before touching
 anything, keeps a recoverable copy, and never touches skills or agents you wrote by hand. Add
 `--dry-run` to see the pass without writing.
 
@@ -453,7 +460,7 @@ anything, keeps a recoverable copy, and never touches skills or agents you wrote
 
 **rsc updates itself.** At session start it checks npm. A release in the same major installs in the
 background and takes effect next session; a new major asks first. To turn it off, create
-`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 && rsc sync`. Every sync
+`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 && rsc sync`. Every sync
 snapshots the project first, so `rsc restore latest` undoes a bad update.
 
 ---
@@ -474,7 +481,7 @@ and a video sales letter (VSL). It is a curated selection of ordinary rsc skills
 In an existing rsc project, this command adds the core selection:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
 ```
 
 Use `design` and your web-stack skill to build the page; use `remotion-video` or your editor to produce
@@ -513,7 +520,7 @@ its own when a task matches.
 Two lanes for change: `ftd` for ordinary work, and the ten-phase chain when durable artifacts would
 settle a real ambiguity. `idea-refinement` runs inside `specify`; `decision-challenge` is on demand.
 
-[ftd](skills/ftd/) · [sdd](skills/sdd/) · [constitution](skills/constitution/) · [idea-refinement](skills/idea-refinement/) · [specify](skills/specify/) · [clarify](skills/clarify/) · [plan](skills/plan/) · [tasks](skills/tasks/) · [analyze](skills/analyze/) · [decision-challenge](skills/decision-challenge/) · [implement](skills/implement/) · [source-grounded-development](skills/source-grounded-development/) · [verify](skills/verify/) · [review](skills/review/) · [simplify-code](skills/simplify-code/) · [ship](skills/ship/) · [debug](skills/debug/) · [worktrees](skills/worktrees/) · [parallel](skills/parallel/) · [tidy](skills/tidy/)
+[ftd](skills/ftd/) · [asdd](skills/asdd/) · [constitution](skills/constitution/) · [idea-refinement](skills/idea-refinement/) · [specify](skills/specify/) · [clarify](skills/clarify/) · [plan](skills/plan/) · [tasks](skills/tasks/) · [analyze](skills/analyze/) · [decision-challenge](skills/decision-challenge/) · [implement](skills/implement/) · [source-grounded-development](skills/source-grounded-development/) · [verify](skills/verify/) · [review](skills/review/) · [simplify-code](skills/simplify-code/) · [ship](skills/ship/) · [debug](skills/debug/) · [worktrees](skills/worktrees/) · [parallel](skills/parallel/) · [tidy](skills/tidy/)
 
 ### 💼 Run a business
 

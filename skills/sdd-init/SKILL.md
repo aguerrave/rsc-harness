@@ -1,8 +1,8 @@
 ---
 name: sdd-init
-description: "Use when calibrating an existing repo for the rsc SDD chain: detect stack, package manager, test runners and apply/verify commands, refresh the skill registry, and write the runtime config at 02-DOCS/wiki/sdd/config.yaml. NOT the dispatcher that routes SDD phases (that is `sdd`), NOT first-contact user/workspace bootstrap (that is `init`)."
+description: "Use when calibrating an existing repo for the rsc SDD chain: detect stack, package manager, test runners and apply/verify commands, refresh the skill registry, and write the runtime config at 02-DOCS/wiki/sdd/config.yaml. NOT the dispatcher that routes SDD phases (that is `asdd`), NOT first-contact user/workspace bootstrap (that is `init`)."
 tags: [sdd, init, config, testing, registry]
-recommends: [sdd, specify, implement, verify]
+recommends: [asdd, constitution, specify, verify]
 profiles: [core, full]
 origin: risco
 ---
@@ -15,7 +15,7 @@ Step zero for technical SDD work: read the repo, detect how it should be built a
 02-DOCS/wiki/sdd/config.yaml
 ```
 
-That config is the runtime contract later phases read before choosing commands, TDD strictness, artifact paths, review budget or skill briefs. `sdd` dispatches the phases that consume it, `init` owns first contact and user profiling, `harness` owns `01-TOOLS/` and `02-DOCS/` scaffolding. This skill only calibrates.
+That config is the runtime contract later phases read before choosing commands, TDD strictness, artifact paths, review budget or skill briefs. `asdd` dispatches the phases that consume it, `init` owns first contact and user profiling, `harness` owns `01-TOOLS/` and `02-DOCS/` scaffolding. This skill only calibrates.
 
 ## Inputs
 
@@ -28,18 +28,20 @@ Read-only first:
 
 If `02-DOCS/` does not exist, create only the `02-DOCS/wiki/sdd/` path needed for the config. Do not run full harness scaffolding unless the user asked for `harness`.
 
+**Empty repo — nothing to detect?** Then there is nothing to calibrate yet: `constitution` runs first and decides the stack, and this skill calibrates against that decision (or re-runs once the first manifest exists). Never invent runners for an empty tree.
+
 ## Preflight Choices
 
 Ask only when the answer changes behavior; explain each trade-off in one line, in the register `technical_level` sets.
 
 | Setting | Default | Options |
 | --- | --- | --- |
-| `execution_mode` | `interactive` | `interactive` pauses at review-risk gates; `automatic` chains phases until a blocker/risk appears. |
+| `execution_mode` | `interactive` | `interactive` pauses at review-risk gates; `automatic` chains phases until a blocker/risk appears. `sdd.execution_mode: automatic` is the switch `asdd`'s autopilot reads. |
 | `artifact_store` | `02-DOCS/wiki/sdd` | Keep RSC artifacts in `02-DOCS`; do not create an `openspec/` parallel tree. |
 | `review_budget.line_budget` | `400` | Lower for solo tight review; higher only with explicit approval. |
 | `delivery_strategy.default` | `ask-on-risk` | `ask-on-risk`, `single-pr`, `autochain`, `exception`. |
 | `models.enabled` | `false` | Per-phase model routing is opt-in; leave off unless the user asks for it. |
-| `models.provider` | `anthropic` | Which provider the tiers resolve to. Set from the detected assistant when obvious, else `anthropic`. See `../sdd/references/model-routing.md` for other providers. |
+| `models.provider` | `anthropic` | Which provider the tiers resolve to. Set from the detected assistant when obvious, else `anthropic`. See `../asdd/references/model-routing.md` for other providers. |
 
 ## Detection
 
@@ -60,7 +62,7 @@ If any runner is detected, set `testing.strict_tdd: true`. Strict TDD means impl
 Refresh the project registry:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc registry refresh
+npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc registry refresh
 ```
 
 This writes:
@@ -76,11 +78,11 @@ Later phases use it as a cheap index — id, trigger, tags, path, installed/avai
 
 Calibration is the moment to make sure the relevant skills are actually present, not just indexed. Detect → propose → install:
 
-1. **Detect what this repo needs.** Use the stack you just detected, or ask the CLI: `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc consult "<one line: stack + what we're building>"`. Map signals to skills — e.g. `next`→`nextjs`+`design`, `go.mod`→`go`, FastAPI→`fastapi`, `*.sql`/Prisma→`postgresdb`/`prisma-orm`, Stripe→`stripe`, Dockerfile/CI→`docker`/`github-actions`, tests→`testing-*`/`e2e-testing`. The SDD phase skills (`specify`…`ship`) should already be present from `--profile core`; install any that are missing.
+1. **Detect what this repo needs.** Use the stack you just detected, or ask the CLI: `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc consult "<one line: stack + what we're building>"`. Map signals to skills — e.g. `next`→`nextjs`+`design`, `go.mod`→`go`, FastAPI→`fastapi`, `*.sql`/Prisma→`postgresdb`/`prisma-orm`, Stripe→`stripe`, Dockerfile/CI→`docker`/`github-actions`, tests→`testing-*`/`e2e-testing`. The SDD phase skills (`specify`…`ship`) should already be present from `--profile core`; install any that are missing.
 2. **Show the shortlist + confirm.** List the skills with a one-line *why* each, in the user's register, and get a one-word confirm before touching their environment.
 3. **Install them yourself.** You have a terminal — run it via Bash:
    ```bash
-   npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc add <skill> [<skill> ...]
+   npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc add <skill> [<skill> ...]
    ```
    If you genuinely cannot run a shell, print the exact command and ask the user to paste it in another terminal tab.
 4. **Flag the new session.** Newly installed skills load at the START of a session. Tell the user: *"Instaladas. Abre una pestaña/sesión nueva de tu asistente (o recarga) en esta carpeta para que se activen."* Then refresh the registry again so `installed/available` is accurate.
@@ -145,7 +147,7 @@ models:
   overrides: {}               # per-phase tier overrides set by the user
 ```
 
-The `models` block is the **per-phase model routing** profile: each phase declares a tier (`heavy`/`balanced`/`light`) and the tiers resolve to concrete models for `provider`. The full protocol — how phases apply it, the per-assistant switch mechanism, the provider→model table — lives in `../sdd/references/model-routing.md`. Keep this block byte-for-byte in sync with that reference.
+The `models` block is the **per-phase model routing** profile: each phase declares a tier (`heavy`/`balanced`/`light`) and the tiers resolve to concrete models for `provider`. The full protocol — how phases apply it, the per-assistant switch mechanism, the provider→model table — lives in `../asdd/references/model-routing.md`. Keep this block byte-for-byte in sync with that reference.
 
 Preserve user edits if the file exists: update detected facts and leave comments/custom policy fields intact when possible. **Never flip `models.enabled` or drop `models.overrides` on re-calibration** — a calibration pass that silently switches the user's models is the one failure they cannot detect from the diff, so preserve both verbatim and only refresh `tiers`/`provider` if the user asks. If preservation is risky, write a proposed replacement next to it as `config.proposed.yaml` and ask.
 
@@ -158,7 +160,7 @@ End with the standard SDD result envelope:
   "status": "complete",
   "executive_summary": "SDD config calibrated and registry refreshed.",
   "artifact": "02-DOCS/wiki/sdd/config.yaml",
-  "next_recommended": "sdd",
+  "next_recommended": "constitution|specify",
   "risk": "low",
   "skill_resolution": {
     "used": ["sdd-init"],
@@ -170,7 +172,7 @@ End with the standard SDD result envelope:
       "Per-phase model routing ships off (models.enabled:false); never switch models unasked."
     ]
   },
-  "evidence": ["npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc registry refresh", "detected test commands recorded"]
+  "evidence": ["npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc registry refresh", "detected test commands recorded"]
 }
 ```
 
@@ -181,9 +183,9 @@ End with the standard SDD result envelope:
 | "I'll skip config and remember the commands in chat." | Chat is not source of truth. Write `config.yaml`. |
 | "No test command detected, but I'll still say strict TDD is active." | Strict TDD needs a runner. Record the gap. |
 | "Load all skills so the agent has context." | That pollutes context. Use registry -> selected skills -> compact rules. |
-| "This is the same as init." | No. `init` profiles user/workspace, `sdd` dispatches the phases, `sdd-init` calibrates the technical SDD runtime they both rely on. |
+| "This is the same as init." | No. `init` profiles user/workspace, `asdd` dispatches the phases, `sdd-init` calibrates the technical SDD runtime they both rely on. |
 | "Create openspec/ because Gentle does." | RSC uses `02-DOCS/wiki/sdd/` as source of truth. |
 
 ## Next
 
-After `sdd-init`, return to `sdd`. If no spec exists, route to `specify`. If the work is ambiguous or architectural, write a proposal first under `02-DOCS/wiki/sdd/proposals/`.
+After `sdd-init`, return to `asdd` with `next_recommended` set to the next phase: `constitution` if there is none (or it is `status: draft`), else `specify` when no spec exists. If the work is ambiguous or architectural, write a proposal first under `02-DOCS/wiki/sdd/proposals/`.

@@ -1,6 +1,6 @@
 ---
 name: tidy
-description: "Use when every repository in the workspace must end synced and clean: each one on its default branch, everything pushed, everything pulled, no leftover branches or worktrees. Covers the root repo and every nested repo (child projects). Fires on 'limpia el harness', 'actualiza todo', 'sincroniza todo', 'déjalo todo en main', 'sube y baja todo', 'tidy up the repos', 'sync everything'. NOT upgrading the rsc version (that is `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc upgrade`), NOT opening isolation for new work (that is `worktrees`), NOT landing one finished branch (that is `ship`)."
+description: "Use when every repository in the workspace must end synced and clean: each one on its default branch, everything pushed, everything pulled, no leftover branches or worktrees. Covers the root repo and every nested repo (child projects). Fires on 'limpia el harness', 'actualiza todo', 'sincroniza todo', 'déjalo todo en main', 'sube y baja todo', 'tidy up the repos', 'sync everything'. NOT upgrading the rsc version (that is `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc upgrade`), NOT opening isolation for new work (that is `worktrees`), NOT landing one finished branch (that is `ship`)."
 tags: [git, sync, cleanup, branches, worktrees, limpieza, sincronizar, main]
 recommends: [worktrees, ship]
 profiles: [minimal, core, full]
@@ -57,7 +57,7 @@ reading names.
 
 | Item | Proof | Action |
 | --- | --- | --- |
-| Worktree whose work landed | `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees` calls it safe | `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees reap` |
+| Worktree whose work landed | `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees` calls it safe | `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees reap` |
 | Worktree whose directory is gone | `prunable` in the porcelain list | `git -C <repo> worktree prune` |
 | Worktree with live or unsaved work | anything the reaper refuses | keep; report the reaper's reason |
 | Local branch merged into the default | `merge-base --is-ancestor <b> origin/<default>` | `git branch -d <b>` |
@@ -91,7 +91,7 @@ Never delete the default branch, the current branch of another checkout, or `rsc
 2. **Push what is only local.** Every branch with unlanded commits goes to the remote. The default
    branch ahead of `origin`: push it if the default branch is open here; if it is protected
    (branches and PRs), move those commits to a branch and open a PR — ask first.
-3. **Retire what landed.** `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc worktrees reap` for worktrees (it refuses anything
+3. **Retire what landed.** `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees reap` for worktrees (it refuses anything
    that would lose a file, and its refusal stands), `worktree prune`, then the branches from step 3.
    Without rsc in that repo, follow the manual path in `../worktrees/SKILL.md`.
 4. **Back to the default and pull.** Clean checkout on another branch whose work is pushed →
@@ -142,7 +142,7 @@ kept item is the failure this skill exists to prevent.
 | "Report says clean; the kept worktree is a detail" | Say what was kept and why. The report is the deliverable. |
 
 **Next:** after a clean report there is nothing to hand over. Neighbours: `../worktrees/SKILL.md`
-opens isolation for new work; `../ship/SKILL.md` lands one finished branch; `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc
+opens isolation for new work; `../ship/SKILL.md` lands one finished branch; `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc
 upgrade` updates the harness itself, which is a different "actualiza".
 
 ## Orientación (siempre)

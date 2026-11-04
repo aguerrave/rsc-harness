@@ -42,8 +42,13 @@ import { spawnSync } from 'node:child_process';
 // with no switch to stop it, so leaving it out made the lockout permanent.
 export const SELLO_STATE_PATHS = [
   '.rsc/sello.json', '.rsc/sello-config.json', '.rsc/sello-findings.md', '.rsc/sello-log.jsonl',
-  '.rsc/automation-gaps.md',
+  '.rsc/automation-gaps.md', '.rsc/review-ledger.jsonl',
 ];
+
+// Worktrees nested inside the project (the assistant's native `.claude/worktrees/`, rsc's own
+// `.worktrees/`) are other checkouts, not part of this change. Untracked, they showed up as one
+// `.claude/…` path, scored as harness — tier 2 for every task of a run that used isolation.
+export const NESTED_WORKTREES = /^(?:\.claude\/worktrees|\.worktrees)(?:\/|$)/;
 
 export function selloPaths(root) {
   return {
@@ -197,6 +202,97 @@ export function classifyRisk(paths, cfg = null) {
   return { tier, classes, lowered, configError };
 }
 
+// ---------------------------------------------------------------- content signals
+// A path table only sees code that lives where its name says. A real 4.0.3 run put a whole login —
+// password hashing, session cookies — into `src/app.js`: tier 1 by path, so no gate and no panel would
+// have fired had the spec not happened to be called `login.md`. These rows read WHAT the change adds:
+// code that hashes passwords, sets session cookies, moves money, alters a schema or carries a secret
+// is high risk wherever it lives. Still deterministic (P1): fixed patterns over the added lines, never
+// a judgement. Documentation is not scanned — a spec that talks about passwords is not auth code.
+export const CONTENT_RISK = [
+  // Operations, not words: hashing or verifying a password, issuing a session or token. A login form's
+  // `type="password"` or an i18n string is not auth code (closing review, 4.0.4).
+  { class: 'auth', scope: 'code', pattern: String.raw`\b(?:bcrypt(?:js)?|argon2(?:id|i|d)?)\.(?:hash|compare|verify)(?:Sync)?\s*\(|\b(?:scrypt|scryptSync|pbkdf2|pbkdf2Sync|timingSafeEqual|createHmac)\s*\(|\bjwt\.(?:sign|verify)\s*\(|\b(?:password_hash|password_verify)\s*\(|\bpassport\.(?:use|authenticate)\s*\(|\b(?:getServerSession|verifyIdToken|signInWith[A-Z]\w*)\s*\(|\bres\.cookie\s*\(\s*(?:['"\x60](?:sid|session|token|auth)|[A-Z_]*(?:SESSION|SID|TOKEN|AUTH))|\bpromisify\s*\(\s*(?:crypto\.)?(?:scrypt|pbkdf2)\b|\b(?:jwtVerify|SignJWT)\b|\breq\.session\.(?:\w+\s*=[^=]|regenerate\s*\()|\bcreateSession\s*\(|set-cookie['"\x60]?\s*[,:]\s*['"\x60]?\s*\x60?(?:sid|session|token|auth)\w*=` },
+  { class: 'billing', scope: 'code', pattern: String.raw`\b(?:paymentIntents|charges|refunds|subscriptions|checkout\.sessions|invoices)\.(?:create|update|confirm|capture)\s*\(|\bprocess\.env\.(?:STRIPE|PAYPAL|BRAINTREE|ADYEN)_\w+` },
+  { class: 'migrations', scope: 'code', pattern: String.raw`\b(?:ALTER\s+TABLE|DROP\s+(?:TABLE|COLUMN)|CREATE\s+TABLE|ADD\s+COLUMN|RENAME\s+COLUMN)\b` },
+  // A secret is a leak wherever it is added — tests, config and docs included.
+  { class: 'secrets', scope: 'all', pattern: String.raw`-----BEGIN [A-Z ]*PRIVATE KEY-----|\bAKIA[0-9A-Z]{16}\b|\b[sr]k_live_[0-9a-zA-Z]{16,}|\bgh[pousr]_[0-9A-Za-z]{30,}` },
+];
+// What `code` rows never read: tests and fixtures, lockfiles, minified bundles, docs, and comment lines.
+const NOT_CODE = /(?:^|\/)(?:tests?|__tests__|spec|fixtures?|__mocks__)\/|\.(?:test|spec)\.[cm]?[jt]sx?$|(?:^|\/)(?:package-lock\.json|npm-shrinkwrap\.json|yarn\.lock|pnpm-lock\.yaml|Cargo\.lock|poetry\.lock|Gemfile\.lock|composer\.lock|go\.sum)$|\.min\.(?:js|css)$/;
+const COMMENT_LINE = /^\s*(?:\/\/|#|\*|\/\*|<!--|--\s)/;
+const CONTENT_MAX_BYTES = 1024 * 1024;
+
+// The text a change ADDS, per path: added lines of the diff against `base` for tracked files, the
+// whole file for untracked ones (or for every path when there is no base — an explicit `rsc risk
+// <paths>`). One whole-tree diff, filtered after: a pathspec per file overflows the argument list on a
+// large change, and a large change must not get LESS scrutiny than a small one. Unreadable or huge
+// files are skipped: the path row still scores them.
+export function changeText(rawRoot, base, paths) {
+  const root = resolveRoot(rawRoot);
+  const out = {};
+  const wanted = new Set(paths);
+  const readWhole = (p) => {
+    try {
+      const st = lstatSync(join(root, p));
+      if (st.isFile() && st.size <= CONTENT_MAX_BYTES) out[p] = readFileSync(join(root, p), 'utf8');
+    } catch { /* gone or unreadable */ }
+  };
+  if (!base) { paths.forEach(readWhole); return out; }
+  const tracked = new Set(nulList(git(root, 'ls-files', '-z')));
+  const diff = git(root, 'diff', '-U0', '--no-renames', '--no-color', base) || '';
+  let cur = null;
+  let header = false;
+  for (const line of diff.split('\n')) {
+    if (line.startsWith('diff --git ')) { header = true; cur = null; continue; }
+    if (header) {
+      // git quotes a path with a tab, newline or quote even under core.quotePath=false: "b/tab\tx.js".
+      const q = /^\+\+\+ "b\/((?:[^"\\]|\\.)*)"$/.exec(line);
+      const m = q ? [null, q[1].replace(/\\([tn"\\])/g, (_, c) => ({ t: '\t', n: '\n', '"': '"', '\\': '\\' })[c])]
+        : /^\+\+\+ b\/(.+?)\t?$/.exec(line);
+      if (m && wanted.has(m[1])) { cur = m[1]; out[cur] ||= ''; }
+      if (line.startsWith('@@')) header = false;
+      continue;
+    }
+    if (line.startsWith('@@')) continue;
+    if (cur && line.startsWith('+')) out[cur] += `${line.slice(1)}\n`;
+  }
+  paths.filter((p) => !tracked.has(p)).forEach(readWhole);
+  return out;
+}
+
+// Path rows and content rows together. A path scores the higher of the two; `content` lists each
+// content hit (path, class, the matched text) so the reader can see why. Lowered classes apply to
+// content rows too; floor classes stay at tier 2.
+export function classifyChange(paths, texts = {}, cfg = null) {
+  const byPath = classifyRisk(paths, cfg);
+  const lowered = byPath.lowered || [];
+  const content = [];
+  let { tier } = byPath;
+  const classes = { ...byPath.classes };
+  const rowTier = (cls) => (lowered.includes(cls) && !FLOOR_CLASSES.includes(cls) ? 1 : 2);
+  const docs = new RegExp(RISK_TABLE.find((r) => r.class === 'docs').pattern);
+  for (const [p, text] of Object.entries(texts)) {
+    if (!text) continue;
+    const codeText = docs.test(p) || NOT_CODE.test(p) ? '' : text.split('\n').filter((l) => !COMMENT_LINE.test(l)).join('\n');
+    for (const row of CONTENT_RISK) {
+      const m = new RegExp(row.pattern, row.scope === 'all' ? '' : 'i').exec(row.scope === 'all' ? text : codeText);
+      if (!m) continue;
+      const t = rowTier(row.class);
+      content.push({ path: p, class: row.class, match: m[0].slice(0, 60) });
+      if (t > classifyRisk([p], cfg).tier) classes[p] = row.class;
+      if (t > tier) tier = t;
+      break;
+    }
+  }
+  return { ...byPath, tier, classes, content };
+}
+
+export function classifyCandidate(rawRoot, candidate, cfg = null) {
+  const paths = Object.keys(candidate.files);
+  return classifyChange(paths, changeText(rawRoot, candidate.base, paths), cfg);
+}
+
 // How many lenses a tier requires (capped by an explicit config knob, floor 1).
 export function lensesRequired(tier, cfg = null) {
   const base = tier === 0 ? 0 : tier === 1 ? 1 : 3;
@@ -241,7 +337,8 @@ export function computeCandidate(rawRoot, cfg = null) {
 
   const names = new Set();
   for (const n of nulList(git(root, 'diff', '--name-only', '-z', base))) names.add(n);
-  for (const n of nulList(git(root, 'ls-files', '--others', '--exclude-standard', '-z'))) names.add(n);
+  // Untracked nested worktrees are other checkouts; committed paths under them are part of the change.
+  for (const n of nulList(git(root, 'ls-files', '--others', '--exclude-standard', '-z'))) if (!NESTED_WORKTREES.test(n)) names.add(n);
   for (const p of SELLO_STATE_PATHS) names.delete(p);
 
   const files = {};
@@ -266,7 +363,7 @@ export function computeCandidate(rawRoot, cfg = null) {
   // Untracked files never appear in numstat, so a fix hidden in a new file would
   // cost zero budget. Count their lines.
   for (const n of nulList(git(root, 'ls-files', '--others', '--exclude-standard', '-z'))) {
-    if (SELLO_STATE_PATHS.includes(n) || numstat[n] !== undefined) continue;
+    if (SELLO_STATE_PATHS.includes(n) || NESTED_WORKTREES.test(n) || numstat[n] !== undefined) continue;
     try {
       const st = lstatSync(join(root, n));
       if (st.isFile()) numstat[n] = readFileSync(join(root, n), 'utf8').split('\n').length;
@@ -357,25 +454,25 @@ export function isDeliveryCommand(command) {
 export const MESSAGES = {
   noReview: (tier) =>
     `sello: this change is risk tier ${tier} and has no review. ` +
-    `Recover: run the \`review\` skill (it freezes, reviews and approves the sello), or \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off\` to turn the sello off for this project.`,
+    `Recover: run the \`review\` skill (it freezes, reviews and approves the sello), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` to turn the sello off for this project.`,
   diverged: (paths) =>
     `sello: the change no longer matches what was reviewed — ${paths.slice(0, 5).join(', ')}${paths.length > 5 ? ` (+${paths.length - 5} more)` : ''} differ from the sealed bytes. ` +
-    `Recover: re-run the \`review\` skill on the divergence (only what changed is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill on the divergence (only what changed is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
   baseMoved: () =>
     `sello: the sello belongs to a different base — the branch was rebased/merged, or this sello was left over from a change that already shipped. Either way nothing has reviewed the current candidate. ` +
-    `Recover: re-run the \`review\` skill (only the divergence is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill (only the divergence is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
   corrupt: () =>
     `sello: the sello file is unreadable, which counts as "no review" — nothing is ever approved by default. ` +
-    `Recover: re-run the \`review\` skill to produce a fresh sello, or \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill to produce a fresh sello, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
   blocked: (reason) =>
     `sello: the review left this change BLOCKED${reason ? ` (${reason})` : ''}. ` +
-    `Recover: fix the blocking findings and re-run the \`review\` skill, or \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: fix the blocking findings and re-run the \`review\` skill, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
   notFrozen: () =>
     `sello: nothing is frozen yet, so there is nothing to approve. ` +
-    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello freeze\` first, then review, then approve.`,
+    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello freeze\` first, then review, then approve.`,
   staleFreeze: () =>
     `sello: the change mutated after it was frozen — approving now would seal bytes nobody reviewed. ` +
-    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello freeze\` again and re-review the divergence.`,
+    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello freeze\` again and re-review the divergence.`,
   overBudget: (spent, budget) =>
     `sello: the fix touched ~${spent} line(s) but the declared budget was ${budget} — an unexplained overrun is how over-engineering gets in. ` +
     `Recover: re-run with --justify "<why the budget was not enough>" to record the reason, or shrink the fix.`,
@@ -383,7 +480,7 @@ export const MESSAGES = {
     `sello: risk tier needs ${required} lens(es) but only ${given} were recorded — an incomplete panel must not seal silently. ` +
     `Recover: run the missing lenses and pass them all to --lenses, or accept the gap on purpose with --accept-partial-lenses.`,
   badRiskConfig:
-    'Recover: fix .rsc/sello-config.json — "raise" entries need a valid pattern under 200 chars; "lower" only accepts known classes and never "secrets" or "harness". `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc sello off` always works, even with a broken config.',
+    'Recover: fix .rsc/sello-config.json — "raise" entries need a valid pattern under 200 chars; "lower" only accepts known classes and never "secrets" or "harness". `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off` always works, even with a broken config.',
   riskUnknown: () =>
     `sello: the risk of this change could not be evaluated, so it is treated as risk tier 1 (never silently as 0). ` +
     `Recover: check that this is a git repository with a reachable trunk (origin/main, main, or "trunk" in .rsc/sello-config.json), then retry.`,
@@ -412,7 +509,7 @@ export function checkSello(rawRoot) {
   const paths = Object.keys(candidate.files);
   if (paths.length === 0) return { ok: true, code: 'clean' };
 
-  const risk = classifyRisk(paths, cfg);
+  const risk = classifyCandidate(root, candidate, cfg);
   // P7 first, before any sello state is consulted: a docs-only change must never
   // be blocked by a leftover sello from some other change.
   if (risk.tier === 0) return { ok: true, code: 'risk0' };

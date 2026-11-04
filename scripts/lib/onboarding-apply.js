@@ -93,7 +93,7 @@ function digestGovernedPaths(cwd, paths) {
 function recoveryCommand(plan, planId) {
   const record = plan.record;
   return [
-    'npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard',
+    'npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard',
     `--technical-level ${record.technicalLevel}`,
     `--project-kind ${record.projectKind}`,
     `--goal-base64 ${encodeGoal(record.goal)}`,
@@ -111,7 +111,7 @@ export function renderOnboardingDocuments(plan, planId) {
   const profile = `---\ntechnical_level: ${plan.record.technicalLevel}\nproject_kind: ${plan.record.projectKind}\n---\n\n# User profile\n\nGoal: ${plan.record.goal}\n`;
   const rows = plan.decisions.map((d) => `| ${d.kind} | ${d.id} | ${d.state} | ${d.reason} | ${d.reevaluateWhen.join('; ') || '—'} |`).join('\n');
   const installation = `# Accepted harness plan\n\nPlan id: \`${planId}\`\n\n| Kind | Component | Decision | Reason | Reevaluate when |\n| --- | --- | --- | --- | --- |\n${rows}\n`;
-  const decisions = `# Harness decisions\n\n- Accepted plan \`${planId}\`.\n- Project kind: ${plan.record.projectKind}.\n- SDD: ${plan.decisions.find((d) => d.id === 'sdd')?.state || 'selected through profile'}.\n`;
+  const decisions = `# Harness decisions\n\n- Accepted plan \`${planId}\`.\n- Project kind: ${plan.record.projectKind}.\n- SDD: ${plan.decisions.find((d) => d.id === 'asdd')?.state || 'selected through profile'}.\n`;
   return { profile, installation, decisions };
 }
 
@@ -502,7 +502,7 @@ export function harnessReadiness(cwd = process.cwd(), plan = {}) {
 //
 // Un recibo de una versión que no declaraba suelo queda exento por construcción (P3), igual que en
 // el instalador: aquí no se inventa un suelo que el plan aceptado no traía.
-const ONBOARD_ACTION = 'Run `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard` to record a plan for this harness (optional: what is installed keeps working).';
+const ONBOARD_ACTION = 'Run `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard` to record a plan for this harness (optional: what is installed keeps working).';
 const draftAction = (path) => `Complete ${path} with the \`constitution\` phase (tell your agent "constitution") before the first SDD feature; ratifying removes \`status: draft\`.`;
 
 export function onboardingReadiness(cwd = process.cwd(), manifest = readManifest(cwd)) {
@@ -516,7 +516,7 @@ export function onboardingReadiness(cwd = process.cwd(), manifest = readManifest
   if (!identical) {
     return {
       status: 'incomplete', missing: ['<onboarding receipt does not match its accepted plan id>'], pending,
-      action: 'Do not trust the receipt. Re-run `npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard` and accept a fresh plan.',
+      action: 'Do not trust the receipt. Re-run `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard` and accept a fresh plan.',
     };
   }
   const missing = harnessFloorGaps(cwd, receipt.plan);

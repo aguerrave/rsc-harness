@@ -1,6 +1,6 @@
 {
   "name": "@aguerrave/rsc",
-  "version": "3.7.5-aguerrave.1",
+  "version": "4.0.4-aguerrave.1",
   "description": "A guided harness builder that turns your goal into a minimal, verified AI-agent setup using strict best practices.",
   "type": "module",
   "bin": {

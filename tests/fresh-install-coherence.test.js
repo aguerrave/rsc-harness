@@ -50,12 +50,12 @@ function sessionStart(sessionId) {
 
 test('9c · the accept command pins the exact version that produced the plan', () => {
   const line = preview.split('\n').find((l) => l.startsWith('Accept exactly this plan:'));
-  assert.ok(line.includes('npx --yes --package=github:aguerrave/rsc-harness#v3.7.5-aguerrave.1 rsc onboard'), line);
+  assert.ok(line.includes('npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard'), line);
   assert.ok(!line.includes('@latest'), line);
 });
 
-test('9a · sdd is not shown as merely deferred while its skill is installed', () => {
-  const deferredSdd = preview.split('\n').find((l) => l.includes('workflow/sdd'));
+test('9a · asdd is not shown as merely deferred while its skill is installed', () => {
+  const deferredSdd = preview.split('\n').find((l) => l.includes('workflow/asdd'));
   assert.ok(deferredSdd, 'the deferred practice is still listed, so reassess keeps watching it');
   assert.match(deferredSdd, /skill is installed/i, deferredSdd);
   assert.match(deferredSdd, /practice/i, deferredSdd);
