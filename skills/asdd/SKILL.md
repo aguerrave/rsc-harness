@@ -51,17 +51,17 @@ Every spec answers four questions, and `spec:gate` refuses one dated 2026-11-03 
 
 ### The risk decides, never the agent
 
-`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc risk [--base <ref>] [paths…]` classifies a change by **what it touches and what it adds** (the sello's path table plus fixed content patterns — password hashing, session cookies, payments, schema changes, secrets — so auth code in `src/app.js` is still auth; works with the sello off): tier 0 docs/copy → no reviewer; tier 1 ordinary code → one fresh-context reviewer; tier 2 auth, billing, CI workflows, migrations, secrets, harness config → the three-refuter panel **and human approval**. An agent's approval never counts as a human's. **Enforced at push:** a tier-2 branch leaves the machine only with a spec linked to it that passes `rsc spec gate` **and** a panel recorded with `rsc review ledger panel <slug>/<task> --lenses correctness,security,tests`.
+`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk [--base <ref>] [paths…]` classifies a change by **what it touches and what it adds** (the sello's path table plus fixed content patterns — password hashing, session cookies, payments, schema changes, secrets — so auth code in `src/app.js` is still auth; works with the sello off): tier 0 docs/copy → no reviewer; tier 1 ordinary code → one fresh-context reviewer; tier 2 auth, billing, CI workflows, migrations, secrets, harness config → the three-refuter panel **and human approval**. An agent's approval never counts as a human's. **Enforced at push:** a tier-2 branch leaves the machine only with a spec linked to it that passes `rsc spec gate` **and** a panel recorded with `rsc review ledger panel <slug>/<task> --lenses correctness,security,tests`.
 
 ### The loop converges
 
-`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc review ledger` holds it to the rules that stopped Anthropic's 50-round reviews: `round <slug>/<task>` refuses a 4th round (rethink the approach or park the task), `record` marks a finding already raised as a `repeat` that is never raised again, `outcome` closes each finding as `fixed|false|intentional|irrelevant`, `stats` measures the noise. Flag the bug class, not the line; from round 2 re-review only the new diff.
+`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc review ledger` holds it to the rules that stopped Anthropic's 50-round reviews: `round <slug>/<task>` refuses a 4th round (rethink the approach or park the task), `record` marks a finding already raised as a `repeat` that is never raised again, `outcome` closes each finding as `fixed|false|intentional|irrelevant`, `stats` measures the noise. Flag the bug class, not the line; from round 2 re-review only the new diff.
 
 ### Park, don't block
 
 Tier 2, a contradiction with a recorded decision, a gap that would make the build unsafe, or no convergence in 3 rounds: the task goes to the **decision queue** (`## Decision queue` in `progress/<slug>.md`) with its evidence, and the agent **continues with the independent tasks**. The run never waits at 2 a.m. for an answer.
 
-Every entry carries a kind, one line each:
+Every entry carries a kind, one line each, in exactly this form (no bold, no other bullet):
 
 ```markdown
 - [blocking] Q3 — <what must be decided>, <evidence>, <task>
@@ -101,6 +101,8 @@ Autopilot does not stop the run for questions — it **parks**: real ambiguity, 
 - `clarify` records its assumptions (`suposición tomada`) → `review-after` entries.
 - `implement` parks `blocking` items and continues with the independent tasks.
 - `ship` lands by the rule below.
+
+**Never hand the turn back mid-run.** No "¿sigo?" / "shall I continue?": not between phases, not while reviewers run. Background reviewers are waited for (their completion notice, or run them in the foreground); ending the turn to wait ends a headless run. A later "continue" from the person resumes the run; it is **not** approval for a tier-2 merge, which needs an explicit yes to that merge.
 
 **Landing — there is always a legal path.** A remote exists → open a PR; self-merge only when `rsc risk` says tier 0-1, CI is green and no `blocking` entry is open; `review-after` entries go into the PR body. No remote → **park**: leave the branch committed, write the explainer, the open entries and the exact merge command for the human into `progress/<slug>.md`, and stop. Never merge locally around the branch guard: when `rsc main status` says `closed: true`, the guard denies it.
 

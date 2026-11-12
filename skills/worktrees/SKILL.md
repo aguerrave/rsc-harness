@@ -44,7 +44,7 @@ Both isolate history. A worktree also isolates the *filesystem*. Pick by what's 
 | You'll run two streams of work at once (see the parallel pattern) | **worktree** | Each stream gets its own directory; no stash-juggling, no checkout thrash. |
 | The current tree is dirty and the user wants both the WIP and the new work | **worktree** | Stash-and-switch risks losing the WIP; a worktree sidesteps the stash entirely. |
 | You're an agent that may keep the main session running elsewhere | **worktree** | Filesystem isolation is the whole point — the parent session keeps its files. |
-| **Another session is working in this same folder** (rsc says so on each message) | **worktree — mandatory** | Switching branches would change its files under it; rsc's branch guard denies the switch. Tell the person that `.worktrees/<branch>/` is where the project now runs. Off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc isolation off`. |
+| **Another session is working in this same folder** (rsc says so on each message) | **worktree — mandatory** | Switching branches would change its files under it; rsc's branch guard denies the switch. Tell the person that `.worktrees/<branch>/` is where the project now runs. Off for the project: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc isolation off`. |
 
 When in doubt, prefer a **worktree**: it is the strictly stronger isolation and the cost is one
 extra directory. The rest of this skill assumes a worktree; the branch path is the degenerate case
@@ -85,6 +85,12 @@ Run this in order. Each check prevents a class of "lost work" you can't easily u
 Only once the tree state is understood and the user's WIP is accounted for do you create anything.
 
 ## Creating the workspace — native first, git fallback
+
+**Orca-managed project:** use Orca's lifecycle instead; do not bypass its setup or teardown hooks
+with a native assistant worktree tool or plain Git. Follow [Orca setup and cleanup](references/orca.md).
+Declare `"worktreeManager": "orca"` in `.rsc.json` so cleanup retains these checkouts even on a
+machine without the Orca CLI. A shared worktree or parent/child relationship alone does not prove
+that two agent sessions belong to the same task; verify their identities before sharing changes.
 
 **Prefer the native worktree tool when it's available in your environment.** An `EnterWorktree`-style
 tool typically creates an isolated worktree (often under something like `.claude/worktrees/`, though
@@ -141,7 +147,7 @@ git switch -c feat/<slug> origin/<default-branch>
 
 ```bash
 # when the work has landed — the cleanup is the default, and it is a command, not a judgement call
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees reap
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc worktrees reap
 ```
 
 Either way, the contract is identical: **after this step, the cwd is an isolated branch off a clean
@@ -155,9 +161,9 @@ reading the situation, because "is this safe to delete?" is a deterministic ques
 answer costs a directory that cannot be brought back. Ask the command:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees        # every landed worktree, with a verdict and a reason
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees reap   # retire the ones that are safe with nothing to lose
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc worktrees reap <path>   # retire one the user has just confirmed
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc worktrees        # every landed worktree, with a verdict and a reason
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc worktrees reap   # retire the ones that are safe with nothing to lose
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc worktrees reap <path>   # retire one the user has just confirmed
 ```
 
 Three things have to hold before a worktree is retired without asking, and each fails towards

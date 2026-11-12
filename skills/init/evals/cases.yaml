@@ -50,8 +50,8 @@ should_not_trigger:
     why: "Concrete frontend build with a named framework — the nextjs stack skill. init would only ever recommend the nextjs skill, not scaffold the app itself."
 
   - prompt: "Review this auth code for security issues like injection and broken access control."
-    route_to: "secure-coding"
-    why: "A security-only review of existing code, no bootstrapping or profiling involved — squarely the secure-coding skill, not the front-door init."
+    route_to: "security-audit"
+    why: "A security-only review of existing code, no bootstrapping or profiling involved — squarely the security-audit skill, not the front-door init."
 
 capability:
   - scenario: "A non-technical founder says: 'I want to build an app to connect dog owners but I don't know where to start.' Show how init opens the engagement."
@@ -60,7 +60,7 @@ capability:
       - "Asks no second calibration question (no accompaniment/verbosity level); given a silent or unclear answer, records non-technical and speaks with plain words and analogies"
       - "Persists the profile to 02-DOCS/wiki/harness/user-profile.md and an append-only 02-DOCS/wiki/harness/decisions.md, and links both from a ## Knowledge map section in root CLAUDE.md (creating CLAUDE.md if absent, additive only)"
       - "Detects greenfield vs brownfield rather than assuming, and runs DISCOVER (goals, audience, constraints, surfaces) before recommending"
-      - "Recommends specific rsc skills matched to discovery (at minimum harness; nextjs/flutter + design if app surfaces justify it) and PRINTS the exact install commands (npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc add <skill> ...)"
+      - "Recommends specific rsc skills matched to discovery (at minimum harness; nextjs/flutter + design if app surfaces justify it) and PRINTS the exact install commands (npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc add <skill> ...)"
       - "Does NOT install anything itself and does NOT scaffold 01-TOOLS/02-DOCS — it hands off to the harness skill as the final step"
       - "Does not recommend speculative skills (e.g. building-agents) unless discovery justified them"
 

@@ -1,3 +1,4 @@
+import { pruneClaudeBootstrap } from './claude-lifecycle.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
 import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -45,13 +46,10 @@ export function hookWiringOf(entry) {
 // plus the legacy cat-form) from settings.json, across all events. User hooks and
 // other settings are preserved. Empty event arrays (and an empty hooks object) are
 // pruned so we don't leave noise behind.
+const ATTRIBUTION_MARKER = '.rsc/attribution-default';
+
 export function unwireHook(paths) {
-  // The bootstrap lives in the COMMITTED tree, so leaving it behind does not just orphan a file the
-  // way a stray `.rsc/` entry would — it leaves an executable in something the user pushes. Nothing
-  // else removes it: uninstall and purge only ever knew about `.rsc/`.
-  try {
-    rmSync(join(paths.projectRoot, '.claude', 'rsc-bootstrap.mjs'), { force: true });
-  } catch { /* never let cleanup be the thing that fails */ }
+  const finish = (removed) => { pruneClaudeBootstrap(paths.projectRoot); return removed; };
 
   // The shadow CLAUDE.md exists only to keep the hook from being doubled by a natively-read
   // AGENTS.md. Unwiring the hook removes the reason for it. Only ever takes back an untouched one.
@@ -59,10 +57,21 @@ export function unwireHook(paths) {
   const removed = shadow ? [shadow] : [];
 
   const file = paths.hookTarget;
-  if (!existsSync(file)) return removed;
+  if (!existsSync(file)) return finish(removed);
   let settings;
-  try { settings = JSON.parse(readFileSync(file, 'utf8')); } catch { return removed; }
-  if (!settings.hooks) return removed;
+  try { settings = JSON.parse(readFileSync(file, 'utf8')); } catch { return finish(removed); }
+  // wireHook's attribution default goes back out with it — only when wireHook wrote it (the marker)
+  // and it is still untouched. The same value set by the person before rsc stays theirs.
+  const marker = join(paths.projectRoot, ATTRIBUTION_MARKER);
+  const a = settings.attribution;
+  const ours = existsSync(marker) && a && Object.keys(a).length === 2 && a.commit === '' && a.pr === '';
+  if (ours) delete settings.attribution;
+  try { rmSync(marker, { force: true }); } catch { /* cleanup never fails the uninstall */ }
+  if (!settings.hooks) {
+    if (!ours) return finish(removed);
+    writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');
+    return finish([...removed, file]);
+  }
   for (const event of Object.keys(settings.hooks)) {
     settings.hooks[event] = (settings.hooks[event] || []).filter((e) => {
       const s = hookWiringOf(e);
@@ -72,7 +81,7 @@ export function unwireHook(paths) {
   }
   if (Object.keys(settings.hooks).length === 0) delete settings.hooks;
   writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');
-  return [...removed, file];
+  return finish([...removed, file]);
 }
 
 // SessionStart runs a project-local session-start.mjs via `node`: it prints
@@ -121,6 +130,7 @@ export function wireHook(paths, sourceMd, policy = {}) {
   // Same reason: session-start imports the reaper for the landed-worktree sweep, so it travels as a
   // sibling too. Missing it does not break startup — the sweep is wrapped — it just goes silent.
   copyFileSync(join(HERE, 'worktree-reaper.mjs'), join(paths.projectRoot, '.rsc', 'worktree-reaper.mjs'));
+  copyFileSync(join(HERE, 'risk-policy.mjs'), join(paths.projectRoot, '.rsc', 'risk-policy.mjs'));
   // session-start imports the shared update check, so it travels as a sibling too.
   copyFileSync(join(HERE, 'auto-update.mjs'), join(paths.projectRoot, '.rsc', 'auto-update.mjs'));
   // session-start imports the optional MemSlop offer lazily, so it travels as a sibling too.
@@ -318,6 +328,15 @@ export function wireHook(paths, sourceMd, policy = {}) {
     rmSync(join(paths.projectRoot, '.rsc', 'danger-guard.mjs'), { force: true });
   }
   if (!settings.hooks.PreToolUse.length) delete settings.hooks.PreToolUse;
+
+  // Authorship is the responsible person, never an AI trailer (constitution P8). Claude Code's own
+  // default adds a Co-Authored-By line to commits and a footer to PRs, and the 4.0.4 run had to rebase
+  // them out by hand. Empty strings hide both. A choice already in the file is the person's and stays.
+  if (settings.attribution === undefined && settings.includeCoAuthoredBy === undefined) {
+    settings.attribution = { commit: '', pr: '' };
+    mkdirSync(join(paths.projectRoot, '.rsc'), { recursive: true });
+    writeFileSync(join(paths.projectRoot, ATTRIBUTION_MARKER), '');
+  }
 
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, JSON.stringify(settings, null, 2) + '\n');

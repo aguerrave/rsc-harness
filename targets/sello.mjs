@@ -28,6 +28,8 @@ import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { chooseTrunk, policyRules, matchPolicyRules, readPolicy, mergePolicyConfig, policyRoot, changeDetails } from './risk-policy.mjs';
+export { readPolicy, mergePolicyConfig, policyRoot, changeDetails } from './risk-policy.mjs';
 
 // ---------------------------------------------------------------- paths & config
 
@@ -127,7 +129,7 @@ export const RISK_TABLE = [
   { class: 'ci', tier: 2, pattern: '(^|/)\\.github/workflows/|(^|/)\\.gitlab-ci\\.yml$|(^|/)Jenkinsfile$' },
   { class: 'migrations', tier: 2, pattern: '(^|/)migrations?/' },
   { class: 'billing', tier: 2, pattern: '(^|/)(billing|payments?|checkout|stripe)(/|\\.|-)' },
-  { class: 'harness', tier: 2, pattern: '(^|/)\\.rsc/|(^|/)\\.claude/|(^|/)CLAUDE\\.md$' },
+  { class: 'harness', tier: 2, pattern: '(^|/)\\.rsc/|(^|/)\\.rsc-risk\\.json$|(^|/)\\.claude/|(^|/)CLAUDE\\.md$' },
 ];
 export const FLOOR_CLASSES = ['secrets', 'harness'];
 export const DEFAULT_TIER = 1;
@@ -264,7 +266,7 @@ export function changeText(rawRoot, base, paths) {
 // Path rows and content rows together. A path scores the higher of the two; `content` lists each
 // content hit (path, class, the matched text) so the reader can see why. Lowered classes apply to
 // content rows too; floor classes stay at tier 2.
-export function classifyChange(paths, texts = {}, cfg = null) {
+export function classifyChange(paths, texts = {}, cfg = null, details = {}) {
   const byPath = classifyRisk(paths, cfg);
   const lowered = byPath.lowered || [];
   const content = [];
@@ -285,12 +287,39 @@ export function classifyChange(paths, texts = {}, cfg = null) {
       break;
     }
   }
-  return { ...byPath, tier, classes, content };
+  const rules = [];
+  const policyTiers = {};
+  let configError = byPath.configError || cfg?.policyError || null;
+  try {
+    const configured = policyRules(cfg);
+    const matched = matchPolicyRules(configured, paths, details, texts, cfg);
+    for (const p of paths) {
+      const detail = details[p] || { added: (texts[p] || '').split('\n') };
+      const hits = (matched[p] || []).map(i => configured[i]);
+      if (!hits.length) continue;
+      const best = hits.reduce((a,b) => a.tier >= b.tier ? a : b);
+      const intrinsic = classifyRisk([p], cfg);
+      const contentTier = content.filter(h => h.path === p).reduce((n,h) => Math.max(n,rowTier(h.class)),0);
+      const floor = intrinsic.classes[p] === 'default' ? 0 : intrinsic.tier;
+      const effective = Math.max(best.tier, floor, contentTier);
+      if (effective === best.tier) classes[p] = best.class;
+      rules.push(...hits.map(r => ({ path:p, class:r.class, tier:r.tier, because:r.because || r.class })));
+      policyTiers[p] = effective;
+    }
+    // Recompute so an explicit level-zero rule can replace the ordinary-code default.
+    tier = paths.reduce((n,p) => Math.max(n, policyTiers[p] ?? Math.max(classifyRisk([p],cfg).tier, ...content.filter(h=>h.path===p).map(h=>rowTier(h.class)))),0);
+  } catch (e) { configError = `${e.message}. Recover: correct risk.rules in .rsc-risk.json.`; }
+  if (configError) tier = Math.max(tier, 2);
+  return { ...byPath, tier, classes, content, rules, configError };
+
 }
 
 export function classifyCandidate(rawRoot, candidate, cfg = null) {
   const paths = Object.keys(candidate.files);
-  return classifyChange(paths, changeText(rawRoot, candidate.base, paths), cfg);
+  const root = resolveRoot(rawRoot);
+  const policy = readPolicy(root, { localConfig: cfg });
+  const effective = mergePolicyConfig(cfg, policy);
+  return classifyChange(paths, changeText(root, candidate.base, paths), effective, changeDetails(root, candidate.base, paths));
 }
 
 // How many lenses a tier requires (capped by an explicit config knob, floor 1).
@@ -315,11 +344,7 @@ function git(root, ...args) {
 const nulList = (out) => (out || '').split('\0').filter(Boolean);
 
 export function trunkRef(root, cfg = null) {
-  const configured = typeof cfg?.trunk === 'string' ? [cfg.trunk, `origin/${cfg.trunk}`] : [];
-  for (const ref of [...configured, 'origin/main', 'origin/master', 'main', 'master']) {
-    if (git(root, 'rev-parse', '--verify', '--quiet', ref) !== null) return ref;
-  }
-  return null;
+  return chooseTrunk(root, cfg);
 }
 
 // The candidate is the change vs the trunk merge-base: every path that differs
@@ -329,7 +354,7 @@ export function trunkRef(root, cfg = null) {
 // read, and a link to a FIFO would hang the hook).
 export function computeCandidate(rawRoot, cfg = null) {
   const root = resolveRoot(rawRoot);
-  const trunk = trunkRef(root, cfg);
+  const trunk = readPolicy(root, { localConfig: cfg }).trunk;
   if (!trunk) return null;
   const head = git(root, 'rev-parse', 'HEAD');
   const base = head ? (git(root, 'merge-base', 'HEAD', trunk) || '').trim() : null;
@@ -454,25 +479,25 @@ export function isDeliveryCommand(command) {
 export const MESSAGES = {
   noReview: (tier) =>
     `sello: this change is risk tier ${tier} and has no review. ` +
-    `Recover: run the \`review\` skill (it freezes, reviews and approves the sello), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` to turn the sello off for this project.`,
+    `Recover: run the \`review\` skill (it freezes, reviews and approves the sello), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off\` to turn the sello off for this project.`,
   diverged: (paths) =>
     `sello: the change no longer matches what was reviewed — ${paths.slice(0, 5).join(', ')}${paths.length > 5 ? ` (+${paths.length - 5} more)` : ''} differ from the sealed bytes. ` +
-    `Recover: re-run the \`review\` skill on the divergence (only what changed is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill on the divergence (only what changed is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off\` for this project.`,
   baseMoved: () =>
     `sello: the sello belongs to a different base — the branch was rebased/merged, or this sello was left over from a change that already shipped. Either way nothing has reviewed the current candidate. ` +
-    `Recover: re-run the \`review\` skill (only the divergence is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill (only the divergence is re-reviewed), or \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off\` for this project.`,
   corrupt: () =>
     `sello: the sello file is unreadable, which counts as "no review" — nothing is ever approved by default. ` +
-    `Recover: re-run the \`review\` skill to produce a fresh sello, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: re-run the \`review\` skill to produce a fresh sello, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off\` for this project.`,
   blocked: (reason) =>
     `sello: the review left this change BLOCKED${reason ? ` (${reason})` : ''}. ` +
-    `Recover: fix the blocking findings and re-run the \`review\` skill, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off\` for this project.`,
+    `Recover: fix the blocking findings and re-run the \`review\` skill, or \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off\` for this project.`,
   notFrozen: () =>
     `sello: nothing is frozen yet, so there is nothing to approve. ` +
-    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello freeze\` first, then review, then approve.`,
+    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello freeze\` first, then review, then approve.`,
   staleFreeze: () =>
     `sello: the change mutated after it was frozen — approving now would seal bytes nobody reviewed. ` +
-    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello freeze\` again and re-review the divergence.`,
+    `Recover: run \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello freeze\` again and re-review the divergence.`,
   overBudget: (spent, budget) =>
     `sello: the fix touched ~${spent} line(s) but the declared budget was ${budget} — an unexplained overrun is how over-engineering gets in. ` +
     `Recover: re-run with --justify "<why the budget was not enough>" to record the reason, or shrink the fix.`,
@@ -480,7 +505,7 @@ export const MESSAGES = {
     `sello: risk tier needs ${required} lens(es) but only ${given} were recorded — an incomplete panel must not seal silently. ` +
     `Recover: run the missing lenses and pass them all to --lenses, or accept the gap on purpose with --accept-partial-lenses.`,
   badRiskConfig:
-    'Recover: fix .rsc/sello-config.json — "raise" entries need a valid pattern under 200 chars; "lower" only accepts known classes and never "secrets" or "harness". `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc sello off` always works, even with a broken config.',
+    'Recover: fix .rsc/sello-config.json — "raise" entries need a valid pattern under 200 chars; "lower" only accepts known classes and never "secrets" or "harness". `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off` always works, even with a broken config.',
   riskUnknown: () =>
     `sello: the risk of this change could not be evaluated, so it is treated as risk tier 1 (never silently as 0). ` +
     `Recover: check that this is a git repository with a reachable trunk (origin/main, main, or "trunk" in .rsc/sello-config.json), then retry.`,

@@ -8,14 +8,14 @@
 
 [![npm](https://img.shields.io/npm/v/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=npm)](https://www.npmjs.com/package/@ericrisco/rsc)
 [![downloads](https://img.shields.io/npm/dm/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=downloads)](https://www.npmjs.com/package/@ericrisco/rsc)
-[![skills](https://img.shields.io/badge/skills-277-63d68a?labelColor=12161c)](#the-catalog)
+[![skills](https://img.shields.io/badge/skills-276-63d68a?labelColor=12161c)](#the-catalog)
 [![license](https://img.shields.io/badge/license-MIT-63d68a?labelColor=12161c)](LICENSE)
 [![stars](https://img.shields.io/github/stars/ericrisco/rsc-harness?color=63d68a&labelColor=12161c)](https://github.com/ericrisco/rsc-harness/stargazers)
 
 Keep your project knowledge, skills and working rules together across the assistants you already use.
 Start with your goal. Review what rsc proposes to install. Accept the plan before it changes your project.
 
-**MIT licensed · project-local setup · 18 assistant targets**
+**MIT licensed · project-local setup · 19 assistant targets**
 
 Give this URL to your agent and paste the request in the chat:
 
@@ -27,7 +27,7 @@ Ask me the onboarding questions, show me the exact plan, and wait for my accepta
 Or start from the terminal:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard
 ```
 
 </div>
@@ -71,7 +71,7 @@ The decisions your agent needs should have a place to live outside the chat.
 | --- | --- |
 | **Knowledge** | A local `02-DOCS/` wiki for project context, decisions and evidence. |
 | **Tools** | A `01-TOOLS/` convention for documenting real connections and their checks. |
-| **Skills** | A selection from 277 available skills, loaded progressively when relevant. |
+| **Skills** | A selection from 276 available skills, loaded progressively when relevant. |
 | **Controls** | Working rules and provider-specific hooks, with explicit support limits. |
 
 The mechanism is practical: keep the decision, make it discoverable, and have the next task consult it.
@@ -104,7 +104,7 @@ individual skill into an existing rsc project rather than adopt a whole workflow
 ## Install in one minute
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard
 ```
 
 The first run asks **one** question about conversation (technical, or with analogies), then what the
@@ -117,10 +117,16 @@ Everything stays **in the project**. The real skill files are written once to `.
 each assistant gets a symlink back to that shared base, so picking several duplicates nothing. Skills
 load progressively: only their description is paid for until a task needs them.
 
-Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1`.
+Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v4.1.5-aguerrave.1`.
+
+When an executable `rsc` is already on PATH, install and sync write operational skill and
+command instructions using that installed CLI. This also applies to unversioned commands
+suggested by hooks. Explicit versions such as `@4.1.1` and `@latest` keep their meaning.
+No execution permission is added for this choice. If the CLI is removed, run sync using the
+version declared in `.rsc.json` to restore the `npx` instructions.
 
 > **Run it inside the project you are equipping, not inside a clone of this repo.** The catalog's own
-> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc` from within a clone resolves to
+> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc` from within a clone resolves to
 > the local bin and fails with `sh: rsc: command not found`. Working on the catalog itself? Use
 > `node scripts/rsc.js …` or `npm link`.
 
@@ -130,7 +136,7 @@ If you are an AI coding agent and your user asked you to **install rsc, this har
 skills**, run this in the root of the project they are equipping:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard
 ```
 
 It asks the user how technical to talk, the project kind and the goal **before it writes anything**,
@@ -143,11 +149,11 @@ tell the user before accepting.
 Non-interactive, with the answers collected first:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex
 # After the user accepts the printed plan:
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex --accept-plan PRINTED_SHA256_ID
 ```
@@ -235,6 +241,12 @@ project. rsc handles four things by default:
 | **The agent picks the method** | FTD for simple changes, ASDD for complex ones. The agent decides and says why. | Ask for the other lane |
 | **Knowledge reaches everyone** | `01-TOOLS/`, `02-DOCS/wiki/` and `02-DOCS/attachments/` travel through one exchange branch, `rsc/knowledge`, and reach `main` inside your normal pull requests. | `rsc knowledge-sync off` |
 
+**Orca worktrees.** Set `"worktreeManager": "orca"` in `.rsc.json` to retain externally managed
+checkouts even when Orca is unavailable. rsc also recognises a matching Orca CLI response, and never
+removes these checkouts through plain Git. [Setup and cleanup](skills/worktrees/references/orca.md)
+use the pinned harness version and Orca's lifecycle hooks; workspace lineage does not silence
+warnings about unverified concurrent sessions.
+
 **How it knows a project is complex.** A hook counts what anyone can check: a CI setup, a deployment
 file (`Dockerfile`, `vercel.json`, `fly.toml`…) or at least two people in the last 50 commits. The
 answer you gave at install always wins over this detection.
@@ -275,7 +287,7 @@ Whoever clones runs **one command** and gets the same harness, at the version th
 its `.rsc.json` as `catalogVersion`:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc@<catalogVersion> sync
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc@<catalogVersion> sync
 ```
 
 You do not have to know that. Open the project and the assistant tells you, in the first message,
@@ -367,17 +379,31 @@ The wizard asks which ones; `--target a,b` does it non-interactively.
 | `amp` | `.amp/rsc/<id>/` → symlink | block in `AGENTS.md` |
 | `opencode` | `.opencode/rsc/<id>/` → symlink | block in `AGENTS.md` |
 | `deepseek` | `.dsh/skills/<id>/` → symlink (discovered natively) | block in `AGENTS.md` |
+| `pi` | `.pi/skills/<id>/` → symlink (copy on Windows; discovered natively) | block in Pi's selected project context file |
 | `jules` | `.jules/rsc/<id>/` → symlink | block in `AGENTS.md` |
 | `junie` | `.junie/rsc/<id>/` → symlink | block in `.junie/guidelines.md` |
 | `kiro` | `.kiro/rsc/<id>/` → symlink | doc in `.kiro/steering/rsc-suggest.md` |
 | `aider` | `.aider/rsc/<id>/` → symlink | block in `CONVENTIONS.md` |
 
 > `codex`, `zed`, `amp`, `opencode`, `deepseek` and `jules` share one root `AGENTS.md`; the block is
-> written once.
+> written once. Pi shares it when that is the context file its native loader selects.
 
 > **DeepSeek Harness** (`dsh`) has no project-level hooks, so once per machine rsc adds one marked
 > block to `~/.dsh/cordis.patch.yml` that runs the hooks of whichever project the session is in.
 > Restart dsh once after the first install; delete the block to turn it off.
+
+> **Pi:** select `--target pi` during onboarding, then run `/reload` in Pi to discover the
+> installed skills. Invoke one explicitly with `/skill:<id>`. Pi loads project resources after
+> project trust is granted; rsc preserves your `.pi/settings.json` and extensions.
+> This target uses Pi's [native skills and context files](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/configuration.md).
+> Its [context loader](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/src/core/resource-loader.ts)
+> selects the first readable file in this order: `AGENTS.override.md`, `AGENTS.md`, `AGENTS.MD`,
+> `CLAUDE.md`, `CLAUDE.MD`. rsc adds its marked block to that file, preserving your instructions;
+> it creates `AGENTS.md` only when none exists. If a new override hides the block, doctor reports
+> the missing wiring and sync writes the block into the selected file.
+> It does not install a custom extension, subagents, automatic session-memory hooks, or tool guards.
+> Pi has no built-in subagents; skills that require independent reviewers need an external review.
+> The instructions request an update check on the first turn, as for other targets without a wired session hook.
 
 | Targets | Stack agents | Native commands | Session memory |
 | --- | --- | --- | --- |
@@ -386,6 +412,7 @@ The wizard asks which ones; `--target a,b` does it non-interactively.
 | Cursor desktop | yes | yes | assisted |
 | Gemini CLI, OpenCode | yes | yes | full |
 | DeepSeek Harness | unsupported | unsupported | full (machine bridge) |
+| Pi | unsupported | native `/skill:<id>` (no generated command files) | unsupported |
 | GitHub Copilot | yes | yes | unsupported |
 | Junie, Kiro | yes | unsupported | unsupported |
 | Windsurf, Cline, Roo | unsupported | yes | unsupported |
@@ -401,7 +428,7 @@ file, and `rsc agents reset <name>` takes rsc's version back after a backup.
 
 ## CLI
 
-`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1`),
+`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v4.1.5-aguerrave.1`),
 the bare `rsc` answers `command not found`: type the `npx` form.
 
 ```bash
@@ -452,7 +479,7 @@ follows. **Onboarding readiness** says whether onboarding is finished (`ready`, 
 ### Something's off? `rsc repair`
 
 If the harness is wired for the wrong assistant, a hook runs several times, or skills appear that you
-never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc repair`. It shows what it found before touching
+never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc repair`. It shows what it found before touching
 anything, keeps a recoverable copy, and never touches skills or agents you wrote by hand. Add
 `--dry-run` to see the pass without writing.
 
@@ -460,7 +487,7 @@ anything, keeps a recoverable copy, and never touches skills or agents you wrote
 
 **rsc updates itself.** At session start it checks npm. A release in the same major installs in the
 background and takes effect next session; a new major asks first. To turn it off, create
-`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 && rsc sync`. Every sync
+`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 && rsc sync`. Every sync
 snapshots the project first, so `rsc restore latest` undoes a bad update.
 
 ---
@@ -481,7 +508,7 @@ and a video sales letter (VSL). It is a curated selection of ordinary rsc skills
 In an existing rsc project, this command adds the core selection:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.0.4-aguerrave.1 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
 ```
 
 Use `design` and your web-stack skill to build the page; use `remotion-video` or your editor to produce
@@ -508,7 +535,7 @@ price, customer testimonial, deadline or guarantee is needed to explain a useful
 
 ## The catalog
 
-277 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
+276 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
 its own when a task matches.
 
 ### 🧭 Core & control plane
@@ -597,7 +624,7 @@ whether, what and which platform.
 
 ### 🔒 Ship & operate: quality & security
 
-[code-review](skills/code-review/) · [security-scan](skills/security-scan/) · [secure-coding](skills/secure-coding/) · [testing-py](skills/testing-py/) · [testing-web](skills/testing-web/) · [testing-go](skills/testing-go/) · [e2e-testing](skills/e2e-testing/) · [accessibility](skills/accessibility/) · [performance](skills/performance/) · [error-handling](skills/error-handling/) · [observability](skills/observability/)
+[code-review](skills/code-review/) · [security-audit](skills/security-audit/) · [testing-py](skills/testing-py/) · [testing-web](skills/testing-web/) · [testing-go](skills/testing-go/) · [e2e-testing](skills/e2e-testing/) · [accessibility](skills/accessibility/) · [performance](skills/performance/) · [error-handling](skills/error-handling/) · [observability](skills/observability/)
 
 ### 🌀 Motion & interface craft
 
@@ -674,12 +701,75 @@ Most of this catalog is written here. These are not, and they keep their author'
 Adapted, not mirrored: each carries rsc frontmatter, routing evals and hand-offs to its siblings. The
 craft bar in them is the original author's.
 
-## License
+### Shared risk policy and external branch checks
 
-MIT. See [LICENSE](LICENSE).
+Commit `.rsc-risk.json` at the workspace root to share risk rules across clones and submodules:
+
+```json
+{
+  "version": 1,
+  "trunks": ["develop", "integration"],
+  "repositories": { "Catman": { "trunks": ["develop"] } },
+  "testRepos": ["CatmanTest"],
+  "rules": [
+    { "class": "schema", "tier": 2, "path": "\\.Table\\.al$",
+      "removed": "^\\s*field\\s*\\(", "productionOnly": true,
+      "because": "Removing a field changes the stored schema." },
+    { "class": "api", "tier": 2, "path": "\\.Page\\.al$",
+      "contains": "PageType\\s*=\\s*API", "removed": "APIVersion",
+      "because": "The API contract changes." },
+    { "class": "platform", "tier": 2, "path": "(^|/)app\\.json$",
+      "jsonKeys": ["dependencies", "idRanges", "runtime"],
+      "because": "Dependencies or platform requirements change." },
+    { "class": "editor", "tier": 0, "path": "^\\.vscode/settings\\.json$",
+      "because": "Editor preferences only." }
+  ]
+}
+```
+
+Rules can also use `added`, `deleted: true` and `repos: ["relative/path"]`. Conditions in one rule
+must all match. `contains` reads the file before and after the change; `added` and `removed` read
+changed lines with whitespace differences ignored. JSON keys are top-level keys. Renames are
+checked as both old and new paths. Matching rules take their highest tier; explicit zero replaces
+ordinary-code defaults, but built-in risk classes and the secrets/harness floors still apply.
+Patterns are case-insensitive and limited to 200 characters; repeated groups, lookarounds and
+backreferences are rejected. Content lines over 2,000 characters are skipped. Rule evaluation has
+a hard one-second timeout and an 8 MiB input budget: exceeding either reports an error at tier 2.
+At most 64 rules and 16 trunk candidates are supported.
+
+`rsc risk` and the push gate use the policy **from the workspace trunk**, including repository
+settings and exemptions. A proposed policy cannot relax its own outgoing branch. A policy first
+added on a feature branch stays inactive until it lands. Use `rsc risk --policy-preview` to inspect
+the proposed policy explicitly; the output identifies its source. Local `.rsc/sello-config.json`
+remains available for existing settings and bootstrap. Initial trunk discovery uses `origin/HEAD`,
+then `main`, `master` or `develop`; for another name, set the remote HEAD or the local `trunk` first.
+Once a trusted policy exists, its trunk candidates select the nearest branch by commits ahead.
+`rsc doctor` reports an installed ASDD gate that cannot find a trunk.
+
+Specs accept `branches: [feature/a, fix/b]` or a YAML block list, as well as the existing `branch:`.
+An FTD under `02-DOCS/wiki/ftd/` can link its branch to a spec with `spec: <slug>`. Optional trusted
+`asddGate` settings are `require: "spec"` (default: full panel), `exemptBranches: ["^chore/back-merge-"]`
+and `cherryPickSuffix: "-master"`. These settings take effect after the policy reaches the trunk.
+
+External PR tools can run `rsc spec gate --branch-check --repo <directory> [--branch <name>]` from
+the workspace, or run the same command inside a submodule. Exit `0` means allowed, `2` means denied,
+and `1` means the check could not run. `--branch` evaluates that branch even when it is not checked
+out. The hook resolves ordinary `git -C`, directory changes, shell `-c`/`eval` wrappers and `gh pr`
+commands. Arbitrary scripts, aliases and shell functions need the explicit CLI check; their bodies
+cannot be inferred from the shell invocation. This is a local review aid, not a remote-server policy.
+
+Sync preserves opt-outs declared by teammates in `.rsc.json`. Existing local markers remain local
+choices; doctor reports differences. To explicitly re-arm a team gate, remove its local marker and
+run an explicit install, which records the new decision; sync alone does not erase the declaration.
 
 ## iDempiere (aguerrave)
 
 - [Implantación](skills/idempiere-implementation/)
 - [Plugins](skills/idempiere-plugins/)
 - [Despliegue](skills/idempiere-deployment/)
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+*Made in Andorra*
