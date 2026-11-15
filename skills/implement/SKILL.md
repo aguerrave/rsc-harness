@@ -42,7 +42,7 @@ back — you do not write feature code anyway.
    `sdd.registry_path`. Do not choose a different test command from memory while config exists.
 3. **Read the skill registry.** Open `.rsc/skill-registry.json` if present. Select only the
    relevant stack/process skills for this task, then digest them into compact rules. If the
-   registry is missing, run or recommend `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc registry refresh` and record the fallback.
+   registry is missing, run or recommend `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc registry refresh` and record the fallback.
 4. **Read the register.** Open `02-DOCS/wiki/harness/user-profile.md` and read `technical_level`.
    It picks technical terms or plain words with analogies at each checkpoint (see "Checkpoints"
    below). No profile yet → use analogies, and ask before any irreversible step.
@@ -98,7 +98,7 @@ invent a looser one; done means that test is green and the traced acceptance cri
 ### b) Risk — computed, never chosen
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk --base <task base sha> --json
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk --base <task base sha> --json
 ```
 
 It reads the task's **actual** diff through the sello's path table (sello on or off) and prints the
@@ -108,7 +108,7 @@ task's risk forecast. **The agent never picks or argues down its own tier.**
 
 ### c) Review scaled by tier — fresh context
 
-Tier 1 or 2: first call `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc review ledger round <slug>/<task>` — before **every**
+Tier 1 or 2: first call `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review ledger round <slug>/<task>` — before **every**
 review of the task, this first one included. Round 1 is the task's first review, not its first fix.
 
 | Tier | Review |
@@ -126,10 +126,10 @@ finding.
 
 ### d) Consolidate, verify, record
 
-Exactly as `../review/SKILL.md` → *Consolidate, then verify*: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc review consolidate
+Exactly as `../review/SKILL.md` → *Consolidate, then verify*: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review consolidate
 <reports…>` (tier 1 too: it applies the downgrade), then `finding-verifier` on every finding it
 marks `verify` — every blocker and should-fix. Findings use the JSON shape in
-`references/per-task-review.md`. Then `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc review ledger record <findings.json>`. A
+`references/per-task-review.md`. Then `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review ledger record <findings.json> --task <slug>/<task>`. A
 finding the ledger already holds comes back `repeat`: **never raise it again**. When a finding
 closes, record its outcome: `review ledger outcome <id> fixed|false|intentional|irrelevant|parked`
 (`parked` = its task went to the decision queue). The ledger is local (`.rsc/`, not committed);
@@ -153,6 +153,7 @@ A control that did not run is reported as **not run**, never as passed — and t
 Each re-review opens with another `review ledger round <slug>/<task>` (step c). It exits non-zero
 on the 4th round with the action to take; obey it (step g).
 
+Follow [criterion evidence and rounds](references/per-task-review.md#criterion-evidence-and-rounds) for panel accounting, criterion/lens metadata and advisory handling.
 - **From round 2, re-review only the new diff** (BASE = the previous round's head).
 - **Fix the bug class, not the line**: name the class and fix every instance in the task's scope.
 - **Never repeat a finding** — the ledger marks repeats; drop them.

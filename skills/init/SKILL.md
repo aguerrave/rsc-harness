@@ -116,7 +116,7 @@ Record to `02-DOCS/wiki/harness/` as you go. Questionnaires for both cases →
 ### Phase 3 — INSTALL
 
 Map what you learned to skills. **You have a terminal — install them yourself** after a one-word
-confirm: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc add <ids>`. Only if you genuinely cannot run a shell, hand the exact
+confirm: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc add <ids>`. Only if you genuinely cannot run a shell, hand the exact
 command over for another tab. Never install without the confirm; it changes their environment.
 
 | Need | Skills |
@@ -137,7 +137,7 @@ cargan al arrancar la sesión."* Full skill map and sample printouts → `refere
 
 ### Phase 4 — GROUND
 
-Five checks once the skills are in. The SessionStart hook nudges each of these too; doing them here
+Six checks once the skills are in. The SessionStart hook nudges each of these too; doing them here
 means the user starts clean.
 
 1. **Version control.** No `.git/` → offer `git init`; the SDD chain and the ship guard assume it.
@@ -145,7 +145,7 @@ means the user starts clean.
 2. **Context7 (live library docs).** For software, offer to wire it once:
    `claude mcp add --transport http context7 https://mcp.context7.com/mcp`. It gives version-correct
    docs instead of guessing from memory. Declined → `.rsc/.no-context7`.
-3. **Skill audit.** Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc audit`. It inventories what is installed here and on the
+3. **Skill audit.** Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc audit`. It inventories what is installed here and on the
    machine and flags overlap or skills with no footprint, so the project starts with the right set
    rather than a pile. Summarize it in their register.
 4. **Tell them about the danger guard.** A `technical_level` of `non-technical` or `mixed` (and the
@@ -163,6 +163,12 @@ means the user starts clean.
 
    Yes, or no clear answer → do nothing; it is on. No → create `.rsc/.no-auto-update`: every
    release then asks. It is a project switch, recorded in `.rsc.json` on the next sync.
+6. **Emoji.** Ask once, yes by default (`onboard` asks the same, and takes `--emoji <on|off>`):
+   > *"¿Quieres emoji en las respuestas, los commits y los mensajes de rsc? (sí | no; por defecto sí)"*
+
+   Yes, or no clear answer → do nothing; it is on. No → run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc emoji off`: it writes
+   `.rsc/.no-emoji`, and from the next session no reply, commit or rsc message carries an emoji
+   (`emoji on` undoes it). It is a project switch, recorded in `.rsc.json` on the next sync.
 
 ### Phase 5 — HANDOFF
 

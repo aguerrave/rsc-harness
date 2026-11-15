@@ -18,10 +18,10 @@ const nul = (out) => (out || '').split('\0').filter(Boolean);
 // merge-base with `--base`, or with the trunk when none is given.
 export function changedPaths(root, base = null, cfg = readEffectiveConfig(root)) {
   const ref = base || trunkRef(root, cfg);
-  if (!ref) return { ok: false, message: 'rsc: no base to compare against. Pass --base <ref> or the paths themselves: npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk <path…>' };
+  if (!ref) return { ok: false, message: 'rsc: no base to compare against. Pass --base <ref> or the paths themselves: npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk <path…>' };
   const head = git(root, ['rev-parse', 'HEAD']);
   const mb = head ? (git(root, ['merge-base', 'HEAD', ref]) || '').trim() : '';
-  if (!mb) return { ok: false, message: `rsc: cannot find a common ancestor with ${ref}. Pass --base <ref> or the paths themselves: npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk <path…>` };
+  if (!mb) return { ok: false, message: `rsc: cannot find a common ancestor with ${ref}. Pass --base <ref> or the paths themselves: npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk <path…>` };
   // --no-renames: a rename reports both paths, so moving a file OUT of a tier-2 place still counts.
   // Nested worktrees are skipped only while UNTRACKED (another checkout sitting in the tree). Once
   // committed, a path under them is part of the change and keeps its tier.
@@ -68,7 +68,7 @@ export function render(r) {
     `reviewers: ${r.reviewers}`,
     `human approval: ${r.humanApproval ? 'required' : 'not required'}`,
     ...(r.base ? [`base: ${r.base}`] : []),
-    ...(r.escalate ? ['escalate: asdd — tier 2 needs a spec linked to this branch (`branch: <name>` in its frontmatter) that passes `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc spec gate`; push and PR are refused until it exists. Write it now, before more code.'] : []),
+    ...(r.escalate ? ['escalate: asdd — tier 2 needs a spec linked to this branch (`branch: <name>` in its frontmatter) that passes `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc spec gate`; push and PR are refused until it exists. Write it now, before more code.'] : []),
     ...(r.policySource ? [`policy: ${r.policySource}`] : []),
     ...(r.rules || []).map(r => `  rule: ${r.class} in ${r.path}: ${r.because}`),
     ...(r.configError ? [`config ignored: ${r.configError}`] : []),

@@ -47,7 +47,7 @@ Run this before presenting the landing options. Any unchecked item is a stop —
 - [ ] **Working tree is clean** — `git status --short` is empty. No stray edits sneaking into the merge.
 - [ ] **On a feature branch, not the trunk** — `git rev-parse --abbrev-ref HEAD` is not `main`/`master`. If work landed directly on the trunk, that is its own problem; flag it, don't paper over it.
 - [ ] **Rebased / up to date with the base, and tested there** — branch is on top of latest `main`; conflicts resolved locally, not punted to the merge; the checks re-ran on the rebased branch.
-- [ ] **Risk tier known** — `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk --base main` run; its tier, classes and `human approval` line go into the PR's Risk section.
+- [ ] **Risk tier known** — `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk --base main` run; its tier, classes and `human approval` line go into the PR's Risk section.
 - [ ] **No `blocking` entry in the decision queue** (`## Decision queue` in `progress/<slug>.md`) — or the PR says which remain and it does not self-merge. `review-after` entries never block; they are listed in the PR body (or the parked summary) for the human.
 - [ ] **No secrets in the diff** — scan the staged/branch diff for keys, tokens, `.env` values (`git diff main... | grep -iE 'api[_-]?key|secret|password|token|BEGIN .*PRIVATE KEY'`). A hit is a blocker; remove it, and rotate it if it was ever pushed.
 - [ ] **Authorship is the responsible person** — `git config user.email` is the configured human; no AI trailer in any commit on the branch (run the grep above across `main..HEAD`).
@@ -61,7 +61,7 @@ echo "behind:   $(git rev-list --count HEAD..origin/main 2>/dev/null || echo '?'
 git log main..HEAD --format='%an <%ae>' | sort -u   # authors on this branch — expect only the configured user
 git diff main...HEAD | grep -icE 'api[_-]?key|secret|password|token|BEGIN .*PRIVATE KEY' \
   | sed 's/^/secret-hits: /'
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc risk --base main                 # tier, classes, reviewers, human approval
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk --base main                 # tier, classes, reviewers, human approval
 ```
 
 ### The explainer — before the PR, for the human
@@ -88,7 +88,7 @@ The same guard also enforces the **sello** where it was opted into — per proje
 `sello on --global`, with the project switch always winning; `rsc sello status` prints which
 scope decided): commit, push and PR are denied unless the change's exact bytes match the
 sealed, approved review — one byte of drift, a moved base, or a missing review on a risk>0 change
-all block, and every denial names its way out (re-run `review`, or `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sello off`).
+all block, and every denial names its way out (re-run `review`, or `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sello off`).
 Risk-0 changes (docs/copy) always pass silently. Off by default; the flow lives in the `review`
 skill. Note `.rsc/.no-ship-guard` opts out of the branch-hygiene rules above but **not** of the
 sello, which has its own switch. The sello binds bytes, not intent — it proves what ships is what
@@ -105,9 +105,9 @@ This mirrors the harness "siempre 3 opciones" pattern. Gather the one fact that 
 | **3. Park or discard** | Keep the branch un-merged (park) or delete it (discard) | The approach was superseded, the spike answered its question, or the work is paused — it should not land |
 
 **When the default branch is closed for the agent** (team-safe-default: the project is complex or in
-production — `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc main status` says `closed: true`), **option 1 is not offered**: a
+production — `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc main status` says `closed: true`), **option 1 is not offered**: a
 local merge is a commit on the default branch. Present option 2 (the recommendation) and option 3,
-and say in one line why option 1 is absent and that «desbloquea main» (`npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc main
+and say in one line why option 1 is absent and that «desbloquea main» (`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc main
 unlock`) would bring it back. The branch guard denies the local merge anyway.
 
 Recommend based on repo signals: protected `main` or an existing PR culture (look for `.github/`, prior PRs via `gh pr list`) → recommend **option 2**. A solo project with no protection and a passed review → **option 1** is honest and faster. Never default to a PR ceremony the repo doesn't use, and never force-merge a repo that gates `main`. A tier-2 change takes option 1 only after human approval, same as a PR.
@@ -150,7 +150,7 @@ Use `--no-ff` so the feature is one legible merge commit tied to the spec. Confi
 
 This used to be an instruction in this paragraph, and it was skipped on both features that reached it. That is why it is a hook now: an instruction at the end of a long phase is the least reliable place to put a step that matters (P1).
 
-If something did survive, it survived *for a reason* — read it rather than forcing it: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc worktrees` lists what is left and why. `worktrees reap <path>` still exists for the backlog and for anything the hook deliberately refused; name the path, because bare `reap` retires every worktree that qualifies and with `parallel` running two streams that is how shipping A deletes B. Naming a path selects it, it does not accept the risk: add `--confirm` only after the user has seen the reason and said yes.
+If something did survive, it survived *for a reason* — read it rather than forcing it: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc worktrees` lists what is left and why. `worktrees reap <path>` still exists for the backlog and for anything the hook deliberately refused; name the path, because bare `reap` retires every worktree that qualifies and with `parallel` running two streams that is how shipping A deletes B. Naming a path selects it, it does not accept the risk: add `--confirm` only after the user has seen the reason and said yes.
 
 ### Option 2 — pull request
 

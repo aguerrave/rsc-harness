@@ -93,12 +93,14 @@ function digestGovernedPaths(cwd, paths) {
 function recoveryCommand(plan, planId) {
   const record = plan.record;
   return [
-    'npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard',
+    'npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard',
     `--technical-level ${record.technicalLevel}`,
     `--project-kind ${record.projectKind}`,
     `--goal-base64 ${encodeGoal(record.goal)}`,
     ...(record.softwareScope ? [`--software-scope ${record.softwareScope}`] : []),
     ...(record.workflow ? [`--workflow ${record.workflow}`] : []),
+    // Rollback may restore an off marker: retry the accepted choice, not that local default.
+    `--emoji ${record.emoji || 'on'}`,
     `--target ${record.targets.join(',')}`,
     `--accept-plan ${planId}`,
   ].join(' ');
@@ -268,6 +270,20 @@ export function applyWorkflowDecision(cwd, workflow) {
   rmSync(workflow === 'main' ? closed : open, { force: true });
 }
 
+/**
+ * The install-time answer «emoji on | off» is the project's `.rsc/.no-emoji`, the same marker
+ * `rsc emoji off` writes (a PROJECT opt-out, recorded in .rsc.json by the install below, rebuilt in a
+ * clone). A record without `emoji` is `on`: the marker goes. It is NOT a governed path: `rsc emoji`
+ * changes it later, and a digest of it would read that change as drift.
+ */
+export function applyEmojiDecision(cwd, emoji) {
+  const marker = join(cwd, '.rsc', '.no-emoji');
+  if (emoji === 'off') {
+    mkdirSync(dirname(marker), { recursive: true });
+    writeFileSync(marker, '');
+  } else rmSync(marker, { force: true });
+}
+
 export async function applyAcceptedOnboarding({ cwd = process.cwd(), plan, planId, now = new Date(), apply = applyInstall }) {
   if (identifyPlan(plan) !== planId) throw new Error('RSC_PLAN_CHANGED: regenerate the plan and ask the user to accept the new id');
   const previousManifest = readManifest(cwd);
@@ -277,6 +293,8 @@ export async function applyAcceptedOnboarding({ cwd = process.cwd(), plan, planI
     ...(plan.governedPaths || []),
     ...(previousPlan?.governedPaths || []),
     '.rsc.json',
+    // Mutable after onboarding: snapshot it for rollback without adding it to the plan's digests.
+    '.rsc/.no-emoji',
   ])];
   assertManagedPathsStayInsideRoot(cwd, transactionPaths);
   const snapshotPaths = transactionPaths.filter((path) => path !== '.rsc/backups/');
@@ -302,6 +320,7 @@ export async function applyAcceptedOnboarding({ cwd = process.cwd(), plan, planI
   };
   try {
     applyWorkflowDecision(cwd, plan.record.workflow);
+    applyEmojiDecision(cwd, plan.record.emoji);
     for (const target of previousPlan?.policy?.targets || []) {
       if (!plan.policy.targets.includes(target)) removeTargetInstall({ cwd, target });
     }
@@ -502,7 +521,7 @@ export function harnessReadiness(cwd = process.cwd(), plan = {}) {
 //
 // Un recibo de una versión que no declaraba suelo queda exento por construcción (P3), igual que en
 // el instalador: aquí no se inventa un suelo que el plan aceptado no traía.
-const ONBOARD_ACTION = 'Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard` to record a plan for this harness (optional: what is installed keeps working).';
+const ONBOARD_ACTION = 'Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard` to record a plan for this harness (optional: what is installed keeps working).';
 const draftAction = (path) => `Complete ${path} with the \`constitution\` phase (tell your agent "constitution") before the first SDD feature; ratifying removes \`status: draft\`.`;
 
 export function onboardingReadiness(cwd = process.cwd(), manifest = readManifest(cwd)) {
@@ -516,7 +535,7 @@ export function onboardingReadiness(cwd = process.cwd(), manifest = readManifest
   if (!identical) {
     return {
       status: 'incomplete', missing: ['<onboarding receipt does not match its accepted plan id>'], pending,
-      action: 'Do not trust the receipt. Re-run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc onboard` and accept a fresh plan.',
+      action: 'Do not trust the receipt. Re-run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard` and accept a fresh plan.',
     };
   }
   const missing = harnessFloorGaps(cwd, receipt.plan);

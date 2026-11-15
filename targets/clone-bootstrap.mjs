@@ -30,8 +30,8 @@ import { tmpdir } from 'node:os';
 import { createHash } from 'node:crypto';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
-const FORK_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc';
-const PACKAGE = 'github:aguerrave/rsc-harness#v4.1.5-aguerrave.1';
+const FORK_COMMAND = 'npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc';
+const PACKAGE = 'github:aguerrave/rsc-harness#v4.1.7-aguerrave.1';
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9a-z.-]+)?$/i;
 
 /**
@@ -44,7 +44,7 @@ const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9a-z.-]+)?$/i;
  * nothing checks is just drift with a head start.
  */
 export const PROJECT_OPT_OUTS = [
-  'asdd-gate', 'audit', 'auto-update', 'claudemd-check', 'copy-guard', 'danger-guard', 'feature-gate', 'ftd-close', 'ftd-nudge', 'gitmoji', 'knowledge-sync', 'ship-guard', 'trunk-guard', 'trunk-open', 'worktree-cleanup', 'worktree-isolation',
+  'asdd-gate', 'audit', 'auto-update', 'claudemd-check', 'copy-guard', 'danger-guard', 'emoji', 'feature-gate', 'ftd-close', 'ftd-nudge', 'gitmoji', 'knowledge-sync', 'ship-guard', 'trunk-guard', 'trunk-open', 'worktree-cleanup', 'worktree-isolation',
 ];
 
 /**
@@ -233,7 +233,7 @@ export function composeOffer(manifest) {
   // accepting an install on a repo they just cloned is entitled to read the exact thing first
   // (spec AC#21). No pin is itself a fact worth showing, not a blank to fill in.
   //
-  // And it has to be IN THE COMMAND, not only in the prose above it. `npx --yes --package=github:aguerrave/rsc-harness#v4.1.5-aguerrave.1 rsc sync`
+  // And it has to be IN THE COMMAND, not only in the prose above it. `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sync`
   // resolves to the latest published package, so an offer phrased that way hands a clone whatever
   // shipped since — the exact divergence the pin exists to prevent, introduced by the feature meant
   // to honour it. Pinned, the command is reproducible three months from now (spec AC#6).
