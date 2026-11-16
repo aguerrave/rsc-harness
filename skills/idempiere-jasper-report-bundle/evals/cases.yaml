@@ -1,0 +1,35 @@
+skill: idempiere-jasper-report-bundle
+
+should_trigger:
+  - prompt: "Empaqueta este reporte Jasper dentro del plugin para que se instale solo."
+    why: "Shipping a Jasper report in a bundle."
+  - prompt: "Which JasperReport prefix should I use, bundle: or resource:, for a report next to my Java classes?"
+    why: "The prefix decision is this skill's core."
+  - prompt: "Override the standard Balance Sheet report with our own .jasper without new Java code."
+    why: "attachment: prefix case."
+  - prompt: "My bundled Jasper report is not found at runtime although the bundle is ACTIVE."
+    why: "Prefix/location mismatch diagnosis."
+  - prompt: "Register a new AD_Process for our Jasper report through 2Pack with Incremental2PackActivator."
+    why: "2Pack registration of the report."
+
+should_not_trigger:
+  - prompt: "Create a FreeMarker print template for invoices in iDempiere 13."
+    route_to: idempiere-freemarker-print-template
+    why: "Different rendering engine."
+  - prompt: "Install the plugin JAR on the test server and verify the 2Pack applied."
+    route_to: idempiere-deployment
+    why: "Deployment and runtime verification."
+  - prompt: "Build a sales dashboard with charts for the board."
+    route_to: dashboard
+    why: "Not an iDempiere report bundle."
+  - prompt: "Write the Java process logic that the report will call."
+    route_to: idempiere-plugins
+    why: "Plugin code, not report packaging."
+
+capability:
+  - scenario: "Add a brand-new order summary Jasper report to an existing iDempiere plugin so it installs with the bundle."
+    must_include:
+      - "Chooses the bundle: prefix and places the .jasper under resources/ listed in build.properties."
+      - "Uses an Incremental2PackActivator and a versioned META-INF/2Pack zip exported from a dev instance."
+      - "Does not invent _ID or _UU values."
+      - "Checks the JAR contents and says what still needs runtime verification."

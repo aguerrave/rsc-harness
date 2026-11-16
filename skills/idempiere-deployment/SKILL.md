@@ -1,7 +1,7 @@
 ---
 name: idempiere-deployment
 description: "Instalar, actualizar y validar iDempiere o sus bundles en entornos identificados, con respaldo, migraciones y evidencia del runtime. No implica autorización automática para producción ni reinicios compartidos."
-tags: ["idempiere", "deployment", "osgi", "backup"]
+tags: ["idempiere", "deployment", "osgi", "backup", "install", "deploy", "jar", "bundle", "restart", "staging", "production", "despliegue", "instalar", "servicios"]
 origin: aguerrave
 ---
 

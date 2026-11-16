@@ -1,0 +1,35 @@
+skill: idempiere-osgi-framework-listener
+
+should_trigger:
+  - prompt: "Necesito ejecutar una verificación cuando todos los bundles de iDempiere hayan terminado de arrancar."
+    why: "Whole-container startup is the FrameworkListener case."
+  - prompt: "Log every OSGi framework error in our iDempiere server from a plugin."
+    why: "FrameworkEvent.ERROR handling."
+  - prompt: "Register a FrameworkListener as a Declarative Services component in my plugin."
+    why: "Names the mechanism."
+  - prompt: "My startup logic runs twice when the iDempiere start level changes."
+    why: "Repeated STARTLEVEL_CHANGED guard."
+  - prompt: "Run code once after the OSGi container reaches its final start level, without a Bundle-Activator."
+    why: "Component-based framework listener."
+
+should_not_trigger:
+  - prompt: "Run code before an iDempiere business partner is saved."
+    route_to: idempiere-plugins
+    why: "Model event, not framework event."
+  - prompt: "Compile the plugin and report the JARs."
+    route_to: idempiere-plugin-compiler
+    why: "Build task."
+  - prompt: "Restart the iDempiere service after deploying."
+    route_to: idempiere-deployment
+    why: "Operations, not code."
+  - prompt: "Add a startup hook to a Node.js Express server."
+    route_to: nodejs
+    why: "Unrelated stack."
+
+capability:
+  - scenario: "Run a one-time data consistency check after every bundle in the iDempiere container has started."
+    must_include:
+      - "Implements FrameworkListener on an immediate DS component and registers it in @Activate."
+      - "Handles STARTLEVEL_CHANGED and checks bundle states."
+      - "Guards against running the check more than once."
+      - "Keeps slow work off the framework thread and logs with CLogger."

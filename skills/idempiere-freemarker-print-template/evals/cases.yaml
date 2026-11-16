@@ -1,0 +1,34 @@
+skill: idempiere-freemarker-print-template
+
+should_trigger:
+  - prompt: "Crea una plantilla FreeMarker para imprimir el listado de socios de negocio en iDempiere 13."
+    why: "FreeMarker AD_PrintTemplate in list mode."
+  - prompt: "Add an AD_PrintTemplate in document mode for our sales order print."
+    why: "Document-mode template."
+  - prompt: "Generate an HTML and PDF listing from iDempiere without writing a JRXML."
+    why: "FreeMarker as the Jasper alternative."
+  - prompt: "Our .ftlh template shows foreign keys as numbers instead of names."
+    why: "The {id, display} data model."
+  - prompt: "Can I use the FreeMarker print renderer on our iDempiere 12 server?"
+    why: "The version gate is this skill's hard rule."
+
+should_not_trigger:
+  - prompt: "Ship a compiled Jasper report inside the plugin."
+    route_to: idempiere-jasper-report-bundle
+    why: "Different engine."
+  - prompt: "Write an email newsletter template with Handlebars."
+    route_to: newsletter
+    why: "Not iDempiere printing."
+  - prompt: "Install the renderer bundle on production and restart."
+    route_to: idempiere-deployment
+    why: "Deployment."
+  - prompt: "Design a dashboard for sales KPIs."
+    route_to: dashboard
+    why: "Not a print template."
+
+capability:
+  - scenario: "Create a list-mode FreeMarker template of open invoices for a plugin whose target core is iDempiere 12."
+    must_include:
+      - "Checks the target core for IReportContentRenderer before writing anything."
+      - "Stops on iDempiere 12 and offers idempiere-jasper-report-bundle."
+      - "Does not loosen version bounds to make it resolve."

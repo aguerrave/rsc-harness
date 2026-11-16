@@ -1,0 +1,35 @@
+skill: idempiere-integration-test
+
+should_trigger:
+  - prompt: "Escribe una prueba que verifique que mi callout recalcula DatePromised en una orden real de iDempiere."
+    why: "Needs a live iDempiere context and documents."
+  - prompt: "Add an AbstractTestCase test for this model validator in my plugin."
+    why: "Names the iDempiere test base class."
+  - prompt: "My iDempiere test leaves records behind in GardenWorld after it runs."
+    why: "Transaction rollback with getTrxName is this skill's rule."
+  - prompt: "How do I run a single iDempiere JUnit test class from Maven Tycho?"
+    why: "Running integration tests from the terminal."
+  - prompt: "Test that completing an invoice in iDempiere posts the expected accounting facts."
+    why: "Document completion through the workflow in a test."
+
+should_not_trigger:
+  - prompt: "Write a unit test for a pure Python date parser."
+    route_to: testing-py
+    why: "No iDempiere, different language."
+  - prompt: "Write Playwright tests for the iDempiere ZK login page."
+    route_to: e2e-testing
+    why: "Browser/UI testing."
+  - prompt: "Implement the iDempiere process that this test will cover."
+    route_to: idempiere-plugins
+    why: "Writing plugin code, not the test."
+  - prompt: "Write Jest tests for a React component."
+    route_to: testing-web
+    why: "Unrelated stack."
+
+capability:
+  - scenario: "Write a test for a plugin rule that blocks completing a sales order for a blocked business partner."
+    must_include:
+      - "Extends AbstractTestCase and passes getTrxName() to every model and query."
+      - "Uses DictionaryIDs instead of literal IDs and does not modify seed records."
+      - "Completes the order with MWorkflow.runDocumentActionWorkflow and asserts on the ProcessInfo and DocStatus."
+      - "Reports the exact command run and its result, or says the test was not run."

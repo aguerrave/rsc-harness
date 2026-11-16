@@ -7,8 +7,8 @@ import {execFileSync} from 'node:child_process';
 import {applyInstall,syncInstalled} from '../scripts/install-apply.js';
 import {targetPaths} from '../targets/index.js';
 import {readManifest} from '../scripts/lib/manifest-file.js';
-const ids=['idempiere-implementation','idempiere-plugins','idempiere-deployment'];
-for(const target of ['claude','codex','cursor']) test(`fork installs and syncs its three skills on ${target} without altering project code`,async()=>{
+const ids=['idempiere-implementation','idempiere-plugins','idempiere-deployment','idempiere-plugin-compiler','idempiere-integration-test','idempiere-jasper-report-bundle','idempiere-freemarker-print-template','idempiere-osgi-framework-listener','idempiere-jenkinsfile-developer'];
+for(const target of ['claude','codex','cursor']) test(`fork installs and syncs its iDempiere skills on ${target} without altering project code`,async()=>{
  const cwd=mkdtempSync(join(tmpdir(),'rsc-fork-install-'));execFileSync('git',['init','-q'],{cwd});
  writeFileSync(join(cwd,'client-code.java'),'// customer-owned code\n');
  await applyInstall({cwd,target,skillIds:ids});
@@ -21,6 +21,7 @@ for(const target of ['claude','codex','cursor']) test(`fork installs and syncs i
    if(target === 'codex') {
     const native=readFileSync(join(cwd,'.agents/skills',id,'SKILL.md'),'utf8');
     assert.match(native,/rsc:idempiere-native/);assert.ok(!native.includes('origin:'));
+    for(const ref of native.matchAll(/`(assets\/[^`\s]+)`/g)) assert.ok(existsSync(join(cwd,'.agents/skills',id,ref[1])),`${id}: native copy misses ${ref[1]}`);
    }
   }
  assert.equal(readFileSync(join(cwd,'client-code.java'),'utf8'),'// customer-owned code\n');

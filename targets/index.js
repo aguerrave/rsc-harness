@@ -215,6 +215,16 @@ export function writeSkill(target, id, fromDir, toPath) {
     mkdirSync(dirname(native), { recursive: true });
     writeFileSync(native, `---\nname: ${id}\ndescription: ${description}\n---\n${marker}\n${body}`);
     files.push(native);
+    // The skill body points at its own assets/ and references/ by relative path;
+    // without them the native copy would cite templates that are not there.
+    for (const sub of ['assets', 'references', 'scripts']) {
+      const from = join(fromDir, sub);
+      if (!existsSync(from)) continue;
+      const to = join(dirname(native), sub);
+      rmSync(to, { recursive: true, force: true });
+      cpSync(from, to, { recursive: true });
+      files.push(to);
+    }
   }
   return files;
 }

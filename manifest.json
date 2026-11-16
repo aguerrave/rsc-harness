@@ -1,7 +1,7 @@
 {
   "version": "4.1.7-aguerrave.1",
   "counts": {
-    "skills": 276,
+    "skills": 282,
     "agents": 34,
     "commands": 53,
     "fixedCommands": 20
@@ -2457,9 +2457,38 @@
         "idempiere",
         "deployment",
         "osgi",
-        "backup"
+        "backup",
+        "install",
+        "deploy",
+        "jar",
+        "bundle",
+        "restart",
+        "staging",
+        "production",
+        "despliegue",
+        "instalar",
+        "servicios"
       ],
       "recommends": [],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-freemarker-print-template",
+      "description": "Use when an iDempiere 13+ plugin must ship a FreeMarker (.ftlh) print template as an AD_PrintTemplate — document or list mode, HTML/PDF/CSV/XLSX output through the report-content renderer API (IDEMPIERE-7070). Refuses iDempiere 12 targets, where that API does not exist. NOT Jasper reports (idempiere-jasper-report-bundle), NOT writing the rendering engine itself.",
+      "tags": [
+        "idempiere",
+        "freemarker",
+        "ftlh",
+        "print",
+        "report",
+        "template",
+        "printformat"
+      ],
+      "recommends": [
+        "idempiere-jasper-report-bundle",
+        "idempiere-plugins",
+        "idempiere-plugin-compiler"
+      ],
       "profiles": []
     },
     {
@@ -2475,15 +2504,122 @@
       "profiles": []
     },
     {
+      "id": "idempiere-integration-test",
+      "description": "Use when iDempiere plugin or model code needs a JUnit 5 test that runs inside a live iDempiere (OSGi + GardenWorld database) through org.idempiere.test.AbstractTestCase — real context, per-test transaction rollback, DictionaryIDs instead of magic numbers, documents completed through the workflow. NOT pure-logic tests with no server (plain JUnit), NOT UI or browser tests (e2e-testing).",
+      "tags": [
+        "idempiere",
+        "junit",
+        "abstracttestcase",
+        "gardenworld",
+        "dictionaryids",
+        "tycho"
+      ],
+      "recommends": [
+        "idempiere-plugins",
+        "idempiere-plugin-compiler"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-jasper-report-bundle",
+      "description": "Use when a Jasper report (.jrxml/.jasper) must ship inside an iDempiere OSGi plugin and install itself — choosing the bundle:, resource: or attachment: JasperReport prefix, wiring Incremental2PackActivator and the 2Pack that registers the AD_Process or report record. NOT designing or debugging the JRXML itself, NOT FreeMarker print templates (idempiere-freemarker-print-template).",
+      "tags": [
+        "idempiere",
+        "jasper",
+        "jasperreports",
+        "jrxml",
+        "report",
+        "reporte"
+      ],
+      "recommends": [
+        "idempiere-plugins",
+        "idempiere-plugin-compiler",
+        "idempiere-deployment"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-jenkinsfile-developer",
+      "description": "Use when a Jenkinsfile for an iDempiere OSGi plugin must be created, updated or standardized — version-matched target-platform compile on a native agent (no Docker unless the node has it), JAR archiving, and a README-to-HTML documentation stage. NOT compiling locally (idempiere-plugin-compiler), NOT GitHub Actions (github-actions), NOT editing Java sources.",
+      "tags": [
+        "idempiere",
+        "jenkins",
+        "jenkinsfile",
+        "ci",
+        "pipeline",
+        "tycho"
+      ],
+      "recommends": [
+        "idempiere-plugin-compiler",
+        "idempiere-deployment"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-osgi-framework-listener",
+      "description": "Use when iDempiere plugin code must react to the whole OSGi framework — run once after every bundle has started (STARTLEVEL_CHANGED) or log framework errors — through a Declarative Services component registered as a FrameworkListener. NOT one bundle's own lifecycle (BundleActivator / @Activate), NOT reacting to a service (@Reference), NOT model or document events (idempiere-plugins).",
+      "tags": [
+        "idempiere",
+        "osgi",
+        "frameworklistener",
+        "startlevel",
+        "startup",
+        "arranque",
+        "bundles"
+      ],
+      "recommends": [
+        "idempiere-plugins",
+        "idempiere-plugin-compiler"
+      ],
+      "profiles": []
+    },
+    {
+      "id": "idempiere-plugin-compiler",
+      "description": "Use when an iDempiere OSGi plugin must be built, packaged or its compilation failure diagnosed — picks the plugin's own Tycho pom or the idempiere-target-platform-plugin builder, orders local dependencies from Require-Bundle and reports the exact command and JARs produced. Runs natively; never assumes Docker. NOT CI pipeline authoring (idempiere-jenkinsfile-developer), NOT installing the JAR (idempiere-deployment).",
+      "tags": [
+        "idempiere",
+        "tycho",
+        "maven",
+        "build",
+        "compile",
+        "plugin-builder",
+        "compilar"
+      ],
+      "recommends": [
+        "idempiere-jenkinsfile-developer",
+        "idempiere-plugins",
+        "idempiere-deployment"
+      ],
+      "profiles": []
+    },
+    {
       "id": "idempiere-plugins",
       "description": "Desarrollar y revisar plugins Java OSGi de iDempiere: factories, servicios declarativos, modelos, procesos y paquetes 2Pack. Úsala sobre código fuente, no para configurar procesos funcionales del cliente.",
       "tags": [
         "idempiere",
         "java",
         "osgi",
-        "2pack"
+        "2pack",
+        "model",
+        "process",
+        "factory",
+        "event",
+        "validator",
+        "callout",
+        "beforesave",
+        "parser",
+        "matcher",
+        "pruebas",
+        "proceso"
       ],
-      "recommends": [],
+      "recommends": [
+        "idempiere-plugin-compiler",
+        "idempiere-integration-test",
+        "idempiere-jasper-report-bundle",
+        "idempiere-freemarker-print-template",
+        "idempiere-osgi-framework-listener",
+        "idempiere-deployment"
+      ],
       "profiles": []
     },
     {

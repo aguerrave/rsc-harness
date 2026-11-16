@@ -1,0 +1,35 @@
+skill: idempiere-plugin-compiler
+
+should_trigger:
+  - prompt: "Compila este plugin de iDempiere 12 y dime qué JAR generó."
+    why: "Build of an iDempiere OSGi plugin with artifact report."
+  - prompt: "The Tycho build of my iDempiere bundle fails resolving org.adempiere.base, fix it."
+    why: "Diagnosing an iDempiere plugin compilation failure."
+  - prompt: "Use plugin-builder from idempiere-target-platform-plugin to package com.example.payroll."
+    why: "Names the builder this skill drives."
+  - prompt: "Two of our iDempiere plugins depend on each other through Require-Bundle; build both in the right order."
+    why: "Local dependency ordering from the manifest."
+  - prompt: "This machine has no Docker. Build the iDempiere plugin natively with Maven."
+    why: "Native build without containers is this skill's default."
+
+should_not_trigger:
+  - prompt: "Write a Jenkinsfile that builds this iDempiere plugin on every push."
+    route_to: idempiere-jenkinsfile-developer
+    why: "Pipeline authoring, not running a build."
+  - prompt: "Install the compiled JAR on the staging iDempiere and check the bundle state."
+    route_to: idempiere-deployment
+    why: "Installation and runtime verification."
+  - prompt: "Set up a GitHub Actions workflow for a Node library."
+    route_to: github-actions
+    why: "Unrelated CI platform and stack."
+  - prompt: "Build a Spring Boot service with Gradle."
+    route_to: spring-boot
+    why: "Java build outside iDempiere/OSGi."
+
+capability:
+  - scenario: "Build an iDempiere plugin whose MANIFEST.MF requires org.adempiere.base 12 and a sibling custom bundle, on a machine without Docker."
+    must_include:
+      - "Reads MANIFEST.MF to find the core version and Require-Bundle dependencies."
+      - "Checks javac/java/mvn and does not assume Docker."
+      - "Builds the sibling dependency first."
+      - "Reports the exact command, the result and the generated JARs with paths and timestamps."

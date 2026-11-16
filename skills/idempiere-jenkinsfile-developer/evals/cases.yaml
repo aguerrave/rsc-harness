@@ -1,0 +1,35 @@
+skill: idempiere-jenkinsfile-developer
+
+should_trigger:
+  - prompt: "Crea un Jenkinsfile para compilar el plugin iDempiere com.example.recaptcha."
+    why: "New pipeline for an iDempiere plugin."
+  - prompt: "Add the README archiving stage to this iDempiere plugin pipeline."
+    why: "The documentation stage this skill defines."
+  - prompt: "Our Jenkins node has no Docker daemon; rewrite the plugin pipeline to run natively."
+    why: "Native-agent constraint is central here."
+  - prompt: "Standardize the Jenkinsfile of the payroll iDempiere plugin with our other plugins."
+    why: "Standardizing iDempiere plugin pipelines."
+  - prompt: "The Jenkins compile stage uses the wrong idempiere-target-platform-plugin branch for iDempiere 13."
+    why: "Version-matched target platform in CI."
+
+should_not_trigger:
+  - prompt: "Compile this iDempiere plugin on my laptop right now."
+    route_to: idempiere-plugin-compiler
+    why: "Local build, no pipeline."
+  - prompt: "Create a GitHub Actions workflow to build the plugin."
+    route_to: github-actions
+    why: "Different CI system."
+  - prompt: "Deploy the built bundle to the production iDempiere server."
+    route_to: idempiere-deployment
+    why: "Deployment, not CI definition."
+  - prompt: "Write a Dockerfile for a Next.js app."
+    route_to: docker
+    why: "Unrelated stack."
+
+capability:
+  - scenario: "Write a Jenkinsfile for an iDempiere 12 plugin on a node whose provisioning shows git, openjdk17, maven and python3 but no Docker."
+    must_include:
+      - "Uses agent any and native sh steps, no docker agent blocks."
+      - "Clones idempiere-target-platform-plugin on the 12.0 branch and runs plugin-builder."
+      - "Includes the Archive Readme stage with publishHTML."
+      - "States which tools were verified on the node."
