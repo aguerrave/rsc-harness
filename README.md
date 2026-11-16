@@ -8,7 +8,7 @@
 
 [![npm](https://img.shields.io/npm/v/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=npm)](https://www.npmjs.com/package/@ericrisco/rsc)
 [![downloads](https://img.shields.io/npm/dm/@ericrisco/rsc?color=63d68a&labelColor=12161c&label=downloads)](https://www.npmjs.com/package/@ericrisco/rsc)
-[![skills](https://img.shields.io/badge/skills-282-63d68a?labelColor=12161c)](#the-catalog)
+[![skills](https://img.shields.io/badge/skills-283-63d68a?labelColor=12161c)](#the-catalog)
 [![license](https://img.shields.io/badge/license-MIT-63d68a?labelColor=12161c)](LICENSE)
 [![stars](https://img.shields.io/github/stars/ericrisco/rsc-harness?color=63d68a&labelColor=12161c)](https://github.com/ericrisco/rsc-harness/stargazers)
 
@@ -71,7 +71,7 @@ The decisions your agent needs should have a place to live outside the chat.
 | --- | --- |
 | **Knowledge** | A local `02-DOCS/` wiki for project context, decisions and evidence. |
 | **Tools** | A `01-TOOLS/` convention for documenting real connections and their checks. |
-| **Skills** | A selection from 282 available skills, loaded progressively when relevant. |
+| **Skills** | A selection from 283 available skills, loaded progressively when relevant. |
 | **Controls** | Working rules and provider-specific hooks, with explicit support limits. |
 
 The mechanism is practical: keep the decision, make it discoverable, and have the next task consult it.
@@ -537,7 +537,7 @@ price, customer testimonial, deadline or guarantee is needed to explain a useful
 
 ## The catalog
 
-282 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
+283 skills, grouped by what you are trying to do. Click any skill to read its `SKILL.md`. It fires on
 its own when a task matches.
 
 ### 🧭 Core & control plane
@@ -775,6 +775,7 @@ run an explicit install, which records the new decision; sync alone does not era
 - [Plantillas FreeMarker (iDempiere 13+)](skills/idempiere-freemarker-print-template/)
 - [FrameworkListener OSGi](skills/idempiere-osgi-framework-listener/)
 - [Jenkinsfile para plugins](skills/idempiere-jenkinsfile-developer/)
+- [2Pack: empaquetar, importar y depurar](skills/idempiere-2pack/)
 
 Upstream sources and their licenses are pinned in [upstream/idempiere-sources.json](upstream/idempiere-sources.json);
 `node scripts/idempiere-upstream.js` reports what changed since each pin. Java templates in these skills derive from

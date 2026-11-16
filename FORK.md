@@ -18,6 +18,7 @@ Versión propia: 4.1.7-aguerrave.2. Referencia de distribución: v4.1.7-aguerrav
 - idempiere-freemarker-print-template: plantillas FreeMarker (AD_PrintTemplate), solo iDempiere 13+.
 - idempiere-osgi-framework-listener: reaccionar al arranque completo del contenedor OSGi.
 - idempiere-jenkinsfile-developer: Jenkinsfile para plugins con agente nativo.
+- idempiere-2pack: empaquetar, importar y depurar 2Pack (AD_Package_Imp, AD_Package_Imp_Detail).
 
 Se instalan explícitamente, no en todos los perfiles genéricos. No se añaden a proyectos ajenos a iDempiere.
 

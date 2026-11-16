@@ -7,7 +7,7 @@ import {execFileSync} from 'node:child_process';
 import {applyInstall,syncInstalled} from '../scripts/install-apply.js';
 import {targetPaths} from '../targets/index.js';
 import {readManifest} from '../scripts/lib/manifest-file.js';
-const ids=['idempiere-implementation','idempiere-plugins','idempiere-deployment','idempiere-plugin-compiler','idempiere-integration-test','idempiere-jasper-report-bundle','idempiere-freemarker-print-template','idempiere-osgi-framework-listener','idempiere-jenkinsfile-developer'];
+const ids=['idempiere-implementation','idempiere-plugins','idempiere-deployment','idempiere-2pack','idempiere-plugin-compiler','idempiere-integration-test','idempiere-jasper-report-bundle','idempiere-freemarker-print-template','idempiere-osgi-framework-listener','idempiere-jenkinsfile-developer'];
 for(const target of ['claude','codex','cursor']) test(`fork installs and syncs its iDempiere skills on ${target} without altering project code`,async()=>{
  const cwd=mkdtempSync(join(tmpdir(),'rsc-fork-install-'));execFileSync('git',['init','-q'],{cwd});
  writeFileSync(join(cwd,'client-code.java'),'// customer-owned code\n');

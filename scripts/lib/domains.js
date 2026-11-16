@@ -4,7 +4,7 @@
 // catalog grows deliberately, never silently.
 
 export const DOMAINS = [
-  { title: 'iDempiere ERP', ids: ['idempiere-implementation', 'idempiere-plugins', 'idempiere-deployment', 'idempiere-plugin-compiler', 'idempiere-integration-test', 'idempiere-jasper-report-bundle', 'idempiere-freemarker-print-template', 'idempiere-osgi-framework-listener', 'idempiere-jenkinsfile-developer'] },
+  { title: 'iDempiere ERP', ids: ['idempiere-implementation', 'idempiere-plugins', 'idempiere-deployment', 'idempiere-plugin-compiler', 'idempiere-integration-test', 'idempiere-jasper-report-bundle', 'idempiere-freemarker-print-template', 'idempiere-osgi-framework-listener', 'idempiere-jenkinsfile-developer', 'idempiere-2pack'] },
   { title: 'Core & control plane', ids: ['init', 'harness', 'orient', 'suggest', 'unslop', 'author-skill', 'sdd-init'] },
   { title: 'Spec-Driven Development', ids: ['ftd', 'asdd', 'constitution', 'idea-refinement', 'specify', 'clarify', 'plan', 'tasks', 'analyze', 'decision-challenge', 'implement', 'source-grounded-development', 'verify', 'review', 'simplify-code', 'ship', 'debug', 'worktrees', 'parallel', 'tidy'] },
   { title: 'Run a business', ids: ['finance-ops', 'invoicing', 'bookkeeping', 'pricing', 'sales-pipeline', 'lead-gen', 'cold-outreach', 'proposals', 'contracts', 'customer-support', 'client-onboarding', 'retention', 'hiring', 'people-ops', 'inventory', 'logistics-ops', 'procurement', 'meeting-notes', 'sop-builder', 'project-ops'] },

@@ -2,7 +2,7 @@
 name: idempiere-plugins
 description: "Desarrollar y revisar plugins Java OSGi de iDempiere: factories, servicios declarativos, modelos, procesos y paquetes 2Pack. Úsala sobre código fuente, no para configurar procesos funcionales del cliente."
 tags: ["idempiere", "java", "osgi", "2pack", "model", "process", "factory", "event", "validator", "callout", "beforesave", "parser", "matcher", "pruebas", "proceso"]
-recommends: ["idempiere-plugin-compiler", "idempiere-integration-test", "idempiere-jasper-report-bundle", "idempiere-freemarker-print-template", "idempiere-osgi-framework-listener", "idempiere-deployment"]
+recommends: ["idempiere-2pack", "idempiere-plugin-compiler", "idempiere-integration-test", "idempiere-jasper-report-bundle", "idempiere-freemarker-print-template", "idempiere-osgi-framework-listener", "idempiere-deployment"]
 origin: aguerrave
 ---
 
@@ -27,7 +27,9 @@ No generalices un formato bancario sintético a un banco real. Etiqueta las supo
 - Pasa el `trxName` de punta a punta. No hagas commit ni rollback de una transacción que no abriste.
 - Los textos visibles para el usuario salen de `AD_Message` (`Msg.getMsg`), no van escritos en el código. Los errores se lanzan como `AdempiereException` y se registran con `CLogger`, nunca con `System.out`.
 - No edites a mano las clases `X_*` ni `I_*`: se regeneran desde el diccionario.
-- No inventes `*_ID` ni `*_UU`. Los registros del diccionario se crean en una instancia de desarrollo y viajan en un 2Pack exportado.
+- No inventes `*_ID` ni `*_UU`. Los registros del diccionario se crean en una instancia de desarrollo y viajan en un 2Pack exportado (`idempiere-2pack`), con el entity type propio del plugin, nunca `D`.
+- Los documentos se completan o anulan con `processIt` o el workflow, nunca escribiendo `DocStatus` a mano.
+- Callouts: validan o calculan valores del formulario, sin lógica pesada ni JDBC directo. En `beforeSave` y en los event handlers, nada lento (llamadas remotas, recorridos grandes); eso va a un proceso o a un evento posterior.
 - Si el plugin expone API para otros plugins, conserva las firmas públicas: agrega sobrecargas y marca `@Deprecated` en lugar de borrar.
 
 Para compilar usa `idempiere-plugin-compiler`; para probar contra una base real, `idempiere-integration-test`.

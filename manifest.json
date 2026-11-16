@@ -1,7 +1,7 @@
 {
   "version": "4.1.7-aguerrave.2",
   "counts": {
-    "skills": 282,
+    "skills": 283,
     "agents": 34,
     "commands": 53,
     "fixedCommands": 20
@@ -2451,6 +2451,25 @@
       ]
     },
     {
+      "id": "idempiere-2pack",
+      "description": "Empaquetar, importar y depurar 2Pack de iDempiere (PackOut, PackIn, AD_Package_Imp, META-INF/2Pack_*.zip): orden incremental, entity type propio, separación diccionario/datos y diagnóstico de un PackIn fallido. No para escribir el código Java del plugin (idempiere-plugins) ni para el despliegue del bundle (idempiere-deployment).",
+      "tags": [
+        "idempiere",
+        "2pack",
+        "packin",
+        "packout",
+        "ad_package_imp",
+        "diccionario",
+        "entitytype"
+      ],
+      "recommends": [
+        "idempiere-plugins",
+        "idempiere-deployment",
+        "idempiere-jasper-report-bundle"
+      ],
+      "profiles": []
+    },
+    {
       "id": "idempiere-deployment",
       "description": "Instalar, actualizar y validar iDempiere o sus bundles en entornos identificados, con respaldo, migraciones y evidencia del runtime. No implica autorización automática para producción ni reinicios compartidos.",
       "tags": [
@@ -2613,6 +2632,7 @@
         "proceso"
       ],
       "recommends": [
+        "idempiere-2pack",
         "idempiere-plugin-compiler",
         "idempiere-integration-test",
         "idempiere-jasper-report-bundle",

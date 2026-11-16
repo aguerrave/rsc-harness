@@ -1,0 +1,34 @@
+skill: idempiere-2pack
+
+should_trigger:
+  - prompt: "El PackIn del plugin falló a mitad de camino, ¿cómo lo diagnostico en AD_Package_Imp_Detail?"
+    why: "Diagnóstico de un 2Pack fallido."
+  - prompt: "Arma el 2Pack incremental 1.0.3 con la ventana nueva del plugin."
+    why: "Empaquetado incremental."
+  - prompt: "Which entity type should the new columns in my 2Pack use?"
+    why: "Entity type propio en los registros del paquete."
+  - prompt: "Export the new process and menu entry with PackOut so the bundle installs them."
+    why: "PackOut desde AD_Package_Exp."
+  - prompt: "Mi 2Pack mezcla el diccionario con las tasas de impuesto de un cliente, ¿lo separo?"
+    why: "Separación diccionario/datos de tenant."
+
+should_not_trigger:
+  - prompt: "Escribe el event handler Java que valida el documento antes de completarlo."
+    route_to: idempiere-plugins
+    why: "Código del plugin, no empaquetado."
+  - prompt: "Instala el JAR en el servidor de pruebas y reinicia el servicio."
+    route_to: idempiere-deployment
+    why: "Despliegue del bundle."
+  - prompt: "Write a Flyway migration for a Spring Boot app."
+    route_to: db-migrations
+    why: "Migraciones fuera de iDempiere."
+  - prompt: "Comprime una carpeta de imágenes en un zip."
+    route_to: none
+    why: "Nada que ver con 2Pack."
+
+capability:
+  - scenario: "Un PackIn de 2Pack_1.0.2.zip falló y el bundle aparece ACTIVE en el servidor de pruebas."
+    must_include:
+      - "No da por bueno el ACTIVE; revisa AD_Package_Imp y AD_Package_Imp_Detail."
+      - "Busca colisiones de entity type o UUID en el primer objeto que falló."
+      - "No reimporta el mismo zip a ciegas; propone un incremental correctivo o restaurar el respaldo."
