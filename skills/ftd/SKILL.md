@@ -65,7 +65,7 @@ the chain: a result asserted without evidence is treated as not done.
 The lane inherits ASDD's per-task loop, cut to its floor:
 
 1. **Self-check** — run the change's own check and record the output under Evidence.
-2. **`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc risk`** — the tier of what changed (same path table as the sello; works
+2. **`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc risk`** — the tier of what changed (same path table as the sello; works
    with it off).
 3. **Tier ≥ 1 → one fresh-context reviewer** (`../review/SKILL.md`, per-task mode). Tier 0 → none.
 4. **Mandatory controls** — tests, build, the security scan the project has. What did not run is
@@ -74,7 +74,7 @@ The lane inherits ASDD's per-task loop, cut to its floor:
 **Escalate to `asdd`** when `rsc risk` says **tier 2**, or when the change contradicts a decision
 already recorded in `decisions.md`: the feature document becomes its spec input, as below.
 
-**This escalation is enforced, not advised.** A tier-2 branch cannot be pushed or opened as a PR until a spec linked to it (`branch: <name>` in its frontmatter) passes `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc spec gate`. Time pressure does not change the lane: escalate the moment `rsc risk` says tier 2, before writing more code.
+**This escalation is enforced, not advised.** A tier-2 branch cannot be pushed or opened as a PR until a spec linked to it (`branch: <name>` in its frontmatter) passes `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc spec gate`. Time pressure does not change the lane: escalate the moment `rsc risk` says tier 2, before writing more code.
 
 ## Isolation
 

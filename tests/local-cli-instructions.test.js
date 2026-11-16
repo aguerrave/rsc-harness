@@ -21,13 +21,13 @@ test('installed CLI is preferred in operational instructions; version pins and u
   const options = { cwd: root, target: 'claude', skillIds: ['suggest', 'implement'], policy: { baseAgents: false, memory: false, codeHooks: false } };
   await applyInstall(options);
   assert.match(text(root, '.rsc/skills/implement/SKILL.md'), /`rsc risk/);
-  assert.doesNotMatch(text(root, '.rsc/skills/implement/SKILL.md'), /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.2 rsc risk/);
+  assert.doesNotMatch(text(root, '.rsc/skills/implement/SKILL.md'), /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.3 rsc risk/);
   assert.match(text(root, '.rsc/skills/suggest/SKILL.md'), /rsc@<catalogVersion/);
   assert.deepEqual(JSON.parse(text(root, '.claude/settings.json')).permissions, permissions);
   // Same-version sync notices the CLI disappeared and restores the runnable fallback.
   rmSync(exe);
   await applyInstall(options);
-  assert.match(text(root, '.rsc/skills/implement/SKILL.md'), /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.2 rsc risk/);
+  assert.match(text(root, '.rsc/skills/implement/SKILL.md'), /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.3 rsc risk/);
   assert.deepEqual(JSON.parse(text(root, '.claude/settings.json')).permissions, permissions);
 });
 

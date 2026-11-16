@@ -164,7 +164,7 @@ export function outcome(root, id, value, { now = new Date().toISOString() } = {}
     return { ok: false, message: `rsc: unknown outcome "${value}". Use one of: ${OUTCOMES.join(', ')}.` };
   }
   if (!readLedger(root).some((e) => e.type === 'finding' && e.id === id)) {
-    return { ok: false, message: `rsc: no finding "${id}" in ${LEDGER_PATH}. Run \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc review ledger stats\` to see the recorded ids.` };
+    return { ok: false, message: `rsc: no finding "${id}" in ${LEDGER_PATH}. Run \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc review ledger stats\` to see the recorded ids.` };
   }
   append(root, [{ type: 'outcome', id, outcome: value, at: now }]);
   return { ok: true, message: `${id}: ${value}` };
