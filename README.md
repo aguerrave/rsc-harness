@@ -27,7 +27,7 @@ Ask me the onboarding questions, show me the exact plan, and wait for my accepta
 Or start from the terminal:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc onboard
 ```
 
 </div>
@@ -104,7 +104,7 @@ individual skill into an existing rsc project rather than adopt a whole workflow
 ## Install in one minute
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc onboard
 ```
 
 The first run asks **one** question about conversation (technical, or with analogies), then what the
@@ -117,7 +117,7 @@ Everything stays **in the project**. The real skill files are written once to `.
 each assistant gets a symlink back to that shared base, so picking several duplicates nothing. Skills
 load progressively: only their description is paid for until a task needs them.
 
-Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.1`.
+Prefer a short `rsc` command? `npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.2`.
 
 When an executable `rsc` is already on PATH, install and sync write operational skill and
 command instructions using that installed CLI. This also applies to unversioned commands
@@ -126,7 +126,7 @@ No execution permission is added for this choice. If the CLI is removed, run syn
 version declared in `.rsc.json` to restore the `npx` instructions.
 
 > **Run it inside the project you are equipping, not inside a clone of this repo.** The catalog's own
-> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc` from within a clone resolves to
+> `package.json` is named `@aguerrave/rsc`, so `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc` from within a clone resolves to
 > the local bin and fails with `sh: rsc: command not found`. Working on the catalog itself? Use
 > `node scripts/rsc.js …` or `npm link`.
 
@@ -136,7 +136,7 @@ If you are an AI coding agent and your user asked you to **install rsc, this har
 skills**, run this in the root of the project they are equipping:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc onboard
 ```
 
 It asks the user how technical to talk, the project kind and the goal **before it writes anything**,
@@ -149,11 +149,11 @@ tell the user before accepting.
 Non-interactive, with the answers collected first:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex
 # After the user accepts the printed plan:
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc onboard --technical-level technical \
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc onboard --technical-level technical \
   --project-kind software --goal "small compound-interest website" \
   --software-scope small --target codex --accept-plan PRINTED_SHA256_ID
 ```
@@ -289,7 +289,7 @@ Whoever clones runs **one command** and gets the same harness, at the version th
 its `.rsc.json` as `catalogVersion`:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc@<catalogVersion> sync
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc@<catalogVersion> sync
 ```
 
 You do not have to know that. Open the project and the assistant tells you, in the first message,
@@ -430,7 +430,7 @@ file, and `rsc agents reset <name>` takes rsc's version back after a backup.
 
 ## CLI
 
-`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.1`),
+`rsc` below is short for `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc`. Without a global install (`npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.2`),
 the bare `rsc` answers `command not found`: type the `npx` form.
 
 ```bash
@@ -481,7 +481,7 @@ follows. **Onboarding readiness** says whether onboarding is finished (`ready`, 
 ### Something's off? `rsc repair`
 
 If the harness is wired for the wrong assistant, a hook runs several times, or skills appear that you
-never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc repair`. It shows what it found before touching
+never asked for, run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc repair`. It shows what it found before touching
 anything, keeps a recoverable copy, and never touches skills or agents you wrote by hand. Add
 `--dry-run` to see the pass without writing.
 
@@ -489,7 +489,7 @@ anything, keeps a recoverable copy, and never touches skills or agents you wrote
 
 **rsc updates itself.** At session start it checks npm. A release in the same major installs in the
 background and takes effect next session; a new major asks first. To turn it off, create
-`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 && rsc sync`. Every sync
+`.rsc/.no-auto-update`. By hand: `npm install -g github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 && rsc sync`. Every sync
 snapshots the project first, so `rsc restore latest` undoes a bad update.
 
 ---
@@ -510,7 +510,7 @@ and a video sales letter (VSL). It is a curated selection of ordinary rsc skills
 In an existing rsc project, this command adds the core selection:
 
 ```bash
-npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
+npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc add customer-research offer-design sales-funnel vsl-script landing-copy
 ```
 
 Use `design` and your web-stack skill to build the page; use `remotion-video` or your editor to produce

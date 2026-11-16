@@ -1,6 +1,6 @@
 # Validación de la distribución aguerrave — 2026-11-16
 
-Base: upstream v4.1.7 (260396d). Rama: feat/idempiere-skills-consolidation (sin release todavía).
+Base: upstream v4.1.7 (260396d). Release propia: 4.1.7-aguerrave.2 (anterior: 4.1.7-aguerrave.1).
 
 - Seis skills iDempiere nuevas (plugin-compiler, integration-test, jasper-report-bundle, freemarker-print-template, osgi-framework-listener, jenkinsfile-developer), cada una con evals (5/4/1). El catálogo pasa de 276 a 282 skills.
 - `idempiere-plugins` incorpora las reglas de código del core aplicables a plugins, redactadas aquí, y recomienda las skills nuevas.

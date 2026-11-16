@@ -11,7 +11,7 @@ origin: risco
 
 Tests prove the code works, not that it does what was asked. Review answers that other question: **is the diff correct, well-scoped and faithful to the spec — or did it pass for the wrong reasons?** In ASDD (`../asdd/SKILL.md`) it runs in two modes:
 
-- **Per task** — called from `implement`'s loop after each task's self-check. Depth comes from `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk [--base <ref>] [paths…]` (same path table as the sello, works with the sello off): **tier 0** → no review; **tier 1** → one fresh-context reviewer (a subagent that never saw the implementation conversation); **tier 2** → the three-refuter panel below, recorded after it runs with `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review ledger panel <slug>/<task> --lenses correctness,security,tests` (the ship guard refuses to push a tier-2 branch without it — one reviewer is not a panel), and the branch will wait for human approval at ship. The tier reads the diff's content too: auth code in a generic file is tier 2.
+- **Per task** — called from `implement`'s loop after each task's self-check. Depth comes from `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc risk [--base <ref>] [paths…]` (same path table as the sello, works with the sello off): **tier 0** → no review; **tier 1** → one fresh-context reviewer (a subagent that never saw the implementation conversation); **tier 2** → the three-refuter panel below, recorded after it runs with `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc review ledger panel <slug>/<task> --lenses correctness,security,tests` (the ship guard refuses to push a tier-2 branch without it — one reviewer is not a panel), and the branch will wait for human approval at ship. The tier reads the diff's content too: auth code in a generic file is tier 2.
 - **Closing review** — once, before `ship`: the whole branch against the spec. Forty individually-correct tasks can still fail to be the feature together: a criterion nobody owned, two tasks that each assumed the other handled an edge, scope that crept in a slice at a time. Read the spec's acceptance criteria and "must respect" list against `git diff <base>...HEAD`, not the task reviews. Its record — tier, counts, verdict, each finding with its outcome — goes to `02-DOCS/wiki/sdd/reviews/<slug>.md`.
 
 This skill owns **two roles that share one discipline**:
@@ -120,10 +120,10 @@ without actually running the lenses produces a valid sello and a worthless one.
 Every state transition is deterministic CLI, never tokens:
 
 ```text
-1. npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sello freeze      → hashes the candidate, prints risk tier + lens count
+1. npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc sello freeze      → hashes the candidate, prints risk tier + lens count
 2. Run the lenses (below), filter findings, decide
-3a. approved → npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sello approve --lenses correctness,security,tests
-3b. blocked  → npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sello block --reason "<the blocking finding>"
+3a. approved → npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc sello approve --lenses correctness,security,tests
+3b. blocked  → npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc sello block --reason "<the blocking finding>"
 ```
 
 `approve` refuses to seal with fewer lenses than the tier requires — pass them all, or accept the
@@ -187,7 +187,7 @@ steps, in this order:
    report filename. Consolidation preserves these associations as `criterion_refs` pairs so a
    criterion raised by one lens is not attributed to another lens that reported the same defect.
 
-   Save the reports and run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review consolidate <reports…>`. It merges findings
+   Save the reports and run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc review consolidate <reports…>`. It merges findings
    on the same place that say the same thing, or that quote the same evidence; keeps the highest
    severity and every lens that saw it; and **downgrades a blocker or should-fix with no
    `file:line` or no `failure_scenario` to a question**. Several lenses on one finding is a reason
@@ -214,7 +214,7 @@ find something is not evidence:
    its reason in the report); UNPROVEN is a `[question]`, and questions don't block.
 
 **Fixing a blocker is budgeted.** Before touching anything: estimate the fix and declare it —
-`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sello budget --lines <N>`. After the fix: `sello budget-check` (over budget →
+`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc sello budget --lines <N>`. After the fix: `sello budget-check` (over budget →
 justify with `--justify "…"` or shrink; an unexplained overrun is how over-engineering enters
 disguised as a fix). Then `sello freeze` + re-review **only the divergence**, and approve. Each
 fix-and-re-review is one round of the loop below.
@@ -222,7 +222,7 @@ fix-and-re-review is one round of the loop below.
 ### Convergence — the fix loop ends
 
 A review loop that never converges is worse than none: Anthropic saw a single PR take 50 rounds.
-Five rules, enforced by `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review ledger` (`.rsc/review-ledger.jsonl`) rather
+Five rules, enforced by `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc review ledger` (`.rsc/review-ledger.jsonl`) rather
 than by memory:
 
 1. **Max 3 rounds per task.** Call `review ledger round <slug>/<task>` before **every** review of
@@ -342,7 +342,7 @@ This phase's default model tier is **`heavy`** — adversarial diff reading is w
 ## Where this writes — and how the reviewer learns
 
 - **Accepted/declined findings** of consequence → append to `02-DOCS/wiki/sdd/decisions.md` (e.g. "declined NPE finding on documents.py:42 — guarded by require_auth; added regression test"). This is the same append-only log `implement` writes to.
-- **Escapes become cases.** `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc review escapes [--since <ref>]` lists every revert commit and whether it has a case at `02-DOCS/wiki/sdd/review-evals/<shortsha>.md`. Write the missing ones: the diff that shipped, where the bug was, and what the reviewer should have said. Only `Revert "…"` / `revert:` commits are seen; a hand-made revert is invisible.
+- **Escapes become cases.** `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc review escapes [--since <ref>]` lists every revert commit and whether it has a case at `02-DOCS/wiki/sdd/review-evals/<shortsha>.md`. Write the missing ones: the diff that shipped, where the bug was, and what the reviewer should have said. Only `Revert "…"` / `revert:` commits are seen; a hand-made revert is invisible.
 - **A finding that keeps repeating becomes a rule** — a lint rule, a constitution principle (`02-DOCS/wiki/sdd/constitution.md`, amended via `constitution`) or a line in `REVIEW.md`. Ask what the model didn't have in front of it: a repeat is almost always missing context, not a careless reviewer.
 
 Index them in `02-DOCS/wiki/index.md` (the Knowledge map; root `CLAUDE.md` keeps only a short pointer) under the `sdd/` topic — the harness owns that map; this skill just keeps its rows honest.

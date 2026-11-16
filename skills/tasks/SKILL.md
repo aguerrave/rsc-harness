@@ -71,7 +71,7 @@ Every task is one row. A row is well-formed only when all seven fields hold:
 | **Done-check** | The **literal** command or observation that proves done. Runnable, not a feeling. See below. |
 | **Depends-on** | The task IDs that must finish first, or `—` for none. Drives the ordering and the parallel markers. |
 | **Trace** | The spec acceptance criterion this task covers (`AC3`). Every task traces to one; if it can't, it's out of scope. |
-| **Risk forecast** | Tier `0`/`1`/`2` from the paths the task expects to touch: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk <expected paths…>`. Never guessed. |
+| **Risk forecast** | Tier `0`/`1`/`2` from the paths the task expects to touch: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc risk <expected paths…>`. Never guessed. |
 
 **Coverage runs both ways.** A criterion with no task, or a task with no criterion, is a defect
 `analyze` flags. The forecast budgets review; `implement` recomputes the tier on the task's actual
@@ -132,7 +132,7 @@ will execute.
    unblocked task. Default to sequential.
 5. TRACE each task to a spec criterion, and each criterion to ≥1 task.
    No trace → cut it (scope creep) or send the gap to `clarify`/`specify`.
-6. FORECAST risk per task: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc risk <expected paths…>`.
+6. FORECAST risk per task: `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc risk <expected paths…>`.
 7. ADD the closer: "all done-checks pass + verify.sh green" (stage 5).
 8. ADD a review workload + delivery forecast before implementation.
 9. APPEND the table to the plan artifact (see below). Do not start a

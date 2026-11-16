@@ -2,11 +2,11 @@
 
 Origen: https://github.com/aguerrave/rsc-harness
 Upstream: https://github.com/ericrisco/rsc-harness
-Base: v4.1.7 (260396d). Fork anterior: v4.1.5-aguerrave.1 sobre v4.1.5.
-Versión propia: 4.1.7-aguerrave.1. Referencia de distribución: v4.1.7-aguerrave.1.
+Base: v4.1.7 (260396d). Fork anterior: v4.1.7-aguerrave.1 sobre v4.1.7.
+Versión propia: 4.1.7-aguerrave.2. Referencia de distribución: v4.1.7-aguerrave.2.
 
 ## Instalar o sincronizar
-`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc sync --target claude,codex,cursor`
+`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc sync --target claude,codex,cursor`
 
 ## Skills propias
 - idempiere-implementation: implantación contractual y funcional.

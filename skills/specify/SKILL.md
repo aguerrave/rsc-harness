@@ -193,7 +193,7 @@ property of the **file**, not of your confidence:
 > Every template section carries content or an explicit typed open point, and no section holds an
 > unmarked assumption.
 
-Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.1 rsc spec gate <path>` on the spec you just wrote (no path: every spec in the
+Run `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.2 rsc spec gate <path>` on the spec you just wrote (no path: every spec in the
 project's `02-DOCS/wiki/sdd/specs/`). It prints `PASS`/`FAIL` per file, reports the missing and the
 empty sections by name, exits non-zero on any `FAIL`, and prints what it does **not** check — the
 unmarked assumption is yours to catch, because no parser can. A red gate means the spec is not
