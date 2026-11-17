@@ -10,7 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { specCompleteness, statusClaims, checkClaims } from './lib/spec-gate.js';
 
 // The corpus of the project the gate is run FROM — not of the package that ships the script. Run as
-// `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc spec gate` in a user project, a package-relative default found nothing.
+// `npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.4 rsc spec gate` in a user project, a package-relative default found nothing.
 function projectRoot() {
   try {
     const top = execFileSync('git', ['rev-parse', '--show-toplevel'], { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();

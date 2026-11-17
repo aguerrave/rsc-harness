@@ -441,7 +441,7 @@ export function branchCheck(
       `${best ? ` (largest still valid: ${best})` : ''}. Tier 2 is reviewed by the full panel, not by one reviewer, and a panel covers ` +
       'the commit it was recorded on: code committed after it needs the panel again (the record is self-attested, like the sello). ' +
       `Recover: run the ${required} fresh-context refuters (correctness, security, tests) on the branch, then record it — ` +
-      `\`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc review ledger panel ${slugs[0]}/closing --lenses correctness,security,tests\` — and push again. ` +
+      `\`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.4 rsc review ledger panel ${slugs[0]}/closing --lenses correctness,security,tests\` — and push again. ` +
       'To turn this gate off for the project: create `.rsc/.no-asdd-gate`.'
     );
   }
@@ -458,7 +458,7 @@ export function branchCheck(
     `Branch "${branch}" is risk tier 2 (${why || 'tier 2'}): tier 2 is ASDD work, and it does not leave this machine without an approved spec. ` +
     found +
     'Recover: write the spec with the `specify` skill (the four questions: what the user can do, what result they get, what it must respect, how it proves it; ' +
-    `plus out of scope), put \`branch: ${branch}\` in its frontmatter, check it with \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.3 rsc spec gate <spec>\`, and push again. ` +
+    `plus out of scope), put \`branch: ${branch}\` in its frontmatter, check it with \`npx --yes --package=github:aguerrave/rsc-harness#v4.1.7-aguerrave.4 rsc spec gate <spec>\`, and push again. ` +
     'Anything decided without the person goes to the decision queue as review-after. To turn this gate off for the project: create `.rsc/.no-asdd-gate`.'
   );
 }

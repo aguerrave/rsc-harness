@@ -6,17 +6,43 @@
       "repo": "https://github.com/idempiere/idempiere.git",
       "branch": "master",
       "pinned": "596d5c6ed62ebae471de4ae40f015cc2b5d0a9d1",
-      "paths": ["AGENTS.md", ".agents/skills"],
+      "paths": [
+        "AGENTS.md",
+        ".agents/skills"
+      ],
       "license": "GPL-2.0",
       "use": "Rules re-expressed in idempiere-plugins and idempiere-integration-test. Its skills target core contribution and are not imported.",
-      "tracks": ["idempiere-plugins", "idempiere-integration-test"]
+      "tracks": [
+        "idempiere-plugins",
+        "idempiere-integration-test"
+      ]
+    },
+    {
+      "id": "idempiere-core-release-13",
+      "repo": "https://github.com/idempiere/idempiere.git",
+      "branch": "release-13",
+      "pinned": "39b9b80be7e7320f9de7ae3d12809e5b7bc6dea4",
+      "paths": [
+        "org.adempiere.pipo/src/org/adempiere/pipo2",
+        "org.idempiere.test/src/org/idempiere/test/DictionaryIDs.java",
+        "org.adempiere.base/src/org/idempiere/print"
+      ],
+      "license": "GPL-2.0",
+      "use": "API de los proyectos que migran a 13: PackIn/2Pack, DictionaryIDs de las pruebas y el renderizador de reportes (IDEMPIERE-7070).",
+      "tracks": [
+        "idempiere-2pack",
+        "idempiere-integration-test",
+        "idempiere-freemarker-print-template"
+      ]
     },
     {
       "id": "hengsin-skills",
       "repo": "https://github.com/hengsin/idempiere-skills.git",
       "branch": "main",
       "pinned": "a7ec5db8f7459ad67fd0753e0f314ba69021a9cb",
-      "paths": ["."],
+      "paths": [
+        "."
+      ],
       "license": null,
       "use": "Plugin skills. Not imported until the repository has a license.",
       "tracks": []
@@ -26,30 +52,47 @@
       "repo": "https://github.com/hengsin/idempiere-examples.git",
       "branch": "main",
       "pinned": "3ce46a29af188be84f538f822bd0acc7d5914265",
-      "paths": ["org.idempiere.test.example", "org.idempiere.jasper.example", "org.idempiere.framework.listener.example"],
+      "paths": [
+        "org.idempiere.test.example",
+        "org.idempiere.jasper.example",
+        "org.idempiere.framework.listener.example"
+      ],
       "license": "GPL-2.0 (per-file headers; no repository LICENSE)",
       "use": "Basis of the GPL-2.0 templates in the skills listed in tracks.",
-      "tracks": ["idempiere-integration-test", "idempiere-jasper-report-bundle", "idempiere-osgi-framework-listener"]
+      "tracks": [
+        "idempiere-integration-test",
+        "idempiere-jasper-report-bundle",
+        "idempiere-osgi-framework-listener"
+      ]
     },
     {
       "id": "carl0gonzalez-skills",
       "repo": "https://github.com/Carl0gonzalez/AI-Skills-Idempiere.git",
       "branch": "main",
       "pinned": "805de2b3891b19f174454807fabceab0651bd0e6",
-      "paths": ["."],
+      "paths": [
+        "."
+      ],
       "license": "MIT",
       "use": "Adapted to native (Docker-free) builds; generate_readme.py.template keeps its MIT notice.",
-      "tracks": ["idempiere-plugin-compiler", "idempiere-jenkinsfile-developer"]
+      "tracks": [
+        "idempiere-plugin-compiler",
+        "idempiere-jenkinsfile-developer"
+      ]
     },
     {
       "id": "muriloht-print-template",
       "repo": "https://github.com/muriloht/idempiere-print-template.git",
       "branch": "main",
       "pinned": "bdbf350355da6becf85e92ffe1eead41b937bb6a",
-      "paths": ["."],
+      "paths": [
+        "."
+      ],
       "license": null,
       "use": "The FreeMarker renderer the skill targets. Nothing copied; the example template is our own.",
-      "tracks": ["idempiere-freemarker-print-template"]
+      "tracks": [
+        "idempiere-freemarker-print-template"
+      ]
     }
   ]
 }

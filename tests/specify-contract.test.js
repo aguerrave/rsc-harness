@@ -21,7 +21,7 @@ test('the gate rule is stated once, not three times', () => {
 
 test('specify has an exit gate that names a runnable command', () => {
   assert.match(specify, /## Exit gate/);
-  assert.match(specify, /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.3 rsc spec gate/);
+  assert.match(specify, /npx --yes --package=github:aguerrave\/rsc-harness#v4\.1\.7-aguerrave\.4 rsc spec gate/);
   assert.doesNotMatch(specify, /npm run spec:gate/, "the npm script only exists inside the rsc package");
 });
 

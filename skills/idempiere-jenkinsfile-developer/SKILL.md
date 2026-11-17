@@ -36,7 +36,8 @@ Dockerfile of the agent) or ask the user to run `which docker git java mvn pytho
        agent any
        steps {
            dir('target-platform') {
-               git branch: '12.0', url: 'https://github.com/ingeint/idempiere-target-platform-plugin.git'
+               git branch: '12.0', // use the branch matching the plugin's core (12.0, 13.0…)
+               url: 'https://github.com/ingeint/idempiere-target-platform-plugin.git'
                sh './plugin-builder build ../${PLUGIN_NAME}'
                archiveArtifacts artifacts: "target/${PLUGIN_NAME}-${IDEMPIERE_VERSION}.${BUILD_NUMBER}.jar", fingerprint: true
            }

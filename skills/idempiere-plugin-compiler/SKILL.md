@@ -20,7 +20,7 @@ dependencies in order, and reports what it actually produced.
 2. Read the repository's build notes, its `pom.xml` and any `Jenkinsfile`. If the
    project documents a build command, use it.
 3. Check the toolchain where the build will run: `which javac java mvn` and
-   `java -version` (iDempiere 12 needs Java 17). **Check for Docker before using
+   `java -version` (iDempiere 12 and 13 need Java 17). **Check for Docker before using
    it** (`which docker`); do not generate a Docker-based command on a machine
    that has no daemon.
 
